@@ -1,11 +1,12 @@
-﻿using Microsoft.Win32;
+﻿using Microsoft.Office.Interop.Excel;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Windows;
 
 namespace AntiBonto
 {
-    public partial class MainWindow : Window
+    public partial class MainWindow : System.Windows.Window
     {
         public MainWindow()
         {
@@ -14,8 +15,7 @@ namespace AntiBonto
 
         private void LoadXLS(object sender, RoutedEventArgs e)
         {
-            var excelInstalled = Type.GetTypeFromProgID("Excel.Application");
-            if (excelInstalled == null)
+            if (Type.GetTypeFromProgID("Excel.Application") == null)
             {
                 MessageBox.Show("Excel nincs telepítve!");
                 return;
@@ -30,12 +30,11 @@ namespace AntiBonto
             };
             if (dialog.ShowDialog(this) != true)
                 return;
-            const int xlLastCell = 11;
-            dynamic excel = Activator.CreateInstance(excelInstalled),
-                file = excel.Workbooks.Open(dialog.FileName),
-                sheet = file.Sheets(1).Range("A1", excel.ActiveCell.SpecialCells(xlLastCell)),
-                col1 = sheet.Columns(1),
-                col2 = sheet.Columns(2);
+            var excel = new Microsoft.Office.Interop.Excel.Application();
+            Workbook file = excel.Workbooks.Open(dialog.FileName);
+            Range sheet = file.Sheets[1].Range("A1", excel.ActiveCell.SpecialCells(XlCellType.xlCellTypeLastCell)),
+             col1 = sheet.Columns[1],
+             col2 = sheet.Columns[2];
             excel.Visible = true;
             List<string> names = new List<string>();
             foreach (string val in col1.Value)
