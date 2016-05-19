@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 
 namespace AntiBonto.ViewModel
 {
-    class ViewModelBase: INotifyPropertyChanged
+    public class ViewModelBase: INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
         

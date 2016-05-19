@@ -4,18 +4,51 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:AntiBonto.ViewModel"
+        xmlns:hammer="clr-namespace:Hammer.SpinningWheel;assembly=Hammer.SpinningWheel"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Title="AntiBontó"  Width="640" Height="480">
     <Window.DataContext>
         <vm:MainWindow/>
     </Window.DataContext>
     <TabControl>
-        <TabItem Header="Adatok">
-            <StackPanel Orientation="Vertical">
-                <StackPanel Orientation="Horizontal">
-                    <Button Content="Excel fájl betöltése" Click="LoadXLS" Padding="5"/>
-                </StackPanel>
-            </StackPanel>
+        <TabItem Header="1. Adatok">
+            <DockPanel>
+                <DockPanel DockPanel.Dock="Top" LastChildFill="False">
+                    <Button Content="Excel fájl betöltése" Click="LoadXLS" Padding="5" Name="OnlyButton" Margin="0,0,20,0" DockPanel.Dock="Left"/>
+                    <hammer:SpinningWheel Radius="9" CircleRadius="2.5" Visibility="Hidden" Name="LoadingAnimation" DockPanel.Dock="Left"/>                    
+                </DockPanel>
+                <Label Target="{Binding ElementName=PeopleView}" Content="Résztvevők" DockPanel.Dock="Top"/>
+                <Grid>
+                    <Border BorderThickness="1" CornerRadius="3" BorderBrush="Gray" Padding="5">
+                        <ItemsControl Name="PeopleView" ItemsSource="{Binding People}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Button Content="{Binding Name}" Margin="0,0,5,5" Padding="3" Name="PersonButton"/>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </Border>
+                    <Button Click="AddPerson" DockPanel.Dock="Right" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="10"
+                            FontSize="20pt" Background="Red" Foreground="White" Height="40" Width="{Binding RelativeSource={RelativeSource Self}, Path=ActualHeight}">
+                        <Button.Template>
+                            <ControlTemplate TargetType="{x:Type Button}">
+                                <Grid>
+                                    <Ellipse Fill="Red"/>
+                                    <ContentPresenter Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Grid>
+                            </ControlTemplate>
+                        </Button.Template>
+                        <Button.Content>
+                            <TextBlock Text="+" Margin="0,-7,0,0"/>
+                        </Button.Content>
+                    </Button>
+                </Grid>
+            </DockPanel>
         </TabItem>
     </TabControl>
 </Window>

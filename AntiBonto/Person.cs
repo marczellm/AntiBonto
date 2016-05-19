@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using AntiBonto.ViewModel;
 
 namespace AntiBonto
 {
@@ -16,10 +12,10 @@ namespace AntiBonto
         Egyéb = 10,
         Újonc = 11
     }
-    public class Person
+    public class Person: ViewModelBase
     {
-        public String name;
-        public int birthyear;
-        public PersonType type;
+        public string Name { get; set; }
+        public int BirthYear;
+        public PersonType Type;
     }
 }

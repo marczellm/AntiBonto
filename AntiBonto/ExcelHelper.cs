@@ -21,14 +21,14 @@ namespace AntiBonto
                  col2 = range.Columns[2];
                 List<Person> ppl = new List<Person>();
                 foreach (string val in col1.Value)
-                    ppl.Add(new Person { name = val });
+                    ppl.Add(new Person { Name = val });
                 if (col1.Count == col2.Count)
                 {
                     int i = 0;
                     foreach (string n in col2.Value)
-                        ppl[i++].name += " " + n;
+                        ppl[i++].Name += " " + n;
                 }
-                ppl.RemoveAll(s => String.IsNullOrWhiteSpace(s.name));
+                ppl.RemoveAll(s => String.IsNullOrWhiteSpace(s.Name));
                 if (isHVKezelo)
                 {
                     Range col4 = range.Columns[4];
@@ -42,10 +42,10 @@ namespace AntiBonto
                             Int32.TryParse(s, out x);
                         else if (s is double || s is int)
                             x = (int)s;
-                        ppl[i++].type = (PersonType)x;
+                        ppl[i++].Type = (PersonType)x;
                     }
                 }
-                if (ppl[0].name.Contains("név"))
+                if (ppl[0].Name.Contains("név"))
                     ppl.RemoveAt(0);
                 return ppl;
             }
