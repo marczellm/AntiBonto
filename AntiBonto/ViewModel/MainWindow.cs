@@ -1,14 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Windows.Data;
 
 namespace AntiBonto.ViewModel
 {
     class MainWindow
     {
-        
+        private ObservableCollection<Person> ocp;
+        public List<Person> ppl;
+        public ObservableCollection<Person> people
+        {
+            get
+            {
+                return ocp ?? (ocp = new ObservableCollection<Person>(ppl));
+            }
+        }
     }
 }

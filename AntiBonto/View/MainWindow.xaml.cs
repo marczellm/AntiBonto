@@ -11,6 +11,8 @@ namespace AntiBonto
             InitializeComponent();
         }
 
+        private ViewModel.MainWindow viewModel { get { return (ViewModel.MainWindow)DataContext; } }
+
         private void LoadXLS(object sender, RoutedEventArgs e)
         {
             if (Type.GetTypeFromProgID("Excel.Application") == null)
@@ -26,9 +28,8 @@ namespace AntiBonto
                 CheckFileExists = true,
                 CheckPathExists = true
             };
-            if (dialog.ShowDialog(this) != true)
-                return;
-            ExcelHelper.LoadXLS(dialog.FileName);
+            if (dialog.ShowDialog(this) == true)
+                viewModel.ppl = ExcelHelper.LoadXLS(dialog.FileName);
         }
     }
 }

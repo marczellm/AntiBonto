@@ -6,17 +6,17 @@ using System.Threading.Tasks;
 
 namespace AntiBonto
 {
-    enum PersonType
+    public enum PersonType
     {
         Teamtag = 0,
-        Fiu_vezeto = 1,
-        Lany_vezeto = 2,
-        Zeneteam_vezeto = 3,
-        Zeneteam_tag = 4,
-        Egyeb = 10,
-        Ujonc = 11
+        Fiú_vezető = 1,
+        Lány_vezető = 2,
+        Zeneteamvezető = 3,
+        Zeneteamtag = 4,
+        Egyéb = 10,
+        Újonc = 11
     }
-    class Person
+    public class Person
     {
         public String name;
         public int birthyear;

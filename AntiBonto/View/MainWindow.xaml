@@ -3,12 +3,19 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:AntiBonto"
+        xmlns:vm="clr-namespace:AntiBonto.ViewModel"
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
-    <StackPanel Orientation="Vertical" Margin="5">
-        <StackPanel Orientation="Horizontal">
-            <Button Content="Excel fájl betöltése" Click="LoadXLS" Width="Auto" Padding="5"/>
-        </StackPanel>
-    </StackPanel>
+    <Window.DataContext>
+        <vm:MainWindow/>
+    </Window.DataContext>
+    <TabControl>
+        <TabItem Header="Adatok">
+            <StackPanel Orientation="Vertical">
+                <StackPanel Orientation="Horizontal">
+                    <Button Content="Excel fájl betöltése" Click="LoadXLS" Padding="5"/>
+                </StackPanel>
+            </StackPanel>
+        </TabItem>
+    </TabControl>
 </Window>
