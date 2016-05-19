@@ -3,36 +3,25 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:view="clr-namespace:AntiBonto.View"
         xmlns:vm="clr-namespace:AntiBonto.ViewModel"
         xmlns:hammer="clr-namespace:Hammer.SpinningWheel;assembly=Hammer.SpinningWheel"
         mc:Ignorable="d"
-        Title="AntiBontó"  Width="640" Height="480">
+        Title="AntiBontó" Width="1024" Height="768">
     <Window.DataContext>
         <vm:MainWindow/>
     </Window.DataContext>
     <TabControl>
-        <TabItem Header="1. Adatok">
+        <TabItem Header="1. Résztvevők">
             <DockPanel>
                 <DockPanel DockPanel.Dock="Top" LastChildFill="False">
+                    <Label DockPanel.Dock="Left" Content="Vedd fel a résztvevőket!"/>
                     <Button Content="Excel fájl betöltése" Click="LoadXLS" Padding="5" Name="OnlyButton" Margin="0,0,20,0" DockPanel.Dock="Left"/>
                     <hammer:SpinningWheel Radius="9" CircleRadius="2.5" Visibility="Hidden" Name="LoadingAnimation" DockPanel.Dock="Left"/>                    
                 </DockPanel>
                 <Label Target="{Binding ElementName=PeopleView}" Content="Résztvevők" DockPanel.Dock="Top"/>
                 <Grid>
-                    <Border BorderThickness="1" CornerRadius="3" BorderBrush="Gray" Padding="5">
-                        <ItemsControl Name="PeopleView" ItemsSource="{Binding People}">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <WrapPanel />
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Button Content="{Binding Name}" Margin="0,0,5,5" Padding="3" Name="PersonButton"/>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </Border>
+                    <view:DnDItemsControl x:Name="PeopleView" ItemsSource="{Binding People}"/>
                     <Button Click="AddPerson" DockPanel.Dock="Right" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="10"
                             FontSize="20pt" Background="Red" Foreground="White" Height="40" Width="{Binding RelativeSource={RelativeSource Self}, Path=ActualHeight}">
                         <Button.Template>
@@ -47,6 +36,39 @@
                             <TextBlock Text="+" Margin="0,-7,0,0"/>
                         </Button.Content>
                     </Button>
+                </Grid>
+            </DockPanel>
+        </TabItem>
+        <TabItem Header="2. Életkor" IsEnabled="{Binding PeopleNotEmpty}">
+            <DockPanel>
+                <Label DockPanel.Dock="Top" Content="Add meg az életkorokat!"/>
+                <DataGrid DockPanel.Dock="Bottom" ItemsSource="{Binding People, Mode=TwoWay}" CanUserAddRows="False" CanUserDeleteRows="False" AutoGenerateColumns="False">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Binding="{Binding Name}" Header="Név"/>
+                        <DataGridTextColumn Binding="{Binding BirthYear}" Header="Születési év"/>
+                        <DataGridTextColumn Binding="{Binding Age}" Header="Kor"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </DockPanel>
+        </TabItem>
+        <TabItem Header="3. Lányok-fiúk" IsEnabled="{Binding PeopleNotEmpty}">
+            <DockPanel>
+                <Label DockPanel.Dock="Top" Content="Válogasd szét a lányokat és a fiúkat!"/>
+                <Grid DockPanel.Dock="Bottom">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Label Grid.Column="0" Grid.Row="0" Content="Lányok"/>
+                    <Label Grid.Column="2" Grid.Row="0" Content="Fiúk"/>
+                    <view:DnDItemsControl Grid.Column="0" Grid.Row="1" ItemsSource="{Binding Lanyok}" Margin="5"/>
+                    <view:DnDItemsControl Grid.Column="1" Grid.Row="1" ItemsSource="{Binding People, Mode=OneWay}" Margin="5"/>
+                    <view:DnDItemsControl Grid.Column="2" Grid.Row="1" ItemsSource="{Binding Fiuk}" Margin="5"/>
                 </Grid>
             </DockPanel>
         </TabItem>

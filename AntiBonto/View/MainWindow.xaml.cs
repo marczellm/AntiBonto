@@ -52,7 +52,7 @@ namespace AntiBonto
             var cp = (FrameworkElement)PeopleView.ItemContainerGenerator.ContainerFromItem(p);
             cp.ApplyTemplate();
             Button button = (Button)PeopleView.ItemTemplate.FindName("PersonButton", cp);
-            TextBox textBox = new TextBox { MinWidth = 10};
+            TextBox textBox = new TextBox { MinWidth = 10 };
             textBox.Tag = p;
             textBox.KeyDown += TextBox_KeyDown;
             button.Content = textBox;
