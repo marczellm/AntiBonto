@@ -7,7 +7,8 @@
         xmlns:vm="clr-namespace:AntiBonto.ViewModel"
         xmlns:hammer="clr-namespace:Hammer.SpinningWheel;assembly=Hammer.SpinningWheel"
         mc:Ignorable="d"
-        Title="AntiBontó" Width="1024" Height="768">
+        Title="AntiBontó" Width="1024" Height="768"
+        xmlns:gdd="clr-namespace:Clarity.Demo.GenericDragDrop">
     <Window.DataContext>
         <vm:MainWindow/>
     </Window.DataContext>
@@ -66,8 +67,9 @@
                     </Grid.RowDefinitions>
                     <Label Grid.Column="0" Grid.Row="0" Content="Lányok"/>
                     <Label Grid.Column="2" Grid.Row="0" Content="Fiúk"/>
-                    <view:DnDItemsControl Grid.Column="0" Grid.Row="1" ItemsSource="{Binding Lanyok}" Margin="5"/>
-                    <view:DnDItemsControl Grid.Column="1" Grid.Row="1" ItemsSource="{Binding People, Mode=OneWay}" Margin="5"/>
+                    <view:DnDItemsControl Grid.Column="0" Grid.Row="1" ItemsSource="{Binding Lanyok}" Margin="5" x:Name="LanyokView"/>
+                    <view:DnDItemsControl Grid.Column="1" Grid.Row="1" ItemsSource="{Binding People, Mode=OneWay}" Margin="5" 
+                                          gdd:DragDropHelper.DropTarget="LanyokView"/>
                     <view:DnDItemsControl Grid.Column="2" Grid.Row="1" ItemsSource="{Binding Fiuk}" Margin="5"/>
                 </Grid>
             </DockPanel>

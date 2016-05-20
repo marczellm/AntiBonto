@@ -79,6 +79,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="View\ButtonDragAdorner.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -88,9 +92,14 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ExcelHelper.cs" />
+    <Compile Include="GenericDragDrop\DragDropAdornerBase.cs" />
+    <Compile Include="GenericDragDrop\DragDropHelper.cs" />
     <Compile Include="Person.cs" />
     <Compile Include="ViewModel\MainWindow.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />
+    <Compile Include="View\ButtonDragAdorner.xaml.cs">
+      <DependentUpon>ButtonDragAdorner.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\DnDItemsControl.cs" />
     <Compile Include="View\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -165,6 +174,7 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
