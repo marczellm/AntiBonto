@@ -6,7 +6,6 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows.Data;
 using System.Windows;
-using AntiBonto.View;
 
 namespace AntiBonto.ViewModel
 {
@@ -91,7 +90,7 @@ namespace AntiBonto.ViewModel
             {
                 return ocp;
             }
-            set
+            private set
             {
                 ocp = value;
                 RaisePropertyChanged();
@@ -206,6 +205,28 @@ namespace AntiBonto.ViewModel
                 RaisePropertyChanged();
                 RaisePropertyChanged("Zeneteamvezeto");
             }
+        }
+        public ICollectionView Kiscsoport(int i)
+        {
+            CollectionViewSource cvs = new CollectionViewSource { Source = People, IsLiveFilteringRequested = true, LiveFilteringProperties = { "Kiscsoport" } };
+            cvs.View.Filter = p => ((Person)p).Kiscsoport == i;
+            return cvs.View;
+        }
+        public ICollectionView[] Kiscsoportok
+        {
+            get { return Enumerable.Range(0, Kiscsoportvezetok.OfType<Person>().Count()).Select(i => Kiscsoport(i)).ToArray(); }
+        }
+        private ObservableCollection<Edge> edges = new ObservableCollection<Edge>();
+        public ObservableCollection<Edge> Edges
+        {
+            get { return edges; }
+            private set { edges = value; RaisePropertyChanged(); }
+        }
+        private Edge edge;
+        public Edge Edge
+        {
+            get { return edge ?? (edge = new Edge()); }
+            set { edge = value; RaisePropertyChanged(); }
         }
     }
 }

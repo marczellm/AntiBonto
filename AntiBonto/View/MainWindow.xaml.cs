@@ -57,11 +57,11 @@ namespace AntiBonto
             Person p = (Person) e.NewItems[0];
             var cp = (FrameworkElement)PeopleView.ItemContainerGenerator.ContainerFromItem(p);
             cp.ApplyTemplate();
-            Button button = (Button)PeopleView.ItemTemplate.FindName("PersonButton", cp);
+            var label = (ContentControl)PeopleView.ItemTemplate.FindName("PersonButton", cp);
             TextBox textBox = new TextBox { MinWidth = 10 };
             textBox.Tag = p;
             textBox.KeyDown += TextBox_KeyDown;
-            button.Content = textBox;
+            label.Content = textBox;
             Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background, (Action)(() => Keyboard.Focus(textBox)));
         }
 
@@ -71,8 +71,14 @@ namespace AntiBonto
             {
                 TextBox textBox = (TextBox)sender;
                 ((Person)textBox.Tag).Name = textBox.Text;
-                ((Button)textBox.Parent).Content = textBox.Text;
+                ((ContentControl)textBox.Parent).Content = textBox.Text;
             }
+        }
+
+        private void AddEdge(object sender, RoutedEventArgs e)
+        {
+            viewModel.Edges.Add(viewModel.Edge);
+            viewModel.Edge = new Edge();
         }
     }
 }

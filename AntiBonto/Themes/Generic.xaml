@@ -37,4 +37,27 @@
         <Setter Property="dd:DragDrop.IsDropTarget" Value="True"/>
         <Setter Property="dd:DragDrop.DragAdornerTemplate" Value="{StaticResource adorner}"/>
     </Style>
+
+    <Style TargetType="{x:Type local:AddButton}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid>
+                        <Ellipse Fill="Red"/>
+                        <ContentPresenter Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Content">
+            <Setter.Value>
+                <TextBlock Text="+" Margin="0,-7,0,0"/>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="FontSize" Value="20pt"/>
+        <Setter Property="Background" Value="Red"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Width" Value="{Binding RelativeSource={RelativeSource Self}, Path=ActualHeight}"/>
+        <Setter Property="Height" Value="40"/>
+    </Style>
 </ResourceDictionary>

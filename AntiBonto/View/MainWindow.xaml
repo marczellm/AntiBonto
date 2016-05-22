@@ -12,6 +12,9 @@
     <Window.DataContext>
         <vm:MainWindow/>
     </Window.DataContext>
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </Window.Resources>
     <TabControl>
         <TabItem Header="1. Résztvevők">
             <DockPanel>
@@ -21,29 +24,16 @@
                     <hammer:SpinningWheel Radius="9" CircleRadius="2.5" Visibility="Hidden" Name="LoadingAnimation" DockPanel.Dock="Left"/>
                 </DockPanel>
                 <Label Target="{Binding ElementName=PeopleView}" Content="Résztvevők" DockPanel.Dock="Top"/>
-                <Grid>
+                <Grid Margin="5">
                     <view:DnDItemsControl x:Name="PeopleView" ItemsSource="{Binding People}" dd:DragDrop.IsDragSource="False"/>
-                    <Button Click="AddPerson" DockPanel.Dock="Right" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="10"
-                            FontSize="20pt" Background="Red" Foreground="White" Height="40" Width="{Binding RelativeSource={RelativeSource Self}, Path=ActualHeight}">
-                        <Button.Template>
-                            <ControlTemplate TargetType="{x:Type Button}">
-                                <Grid>
-                                    <Ellipse Fill="Red"/>
-                                    <ContentPresenter Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                </Grid>
-                            </ControlTemplate>
-                        </Button.Template>
-                        <Button.Content>
-                            <TextBlock Text="+" Margin="0,-7,0,0"/>
-                        </Button.Content>
-                    </Button>
+                    <view:AddButton Click="AddPerson" DockPanel.Dock="Right" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="10"/>
                 </Grid>
             </DockPanel>
         </TabItem>
         <TabItem Header="2. Életkor" IsEnabled="{Binding PeopleNotEmpty}">
             <DockPanel>
                 <Label DockPanel.Dock="Top" Content="Add meg az életkorokat!"/>
-                <DataGrid DockPanel.Dock="Bottom" ItemsSource="{Binding People, Mode=TwoWay}" CanUserAddRows="False" CanUserDeleteRows="False" AutoGenerateColumns="False">
+                <DataGrid DockPanel.Dock="Bottom" ItemsSource="{Binding People}" CanUserAddRows="False" CanUserDeleteRows="False" AutoGenerateColumns="False">
                     <DataGrid.Columns>
                         <DataGridTextColumn Binding="{Binding Name}" Header="Név"/>
                         <DataGridTextColumn Binding="{Binding BirthYear}" Header="Születési év"/>
@@ -101,17 +91,62 @@
                     <Label Grid.Row="4" Grid.Column="0" Content="Újoncok"/>
                     <Label Grid.Row="4" Grid.Column="1" Content="Team"/>
                     <Label Grid.Row="4" Grid.Column="3" Content="Zeneteam"/>
-                    <view:DnDItemsControl Grid.Row="3" Grid.Column="0"   Grid.ColumnSpan="3" ItemsSource="{Binding Kiscsoportvezetok}" Margin="5" dd:DragDrop.DropHandler="{Binding}" x:Name="Kiscsoportvezetok"/>
+                    <view:DnDItemsControl Grid.Row="3" Grid.Column="0"  Grid.ColumnSpan="3" ItemsSource="{Binding Kiscsoportvezetok}" Margin="5" dd:DragDrop.DropHandler="{Binding}" x:Name="Kiscsoportvezetok"/>
                     <Label                Grid.Row="1" Content="{Binding Lanyvezeto}"                            Margin="5" Padding="3" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
-                                                                                                                 dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding}" x:Name="Lanyvezeto" />
+                                                                                                                 dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding}" x:Name="Lanyvezeto"/>
                     <Label                Grid.Row="1" Grid.Column="1" Content="{Binding Fiuvezeto}"             Margin="5" Padding="3" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
                                                                                                                  dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding}" x:Name="Fiuvezeto"/>
                     <Label                Grid.Row="3" Grid.Column="3" Content="{Binding Zeneteamvezeto}"        Margin="5" Padding="3" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
                                                                                                                  dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding}" x:Name="Zeneteamvezeto"/>
                     <view:DnDItemsControl Grid.Row="5" Grid.Column="0" ItemsSource="{Binding Ujoncok}"           Margin="5" dd:DragDrop.DropHandler="{Binding}" x:Name="Ujoncok"/>
-                    <view:DnDItemsControl Grid.Row="5" Grid.Column="1"  Grid.ColumnSpan="2" ItemsSource="{Binding Team}"              Margin="5" dd:DragDrop.DropHandler="{Binding}" x:Name="Team"/>
+                    <view:DnDItemsControl Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2" ItemsSource="{Binding Team}" Margin="5" dd:DragDrop.DropHandler="{Binding}" x:Name="Team"/>
                     <view:DnDItemsControl Grid.Row="5" Grid.Column="3" ItemsSource="{Binding Zeneteam}"          Margin="5" dd:DragDrop.DropHandler="{Binding}" x:Name="Zeneteam"/>
                 </Grid>
+            </DockPanel>
+        </TabItem>
+        <TabItem Header="5. Megszorítások" IsEnabled="{Binding PeopleNotEmpty}">
+            <DockPanel>
+                <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+                    <ComboBox ItemsSource="{Binding People}" IsEditable="False" SelectedItem="{Binding Edge.Person1}" MinWidth="100"/>
+                    <Label Content=" és "/>
+                    <ComboBox ItemsSource="{Binding People}" IsEditable="False" SelectedItem="{Binding Edge.Person2}" MinWidth="100"/>
+                    <ComboBox IsEditable="False" SelectedValue="{Binding Edge.Dislike}" SelectedValuePath="Tag" MinWidth="100">
+                        <ComboBox.Items>
+                            <ComboBoxItem Content="együtt kell legyenek" Tag="False"/>
+                            <ComboBoxItem Content="nem lehetnek együtt" Tag="True"/>
+                        </ComboBox.Items>
+                    </ComboBox>
+                    <Label Content=", mert "/>
+                    <TextBox Text="{Binding Edge.Reason}" MinWidth="100"/>
+                    <view:AddButton Click="AddEdge" Height="20" Margin="10,0,0,0">
+                        <Button.Content>
+                            <TextBlock Text="+" Margin="0,-11,0,0"/>
+                        </Button.Content>
+                    </view:AddButton>
+                    
+                </StackPanel>
+                <ItemsControl ItemsSource="{Binding Edges}" Margin="5">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <Label Content="{Binding Person1}" Margin="5,5,0,5" Padding="3" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+                                <Grid>
+                                    <Line Stroke="Black" X2="50" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    <Label Foreground="Red" Content="X" Background="Transparent" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                           Visibility="{Binding Dislike, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                </Grid>
+                                <Label Content="{Binding Person2}" Margin="0,5,5,5" Padding="3" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                    <ItemsControl.Template>
+                        <ControlTemplate>
+                            <Border BorderThickness="1" CornerRadius="3" BorderBrush="Gray" Padding="5">
+                                <ItemsPresenter/>
+                            </Border>
+                        </ControlTemplate>
+                    </ItemsControl.Template>
+                </ItemsControl>
             </DockPanel>
         </TabItem>
     </TabControl>
