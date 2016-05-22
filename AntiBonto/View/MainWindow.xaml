@@ -6,9 +6,9 @@
         xmlns:view="clr-namespace:AntiBonto.View"
         xmlns:vm="clr-namespace:AntiBonto.ViewModel"
         xmlns:hammer="clr-namespace:Hammer.SpinningWheel;assembly=Hammer.SpinningWheel"
+        xmlns:dd="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
         mc:Ignorable="d"
-        Title="AntiBontó" Width="1024" Height="768"
-        xmlns:gdd="clr-namespace:Clarity.Demo.GenericDragDrop">
+        Title="AntiBontó" Width="1024" Height="768">
     <Window.DataContext>
         <vm:MainWindow/>
     </Window.DataContext>
@@ -22,7 +22,7 @@
                 </DockPanel>
                 <Label Target="{Binding ElementName=PeopleView}" Content="Résztvevők" DockPanel.Dock="Top"/>
                 <Grid>
-                    <view:DnDItemsControl x:Name="PeopleView" ItemsSource="{Binding People}"/>
+                    <view:DnDItemsControl x:Name="PeopleView" ItemsSource="{Binding People}" dd:DragDrop.IsDragSource="False"/>
                     <Button Click="AddPerson" DockPanel.Dock="Right" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="10"
                             FontSize="20pt" Background="Red" Foreground="White" Height="40" Width="{Binding RelativeSource={RelativeSource Self}, Path=ActualHeight}">
                         <Button.Template>
@@ -55,6 +55,7 @@
         <TabItem Header="3. Lányok-fiúk" IsEnabled="{Binding PeopleNotEmpty}">
             <DockPanel>
                 <Label DockPanel.Dock="Top" Content="Válogasd szét a lányokat és a fiúkat!"/>
+                <Canvas Visibility="Collapsed" Name="adornerLayer3"/>
                 <Grid DockPanel.Dock="Bottom">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
@@ -67,10 +68,12 @@
                     </Grid.RowDefinitions>
                     <Label Grid.Column="0" Grid.Row="0" Content="Lányok"/>
                     <Label Grid.Column="2" Grid.Row="0" Content="Fiúk"/>
-                    <view:DnDItemsControl Grid.Column="0" Grid.Row="1" ItemsSource="{Binding Lanyok}" Margin="5" x:Name="LanyokView"/>
-                    <view:DnDItemsControl Grid.Column="1" Grid.Row="1" ItemsSource="{Binding People, Mode=OneWay}" Margin="5" 
-                                          gdd:DragDropHelper.DropTarget="LanyokView"/>
-                    <view:DnDItemsControl Grid.Column="2" Grid.Row="1" ItemsSource="{Binding Fiuk}" Margin="5"/>
+                    <view:DnDItemsControl Grid.Column="0" Grid.Row="1" ItemsSource="{Binding Lanyok}" Margin="5"
+                                          dd:DragDrop.DropHandler="{Binding}" x:Name="Lanyok"/>
+                    <view:DnDItemsControl Grid.Column="1" Grid.Row="1" ItemsSource="{Binding Nullnemuek}" Margin="5"
+                                          dd:DragDrop.DropHandler="{Binding}" x:Name="Nullnemuek"/>
+                    <view:DnDItemsControl Grid.Column="2" Grid.Row="1" ItemsSource="{Binding Fiuk}" Margin="5"
+                                          dd:DragDrop.DropHandler="{Binding}" x:Name="Fiuk"/>
                 </Grid>
             </DockPanel>
         </TabItem>

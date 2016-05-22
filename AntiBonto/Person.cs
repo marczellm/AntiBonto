@@ -34,7 +34,23 @@ namespace AntiBonto
             get { return DateTime.Now.Year - BirthYear; }
             set { BirthYear = DateTime.Now.Year - value; RaisePropertyChanged(); RaisePropertyChanged("BirthYear"); }
         }
-        public PersonType Type;
-        public Nem? Nem;
+        private PersonType _type;
+        private Nem? _nem;
+        public Nem? Nem
+        {
+            get { return _nem; }
+            set { _nem = value; RaisePropertyChanged(); }
+        }
+
+        public PersonType Type
+        {
+            get { return _type; }
+            set { _type = value; RaisePropertyChanged(); }
+        }
+
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 }

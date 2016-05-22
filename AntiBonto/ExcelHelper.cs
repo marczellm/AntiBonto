@@ -20,6 +20,7 @@ namespace AntiBonto
                  col1 = range.Columns[1],
                  col2 = range.Columns[2];
                 List<Person> ppl = new List<Person>();
+                var r = new Random();
                 foreach (string val in col1.Value)
                     ppl.Add(new Person { Name = val });
                 if (col1.Count == col2.Count)
