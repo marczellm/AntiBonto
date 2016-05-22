@@ -14,7 +14,10 @@ namespace AntiBonto
         }
 
         private ViewModel.MainWindow viewModel { get { return (ViewModel.MainWindow)DataContext; } }
-
+        
+        /// <summary>
+        /// Event handler
+        /// </summary>
         private void LoadXLS(object sender, RoutedEventArgs e)
         {
             if (Type.GetTypeFromProgID("Excel.Application") == null)
@@ -39,6 +42,9 @@ namespace AntiBonto
             LoadingAnimation.Visibility = Visibility.Hidden;
         }
 
+        /// <summary>
+        /// Event handler
+        /// </summary>
         private void AddPerson(object sender, RoutedEventArgs e)
         {
             viewModel.People.CollectionChanged += People_CollectionChanged;

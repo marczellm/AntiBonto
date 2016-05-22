@@ -9,17 +9,16 @@ namespace AntiBonto
     public enum PersonType
     {
         Teamtag = 0,
-        Fiú_vezető = 1,
-        Lány_vezető = 2,
-        Zeneteamvezető = 3,
+        Fiuvezeto = 1,
+        Lanyvezeto = 2,
+        Zeneteamvezeto = 3,
         Zeneteamtag = 4,
-        Kiscsoportvezető = 5, // ezt én vettem hozzá
-        Egyéb = 10,
-        Újonc = 11
+        Egyeb = 10,
+        Ujonc = 11
     }
     public enum Nem
     {
-        Lány, Fiú
+        Lany, Fiu
     }
     public class Person: ViewModelBase
     {
@@ -34,18 +33,25 @@ namespace AntiBonto
             get { return DateTime.Now.Year - BirthYear; }
             set { BirthYear = DateTime.Now.Year - value; RaisePropertyChanged(); RaisePropertyChanged("BirthYear"); }
         }
-        private PersonType _type;
-        private Nem? _nem;
+        private PersonType type;
+        private Nem? nem;
+        private bool kcsvez = false;
         public Nem? Nem
         {
-            get { return _nem; }
-            set { _nem = value; RaisePropertyChanged(); }
+            get { return nem; }
+            set { nem = value; RaisePropertyChanged(); }
         }
 
         public PersonType Type
         {
-            get { return _type; }
-            set { _type = value; RaisePropertyChanged(); }
+            get { return type; }
+            set { type = value; RaisePropertyChanged(); }
+        }
+
+        public bool Kiscsoportvezeto
+        {
+            get { return kcsvez; }
+            set { kcsvez = value; RaisePropertyChanged(); }
         }
 
         public override string ToString()

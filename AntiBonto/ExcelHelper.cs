@@ -7,6 +7,10 @@ namespace AntiBonto
 {
     public class ExcelHelper
     {
+        /// <summary>
+        /// Háttérben megnyitja az Excelt és kiolvassa a résztvevők adatait.
+        /// </summary>
+        /// <returns>a beolvasott emberek listáját</returns>
         public static List<Person> LoadXLS(string filename)
         {
             var excel = new Microsoft.Office.Interop.Excel.Application();

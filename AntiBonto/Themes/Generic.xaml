@@ -4,6 +4,7 @@
     xmlns:local="clr-namespace:AntiBonto.View"
     xmlns:dd="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop">
 
+    <!--This file is the definition of the drag-and-drop enabled ItemsControl -->
     <DataTemplate x:Key="adorner">
         <Button Content="{Binding Name}" Margin="0,0,5,5" Padding="3" Name="PersonButton"/>
     </DataTemplate>
@@ -25,6 +26,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:DnDItemsControl}">
+                    <!-- Background="White" needed for drop to work -->
                     <Border BorderThickness="1" CornerRadius="3" BorderBrush="Gray" Padding="5" Background="White">
                         <ItemsPresenter/>
                     </Border>
