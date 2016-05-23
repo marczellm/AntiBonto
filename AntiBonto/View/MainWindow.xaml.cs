@@ -41,15 +41,19 @@ namespace AntiBonto
             {
                 using (var file = new StreamReader(filepath))
                 {
-                    AppData = (AppData)xs.Deserialize(file);
+                    try
+                    {
+                        AppData = (AppData)xs.Deserialize(file);
+                        // The XML serializer doesn't handle object references, so we replace Person copies with references by name
+                        foreach (Edge edge in viewModel.Edges)
+                            for (int i = 0; i < edge.Persons.Count(); i++)
+                                edge.Persons[i] = viewModel.People.Single(p => p.Name == edge.Persons[i].Name);
+                        foreach (Person person in viewModel.People)
+                            if (person.KinekAzUjonca != null)
+                                person.KinekAzUjonca = viewModel.People.Single(p => p.Name == person.KinekAzUjonca.Name);
+                    }
+                    catch { } // If for example the XML is written by a previous version of this app, we shouldn't attempt to load it
                 }
-                // The XML serializer doesn't handle object references, so we replace Person copies with references by name
-                foreach (Edge edge in viewModel.Edges)
-                    for (int i = 0; i < edge.Persons.Count(); i++)
-                        edge.Persons[i] = viewModel.People.Single(p => p.Name == edge.Persons[i].Name);
-                foreach (Person person in viewModel.People)
-                    if (person.KinekAzUjonca != null)
-                        person.KinekAzUjonca = viewModel.People.Single(p => p.Name == person.KinekAzUjonca.Name);
             }
         }
 

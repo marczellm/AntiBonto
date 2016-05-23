@@ -70,13 +70,14 @@ namespace AntiBonto.ViewModel
         /// </summary>
         public void Drop(IDropInfo dropInfo)
         {
-            var kik = (FrameworkElement) dropInfo.VisualTarget;
+            var hova = (FrameworkElement) dropInfo.VisualTarget;
+            var honnan = (FrameworkElement)dropInfo.DragInfo.VisualSource;
             Person p = (Person)dropInfo.Data;
-            switch(kik.Name)
+            switch(hova.Name)
             {
                 case "Fiuk": p.Nem = Nem.Fiu; break;
                 case "Lanyok": p.Nem = Nem.Lany; break;
-                case "Nullnemuek": p.Nem = null; break;
+                case "Nullnemuek": p.Nem = Nem.Undefined; break;
                 case "Team": p.Type = PersonType.Teamtag; break;
                 case "Zeneteam": p.Type = PersonType.Zeneteamtag; break;
                 case "Ujoncok": p.Type = PersonType.Ujonc; break;
@@ -86,7 +87,7 @@ namespace AntiBonto.ViewModel
                 case "Kiscsoportvezetok": p.Kiscsoportvezeto = true; break;
                 case "Egyeb": p.Type = PersonType.Egyeb; break;             
             }
-            if (((FrameworkElement)dropInfo.DragInfo.VisualSource).Name == "Kiscsoportvezetok" && (kik.Name == "Team" || kik.Name == "Ujoncok" || kik.Name=="Egyeb"))
+            if (honnan.Name == "Kiscsoportvezetok" && (hova.Name == "Team" || hova.Name == "Ujoncok" || hova.Name=="Egyeb"))
                 p.Kiscsoportvezeto = false;
         }
         private ObservableCollection2<Person> people = new ObservableCollection2<Person>();
@@ -126,7 +127,7 @@ namespace AntiBonto.ViewModel
             get
             {
                 CollectionViewSource cvs = new CollectionViewSource { Source = People, IsLiveFilteringRequested = true, LiveFilteringProperties = { "Nem" } };
-                cvs.View.Filter = p => ((Person)p).Nem == null;
+                cvs.View.Filter = p => ((Person)p).Nem == Nem.Undefined;
                 return cvs.View;
             }
         }

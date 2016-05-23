@@ -19,7 +19,7 @@ namespace AntiBonto
     }
     public enum Nem
     {
-        Lany, Fiu
+        Lany, Fiu, Undefined
     }
 
     [Serializable]
@@ -39,8 +39,8 @@ namespace AntiBonto
             get { return DateTime.Now.Year - BirthYear; }
             set { BirthYear = DateTime.Now.Year - value; RaisePropertyChanged(); RaisePropertyChanged("BirthYear"); }
         }
-        private Nem? nem;
-        public Nem? Nem
+        private Nem nem = Nem.Undefined;
+        public Nem Nem
         {
             get { return nem; }
             set { nem = value; RaisePropertyChanged(); }
@@ -55,7 +55,13 @@ namespace AntiBonto
         public bool Kiscsoportvezeto
         {
             get { return kcsvez; }
-            set { kcsvez = value; RaisePropertyChanged(); }
+            set
+            {
+                kcsvez = value;
+                RaisePropertyChanged();
+                if (value && (Type == PersonType.Ujonc || Type == PersonType.Egyeb))
+                    Type = PersonType.Teamtag;
+            }
         }
         private int kcs;
         public int Kiscsoport
