@@ -38,7 +38,7 @@
         <Setter Property="dd:DragDrop.DragAdornerTemplate" Value="{StaticResource adorner}"/>
     </Style>
 
-    <Style TargetType="{x:Type local:AddButton}">
+    <Style TargetType="{x:Type local:MaterialButton}">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">

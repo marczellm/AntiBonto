@@ -14,6 +14,7 @@
     </Window.DataContext>
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <FrameworkElement x:Key="DataContextProxy" DataContext="{Binding}"/> <!-- hack, see http://stackoverflow.com/questions/7660967-->
     </Window.Resources>
     <TabControl>
         <TabItem Header="1. Résztvevők">
@@ -22,20 +23,21 @@
                     <Label DockPanel.Dock="Left" Content="Vedd fel a résztvevőket!"/>
                     <Button Content="Excel fájl betöltése" Click="LoadXLS" Padding="5" Name="OnlyButton" Margin="0,0,20,0" DockPanel.Dock="Left"/>
                     <hammer:SpinningWheel Radius="9" CircleRadius="2.5" Visibility="Hidden" Name="LoadingAnimation" DockPanel.Dock="Left"/>
+                    <Button Content="Törlés" DockPanel.Dock="Right" Click="Reset" Padding="5"/>
                 </DockPanel>
                 <Label Target="{Binding ElementName=PeopleView}" Content="Résztvevők" DockPanel.Dock="Top"/>
                 <Grid Margin="5">
                     <view:DnDItemsControl x:Name="PeopleView" ItemsSource="{Binding People}" dd:DragDrop.IsDragSource="False"/>
-                    <view:AddButton Click="AddPerson" DockPanel.Dock="Right" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="10"/>
+                    <view:MaterialButton Click="AddPerson" DockPanel.Dock="Right" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="10"/>
                 </Grid>
             </DockPanel>
         </TabItem>
         <TabItem Header="2. Életkor" IsEnabled="{Binding PeopleNotEmpty}">
             <DockPanel>
                 <Label DockPanel.Dock="Top" Content="Add meg az életkorokat!"/>
-                <DataGrid DockPanel.Dock="Bottom" ItemsSource="{Binding People}" CanUserAddRows="False" CanUserDeleteRows="False" AutoGenerateColumns="False">
+                <DataGrid ItemsSource="{Binding People}" CanUserAddRows="False" CanUserDeleteRows="False" AutoGenerateColumns="False">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Binding="{Binding Name}" Header="Név"/>
+                        <DataGridTextColumn Binding="{Binding Name}" Header="Név" IsReadOnly="True"/>
                         <DataGridTextColumn Binding="{Binding BirthYear}" Header="Születési év"/>
                         <DataGridTextColumn Binding="{Binding Age}" Header="Kor"/>
                     </DataGrid.Columns>
@@ -104,12 +106,26 @@
                 </Grid>
             </DockPanel>
         </TabItem>
-        <TabItem Header="5. Megszorítások" IsEnabled="{Binding PeopleNotEmpty}">
+        <TabItem Header="5. Újoncok"  IsEnabled="{Binding PeopleNotEmpty}">
+            <DockPanel>
+                <Label DockPanel.Dock="Top" Content="Kinek az újonca?"/>
+                <ContentControl Visibility="Collapsed" Content="{StaticResource DataContextProxy}"/> <!-- hack part 2 -->
+                <DataGrid ItemsSource="{Binding Ujoncok}" CanUserAddRows="False" CanUserDeleteRows="False" AutoGenerateColumns="False">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Binding="{Binding Name}" Header="Név" IsReadOnly="True"/>
+                        <DataGridComboBoxColumn Header="Kinek az újonca" 
+                                                ItemsSource="{Binding DataContext.Team, Source={StaticResource DataContextProxy}}" 
+                                                SelectedItemBinding="{Binding KinekAzUjonca}"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </DockPanel>
+        </TabItem>
+        <TabItem Header="6. Megszorítások" IsEnabled="{Binding PeopleNotEmpty}">
             <DockPanel>
                 <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
-                    <ComboBox ItemsSource="{Binding People}" IsEditable="False" SelectedItem="{Binding Edge.Person1}" MinWidth="100"/>
+                    <ComboBox ItemsSource="{Binding People}" IsEditable="False" SelectedItem="{Binding Edge.Persons[0]}" MinWidth="100"/>
                     <Label Content=" és "/>
-                    <ComboBox ItemsSource="{Binding People}" IsEditable="False" SelectedItem="{Binding Edge.Person2}" MinWidth="100"/>
+                    <ComboBox ItemsSource="{Binding People}" IsEditable="False" SelectedItem="{Binding Edge.Persons[1]}" MinWidth="100"/>
                     <ComboBox IsEditable="False" SelectedValue="{Binding Edge.Dislike}" SelectedValuePath="Tag" MinWidth="100">
                         <ComboBox.Items>
                             <ComboBoxItem Content="együtt kell legyenek" Tag="False"/>
@@ -118,24 +134,28 @@
                     </ComboBox>
                     <Label Content=", mert "/>
                     <TextBox Text="{Binding Edge.Reason}" MinWidth="100"/>
-                    <view:AddButton Click="AddEdge" Height="20" Margin="10,0,0,0">
+                    <view:MaterialButton Click="AddEdge" Height="20" Margin="10,0,0,0">
                         <Button.Content>
                             <TextBlock Text="+" Margin="0,-11,0,0"/>
                         </Button.Content>
-                    </view:AddButton>
-                    
+                    </view:MaterialButton>                    
                 </StackPanel>
                 <ItemsControl ItemsSource="{Binding Edges}" Margin="5">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
-                                <Label Content="{Binding Person1}" Margin="5,5,0,5" Padding="3" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+                                <Label Content="{Binding Persons[0]}" Margin="5,5,0,5" Padding="3" MinWidth="100" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
                                 <Grid>
                                     <Line Stroke="Black" X2="50" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                    <Label Foreground="Red" Content="X" Background="Transparent" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                    <Label Foreground="Red" Content="X" Background="Transparent" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,-1,0,0"
                                            Visibility="{Binding Dislike, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                                 </Grid>
-                                <Label Content="{Binding Person2}" Margin="0,5,5,5" Padding="3" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+                                <Label Content="{Binding Persons[1]}" Margin="0,5,5,5" Padding="3" MinWidth="100" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+                                <view:MaterialButton Click="RemoveEdge" Height="20" Margin="10,0,0,0">
+                                    <Button.Content>
+                                        <TextBlock Text="X" Margin="0,-1,0,0" FontSize="14" FontWeight="Bold"/>
+                                    </Button.Content>
+                                </view:MaterialButton>
                             </StackPanel>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>

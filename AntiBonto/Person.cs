@@ -1,6 +1,6 @@
 ﻿using AntiBonto.ViewModel;
 using System;
-using System.Collections.Generic;
+using System.Xml.Serialization;
 
 namespace AntiBonto
 {
@@ -21,16 +21,19 @@ namespace AntiBonto
     {
         Lany, Fiu
     }
+
+    [Serializable]
     public class Person: ViewModelBase
     {
         public string Name { get; set; }
 
-        private int _birthYear;
+        private int _birthYear = DateTime.Now.Year;
         public int BirthYear
         {
             get { return _birthYear; }
             set { _birthYear = value; RaisePropertyChanged(); RaisePropertyChanged("Age"); }
         }
+        [XmlIgnore]
         public int Age
         {
             get { return DateTime.Now.Year - BirthYear; }
@@ -63,6 +66,12 @@ namespace AntiBonto
         public override string ToString()
         {
             return Name;
+        }
+        private Person kinekAzUjonca;
+        public Person KinekAzUjonca
+        {
+            get { return kinekAzUjonca; }
+            set { kinekAzUjonca = value;  RaisePropertyChanged(); }
         }        
     }
 }

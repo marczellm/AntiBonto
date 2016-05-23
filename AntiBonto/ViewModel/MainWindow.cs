@@ -14,6 +14,8 @@ namespace AntiBonto.ViewModel
     /// </summary>
     class ObservableCollection2<T> : ObservableCollection<T>
     {
+        public ObservableCollection2() : base() { }
+        public ObservableCollection2(T[] t) : base(t) { }
         public void AddRange(IEnumerable<T> collection)
         {
             foreach (var i in collection)
@@ -23,9 +25,12 @@ namespace AntiBonto.ViewModel
             OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
     }
+    /// <summary>
+    /// Because this is not an enterprise app, I didn't create the plumbing necessary to have separate ViewModels for each tab.
+    /// Instead I dumped all of the application state in the below class.
+    /// </summary>
     class MainWindow: ViewModelBase, IDropTarget
     {
-        private ObservableCollection2<Person> ocp = new ObservableCollection2<Person>();
         /// <summary>
         /// Some UI elements disable based on this
         /// </summary>
@@ -35,12 +40,12 @@ namespace AntiBonto.ViewModel
         }
         public MainWindow()
         {
-            ocp.CollectionChanged += Ocp_CollectionChanged;            
+            people.CollectionChanged += People_CollectionChanged;            
         }
         /// <summary>
         /// So we need to keep them up to date
         /// </summary>
-        private void Ocp_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void People_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             RaisePropertyChanged("PeopleNotEmpty");
             RaisePropertyChanged("Zeneteamvezeto");
@@ -83,16 +88,16 @@ namespace AntiBonto.ViewModel
             if (((FrameworkElement)dropInfo.DragInfo.VisualSource).Name == "Kiscsoportvezetok" && (kik.Name == "Team" || kik.Name == "Ujoncok"))
                 p.Kiscsoportvezeto = false;
         }
-
+        private ObservableCollection2<Person> people = new ObservableCollection2<Person>();
         public ObservableCollection2<Person> People
         {
             get
             {
-                return ocp;
+                return people;
             }
             private set
             {
-                ocp = value;
+                people = value;
                 RaisePropertyChanged();
                 RaisePropertyChanged("PeopleNotEmpty");
             }
@@ -216,8 +221,8 @@ namespace AntiBonto.ViewModel
         {
             get { return Enumerable.Range(0, Kiscsoportvezetok.OfType<Person>().Count()).Select(i => Kiscsoport(i)).ToArray(); }
         }
-        private ObservableCollection<Edge> edges = new ObservableCollection<Edge>();
-        public ObservableCollection<Edge> Edges
+        private ObservableCollection2<Edge> edges = new ObservableCollection2<Edge>();
+        public ObservableCollection2<Edge> Edges
         {
             get { return edges; }
             private set { edges = value; RaisePropertyChanged(); }

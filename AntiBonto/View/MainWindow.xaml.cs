@@ -1,16 +1,65 @@
 ﻿using Microsoft.Win32;
 using System;
+using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Xml.Serialization;
 
 namespace AntiBonto
 {
+    [Serializable]
+    public class AppData
+    {
+        public Person[] Persons;
+        public Edge[] Edges;
+    }
     public partial class MainWindow : System.Windows.Window
     {
         public MainWindow()
         {
             InitializeComponent();
+            Closing += MainWindow_Closing;
+            Loaded += MainWindow_Loaded;
+            string folder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "AntiBonto");
+            if (!Directory.Exists(folder))
+                Directory.CreateDirectory(folder);
+            filepath = Path.Combine(folder, "state.xml");
+        }
+        private string filepath;
+        private AppData AppData
+        {
+            get { return new AppData { Persons = viewModel.People.ToArray(), Edges = viewModel.Edges.ToArray() }; }
+            set { viewModel.People.AddRange(value.Persons); viewModel.Edges.AddRange(value.Edges); }
+        }
+
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            var xs = new XmlSerializer(typeof(AppData));
+            if (File.Exists(filepath))
+            {
+                using (var file = new StreamReader(filepath))
+                {
+                    AppData = (AppData)xs.Deserialize(file);
+                }
+                // The XML serializer doesn't handle object references, so we replace Person copies with references by name
+                foreach (Edge edge in viewModel.Edges)
+                    for (int i = 0; i < edge.Persons.Count(); i++)
+                        edge.Persons[i] = viewModel.People.Single(p => p.Name == edge.Persons[i].Name);
+                foreach (Person person in viewModel.People)
+                    if (person.KinekAzUjonca != null)
+                        person.KinekAzUjonca = viewModel.People.Single(p => p.Name == person.KinekAzUjonca.Name);
+            }
+        }
+
+        private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            var xs = new XmlSerializer(typeof(AppData));
+            using (var file = new StreamWriter(filepath))
+            {
+                xs.Serialize(file, AppData);
+            }
         }
 
         private ViewModel.MainWindow viewModel { get { return (ViewModel.MainWindow)DataContext; } }
@@ -79,6 +128,18 @@ namespace AntiBonto
         {
             viewModel.Edges.Add(viewModel.Edge);
             viewModel.Edge = new Edge();
+        }
+
+        private void RemoveEdge(object sender, RoutedEventArgs e)
+        {
+            Edge edge = (Edge)((FrameworkElement)sender).DataContext;
+            viewModel.Edges.Remove(edge);
+        }
+
+        private void Reset(object sender, RoutedEventArgs e)
+        {
+            viewModel.People.Clear();
+            viewModel.Edges.Clear();
         }
     }
 }
