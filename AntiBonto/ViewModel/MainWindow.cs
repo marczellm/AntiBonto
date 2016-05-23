@@ -83,9 +83,10 @@ namespace AntiBonto.ViewModel
                 case "Zeneteamvezeto": Zeneteamvezeto = p; break;
                 case "Lanyvezeto": Lanyvezeto = p; break;
                 case "Fiuvezeto": Fiuvezeto = p; break;
-                case "Kiscsoportvezetok": p.Kiscsoportvezeto = true; break;                
+                case "Kiscsoportvezetok": p.Kiscsoportvezeto = true; break;
+                case "Egyeb": p.Type = PersonType.Egyeb; break;             
             }
-            if (((FrameworkElement)dropInfo.DragInfo.VisualSource).Name == "Kiscsoportvezetok" && (kik.Name == "Team" || kik.Name == "Ujoncok"))
+            if (((FrameworkElement)dropInfo.DragInfo.VisualSource).Name == "Kiscsoportvezetok" && (kik.Name == "Team" || kik.Name == "Ujoncok" || kik.Name=="Egyeb"))
                 p.Kiscsoportvezeto = false;
         }
         private ObservableCollection2<Person> people = new ObservableCollection2<Person>();
@@ -144,6 +145,15 @@ namespace AntiBonto.ViewModel
             {
                 CollectionViewSource cvs = new CollectionViewSource { Source = People, IsLiveFilteringRequested = true, LiveFilteringProperties = { "Type" } };                
                 cvs.View.Filter = p => ((Person)p).Type != PersonType.Egyeb && ((Person)p).Type != PersonType.Ujonc;
+                return cvs.View;
+            }
+        }
+        public ICollectionView Egyeb
+        {
+            get
+            {
+                CollectionViewSource cvs = new CollectionViewSource { Source = People, IsLiveFilteringRequested = true, LiveFilteringProperties = { "Type" } };
+                cvs.View.Filter = p => ((Person)p).Type == PersonType.Egyeb;
                 return cvs.View;
             }
         }
