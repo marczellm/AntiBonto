@@ -110,6 +110,7 @@ namespace AntiBonto.ViewModel
             {
                 CollectionViewSource cvs = new CollectionViewSource { Source = People, IsLiveFilteringRequested = true, LiveFilteringProperties = { "Nem" } };
                 cvs.View.Filter = p => ((Person)p).Nem == Nem.Fiu;
+                cvs.View.CollectionChanged += View_CollectionChanged;
                 return cvs.View;
             }
         }
@@ -119,6 +120,7 @@ namespace AntiBonto.ViewModel
             {
                 CollectionViewSource cvs = new CollectionViewSource { Source = People, IsLiveFilteringRequested = true, LiveFilteringProperties = { "Nem" } };
                 cvs.View.Filter = p => ((Person)p).Nem == Nem.Lany;
+                cvs.View.CollectionChanged += View_CollectionChanged;
                 return cvs.View;
             }
         }
@@ -128,6 +130,7 @@ namespace AntiBonto.ViewModel
             {
                 CollectionViewSource cvs = new CollectionViewSource { Source = People, IsLiveFilteringRequested = true, LiveFilteringProperties = { "Nem" } };
                 cvs.View.Filter = p => ((Person)p).Nem == Nem.Undefined;
+                cvs.View.CollectionChanged += View_CollectionChanged;
                 return cvs.View;
             }
         }
@@ -137,15 +140,24 @@ namespace AntiBonto.ViewModel
             {
                 CollectionViewSource cvs = new CollectionViewSource { Source = People, IsLiveFilteringRequested = true, LiveFilteringProperties = { "Type" } };
                 cvs.View.Filter = p => ((Person)p).Type == PersonType.Ujonc;
+                cvs.View.CollectionChanged += View_CollectionChanged;
                 return cvs.View;
             }
         }
+
+        /// <summary>
+        /// Adding this seems to fix a bug (see http://stackoverflow.com/questions/37394151), although I have no idea why
+        /// </summary>
+        private void View_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        { }
+
         public ICollectionView Team
         {
             get
             {
                 CollectionViewSource cvs = new CollectionViewSource { Source = People, IsLiveFilteringRequested = true, LiveFilteringProperties = { "Type" } };                
                 cvs.View.Filter = p => ((Person)p).Type != PersonType.Egyeb && ((Person)p).Type != PersonType.Ujonc;
+                cvs.View.CollectionChanged += View_CollectionChanged;
                 return cvs.View;
             }
         }
@@ -155,6 +167,7 @@ namespace AntiBonto.ViewModel
             {
                 CollectionViewSource cvs = new CollectionViewSource { Source = People, IsLiveFilteringRequested = true, LiveFilteringProperties = { "Type" } };
                 cvs.View.Filter = p => ((Person)p).Type == PersonType.Egyeb;
+                cvs.View.CollectionChanged += View_CollectionChanged;
                 return cvs.View;
             }
         }
@@ -164,6 +177,7 @@ namespace AntiBonto.ViewModel
             {
                 CollectionViewSource cvs = new CollectionViewSource { Source = People, IsLiveFilteringRequested = true, LiveFilteringProperties = { "Kiscsoportvezeto" } };
                 cvs.View.Filter = p => ((Person)p).Kiscsoportvezeto;
+                cvs.View.CollectionChanged += View_CollectionChanged;
                 return cvs.View;
             }
         }
@@ -173,6 +187,7 @@ namespace AntiBonto.ViewModel
             {
                 CollectionViewSource cvs = new CollectionViewSource { Source = People, IsLiveFilteringRequested = true, LiveFilteringProperties = { "Type" } };
                 cvs.View.Filter = p => ((Person)p).Type == PersonType.Zeneteamtag;
+                cvs.View.CollectionChanged += View_CollectionChanged;
                 return cvs.View;
             }
         }
@@ -226,6 +241,7 @@ namespace AntiBonto.ViewModel
         {
             CollectionViewSource cvs = new CollectionViewSource { Source = People, IsLiveFilteringRequested = true, LiveFilteringProperties = { "Kiscsoport" } };
             cvs.View.Filter = p => ((Person)p).Kiscsoport == i;
+            cvs.View.CollectionChanged += View_CollectionChanged;
             return cvs.View;
         }
         public ICollectionView[] Kiscsoportok
