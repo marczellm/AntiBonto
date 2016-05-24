@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows.Data;
 using System.Windows;
+using System;
 
 namespace AntiBonto.ViewModel
 {
@@ -19,9 +20,12 @@ namespace AntiBonto.ViewModel
         public void AddRange(IEnumerable<T> collection)
         {
             foreach (var i in collection)
-            {
-                Items.Add(i);
-            }
+                Items.Add(i);            
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+        }
+        public void RemoveAll(Func<T, bool> cond)
+        {
+            Items.Where(cond).ToList().All(p => Items.Remove(p));
             OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
     }
@@ -129,7 +133,7 @@ namespace AntiBonto.ViewModel
             get
             {
                 CollectionViewSource cvs = new CollectionViewSource { Source = People, IsLiveFilteringRequested = true, LiveFilteringProperties = { "Nem" } };
-                cvs.View.Filter = p => ((Person)p).Nem == Nem.Undefined;
+                cvs.View.Filter = p => ((Person)p).Nem == Nem.Undefined && ((Person)p).Type != PersonType.Egyeb;
                 cvs.View.CollectionChanged += View_CollectionChanged;
                 return cvs.View;
             }
@@ -177,6 +181,16 @@ namespace AntiBonto.ViewModel
             {
                 CollectionViewSource cvs = new CollectionViewSource { Source = People, IsLiveFilteringRequested = true, LiveFilteringProperties = { "Kiscsoportvezeto" } };
                 cvs.View.Filter = p => ((Person)p).Kiscsoportvezeto;
+                cvs.View.CollectionChanged += View_CollectionChanged;
+                return cvs.View;
+            }
+        }
+        public ICollectionView KiscsoportbaOsztando
+        {
+            get
+            {
+                CollectionViewSource cvs = new CollectionViewSource { Source = People, IsLiveFilteringRequested = true, LiveFilteringProperties = { "Type" } };
+                cvs.View.Filter = p => ((Person)p).Type != PersonType.Egyeb;
                 cvs.View.CollectionChanged += View_CollectionChanged;
                 return cvs.View;
             }
@@ -260,5 +274,22 @@ namespace AntiBonto.ViewModel
             get { return edge ?? (edge = new Edge()); }
             set { edge = value; RaisePropertyChanged(); }
         }
+        public ICollectionView CustomEdges
+        {
+            get
+            {
+                CollectionViewSource cvs = new CollectionViewSource { Source = Edges, IsLiveFilteringRequested = true, LiveFilteringProperties = { "Custom" } };
+                cvs.View.Filter = e => ((Edge)e).Custom;
+                cvs.View.CollectionChanged += View_CollectionChanged;
+                return cvs.View;
+            }
+        }
+        public int MaxAgeDifference
+        {
+            get { return maxAgeDifference; }
+            set { maxAgeDifference = value; RaisePropertyChanged(); }
+        }
+
+        private int maxAgeDifference;
     }
 }

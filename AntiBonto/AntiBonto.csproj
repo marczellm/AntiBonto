@@ -96,6 +96,7 @@
     <Compile Include="Person.cs" />
     <Compile Include="ViewModel\MainWindow.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />
+    <Compile Include="View\IntValidator.cs" />
     <Compile Include="View\MaterialButton.cs" />
     <Compile Include="View\DnDItemsControl.cs" />
     <Compile Include="View\MainWindow.xaml.cs">

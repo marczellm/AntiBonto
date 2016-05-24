@@ -145,5 +145,15 @@ namespace AntiBonto
             viewModel.People.Clear();
             viewModel.Edges.Clear();
         }
+
+        private void ApplyMaxAgeDifference(object sender, RoutedEventArgs e)
+        {
+            var v = viewModel;
+            v.Edges.RemoveAll(edge => edge.Reason == "Korkülönbség");
+            foreach (Person p1 in v.KiscsoportbaOsztando)
+                foreach (Person p2 in v.KiscsoportbaOsztando)
+                    if (Math.Abs(p1.Age - p2.Age) > v.MaxAgeDifference)
+                        v.Edges.Add(new Edge { Persons = new Person [] { p1, p2 }, Dislike = true, Reason = "Korkülönbség", Custom=false });
+        }
     }
 }
