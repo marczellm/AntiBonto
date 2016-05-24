@@ -36,11 +36,23 @@ namespace AntiBonto.ViewModel
     class MainWindow: ViewModelBase, IDropTarget
     {
         /// <summary>
-        /// Some UI elements disable based on this
+        /// Some UI elements disable based on these
         /// </summary>
         public bool PeopleNotEmpty
         {
             get { return People.Count() != 0; }
+        }
+        /// <summary>
+        /// Shouldn't be used as a binding source because it's quite slow
+        /// </summary>
+        private bool ReadyForAction
+        {
+            get
+            {
+                var ppl = KiscsoportbaOsztando.OfType<Person>().ToList();
+                return PeopleNotEmpty && ppl.All(p => p.Nem != Nem.Undefined && (p.Type != PersonType.Ujonc || p.KinekAzUjonca != null) && p.Age > 0 && p.Age < 100)
+                    && !Kiscsoportvezetok.IsEmpty && !Ujoncok.IsEmpty && !Team.IsEmpty && Fiuvezeto != null && Lanyvezeto != null && Zeneteamvezeto != null;
+            }
         }
         public MainWindow()
         {
@@ -55,6 +67,7 @@ namespace AntiBonto.ViewModel
             RaisePropertyChanged("Zeneteamvezeto");
             RaisePropertyChanged("Fiuvezeto");
             RaisePropertyChanged("Lanyvezeto");
+            RaisePropertyChanged("ReadyForAction");
         }
         /// <summary>
         /// Set where drops are allowed
@@ -114,7 +127,7 @@ namespace AntiBonto.ViewModel
             {
                 CollectionViewSource cvs = new CollectionViewSource { Source = People, IsLiveFilteringRequested = true, LiveFilteringProperties = { "Nem" } };
                 cvs.View.Filter = p => ((Person)p).Nem == Nem.Fiu;
-                cvs.View.CollectionChanged += View_CollectionChanged;
+                cvs.View.CollectionChanged += EmptyEventHandler;
                 return cvs.View;
             }
         }
@@ -124,7 +137,7 @@ namespace AntiBonto.ViewModel
             {
                 CollectionViewSource cvs = new CollectionViewSource { Source = People, IsLiveFilteringRequested = true, LiveFilteringProperties = { "Nem" } };
                 cvs.View.Filter = p => ((Person)p).Nem == Nem.Lany;
-                cvs.View.CollectionChanged += View_CollectionChanged;
+                cvs.View.CollectionChanged += EmptyEventHandler;
                 return cvs.View;
             }
         }
@@ -132,9 +145,9 @@ namespace AntiBonto.ViewModel
         {
             get
             {
-                CollectionViewSource cvs = new CollectionViewSource { Source = People, IsLiveFilteringRequested = true, LiveFilteringProperties = { "Nem" } };
+                CollectionViewSource cvs = new CollectionViewSource { Source = People, IsLiveFilteringRequested = true, LiveFilteringProperties = { "Nem", "Type" } };
                 cvs.View.Filter = p => ((Person)p).Nem == Nem.Undefined && ((Person)p).Type != PersonType.Egyeb;
-                cvs.View.CollectionChanged += View_CollectionChanged;
+                cvs.View.CollectionChanged += EmptyEventHandler;
                 return cvs.View;
             }
         }
@@ -144,15 +157,19 @@ namespace AntiBonto.ViewModel
             {
                 CollectionViewSource cvs = new CollectionViewSource { Source = People, IsLiveFilteringRequested = true, LiveFilteringProperties = { "Type" } };
                 cvs.View.Filter = p => ((Person)p).Type == PersonType.Ujonc;
-                cvs.View.CollectionChanged += View_CollectionChanged;
+                cvs.View.CollectionChanged += View_CollectionChanged; ;
                 return cvs.View;
             }
+        }
+
+        private void View_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
         }
 
         /// <summary>
         /// Adding this seems to fix a bug (see http://stackoverflow.com/questions/37394151), although I have no idea why
         /// </summary>
-        private void View_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void EmptyEventHandler(object sender, NotifyCollectionChangedEventArgs e)
         { }
 
         public ICollectionView Team
@@ -171,7 +188,7 @@ namespace AntiBonto.ViewModel
             {
                 CollectionViewSource cvs = new CollectionViewSource { Source = People, IsLiveFilteringRequested = true, LiveFilteringProperties = { "Type" } };
                 cvs.View.Filter = p => ((Person)p).Type == PersonType.Egyeb;
-                cvs.View.CollectionChanged += View_CollectionChanged;
+                cvs.View.CollectionChanged += EmptyEventHandler;
                 return cvs.View;
             }
         }
@@ -201,7 +218,7 @@ namespace AntiBonto.ViewModel
             {
                 CollectionViewSource cvs = new CollectionViewSource { Source = People, IsLiveFilteringRequested = true, LiveFilteringProperties = { "Type" } };
                 cvs.View.Filter = p => ((Person)p).Type == PersonType.Zeneteamtag;
-                cvs.View.CollectionChanged += View_CollectionChanged;
+                cvs.View.CollectionChanged += EmptyEventHandler;
                 return cvs.View;
             }
         }
@@ -219,6 +236,8 @@ namespace AntiBonto.ViewModel
                 RaisePropertyChanged();
                 RaisePropertyChanged("Fiuvezeto");
                 RaisePropertyChanged("Lanyvezeto");
+                RaisePropertyChanged("ReadyForAction");
+
             }
         }
         public Person Fiuvezeto
@@ -234,6 +253,7 @@ namespace AntiBonto.ViewModel
                 value.Type = PersonType.Fiuvezeto;
                 RaisePropertyChanged();
                 RaisePropertyChanged("Zeneteamvezeto");
+                RaisePropertyChanged("ReadyForAction");
             }
         }
         public Person Lanyvezeto
@@ -249,13 +269,14 @@ namespace AntiBonto.ViewModel
                 value.Type = PersonType.Lanyvezeto;
                 RaisePropertyChanged();
                 RaisePropertyChanged("Zeneteamvezeto");
+                RaisePropertyChanged("ReadyForAction");
             }
         }
         public ICollectionView Kiscsoport(int i)
         {
             CollectionViewSource cvs = new CollectionViewSource { Source = People, IsLiveFilteringRequested = true, LiveFilteringProperties = { "Kiscsoport" } };
             cvs.View.Filter = p => ((Person)p).Kiscsoport == i;
-            cvs.View.CollectionChanged += View_CollectionChanged;
+            cvs.View.CollectionChanged += EmptyEventHandler;
             return cvs.View;
         }
         public ICollectionView[] Kiscsoportok
@@ -280,16 +301,15 @@ namespace AntiBonto.ViewModel
             {
                 CollectionViewSource cvs = new CollectionViewSource { Source = Edges, IsLiveFilteringRequested = true, LiveFilteringProperties = { "Custom" } };
                 cvs.View.Filter = e => ((Edge)e).Custom;
-                cvs.View.CollectionChanged += View_CollectionChanged;
+                cvs.View.CollectionChanged += EmptyEventHandler;
                 return cvs.View;
             }
         }
+        private int maxAgeDifference = 100;
         public int MaxAgeDifference
         {
             get { return maxAgeDifference; }
             set { maxAgeDifference = value; RaisePropertyChanged(); }
         }
-
-        private int maxAgeDifference;
     }
 }

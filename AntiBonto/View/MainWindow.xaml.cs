@@ -155,5 +155,61 @@ namespace AntiBonto
                     if (Math.Abs(p1.Age - p2.Age) > v.MaxAgeDifference)
                         v.Edges.Add(new Edge { Persons = new Person [] { p1, p2 }, Dislike = true, Reason = "Korkülönbség", Custom=false });
         }
+
+        private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (e.AddedItems[0] == Kiscsoportbeoszto)
+            {
+                string message = null;
+                var newTab = e.AddedItems[0];
+                var v = viewModel;
+                var k = viewModel.KiscsoportbaOsztando.OfType<Person>().ToList();
+                if (v.People.Count() == 0)
+                {
+                    message = "Nincsenek résztvevők!";
+                    newTab = Resztvevok;
+                }                
+                else if (k.Any(p => p.Type == PersonType.Ujonc && p.KinekAzUjonca == null))
+                {
+                    message = "Kinek az újonca " + k.First(p => p.Type == PersonType.Ujonc && p.KinekAzUjonca == null) + "?";
+                    newTab = UjoncokTab;
+                }
+                else if (k.Any(p => p.Age < 0 || p.Age > 100))
+                {
+                    message = "Állítsd be az életkorokat!";
+                    newTab = Eletkorok;
+                }
+                else if (v.Kiscsoportvezetok.IsEmpty)
+                {
+                    message = "Jelöld ki a kiscsoportvezetőket!";
+                    newTab = Szerepek;
+                }
+                else if (v.Ujoncok.IsEmpty)
+                {
+                    message = "Nincsenek újoncok!";
+                    newTab = Szerepek;
+                }
+                else if (v.Team.IsEmpty)
+                {
+                    message = "Nincs team!";
+                    newTab = Szerepek;
+                }
+                else if (v.Fiuvezeto == null || v.Lanyvezeto == null || v.Zeneteamvezeto == null)
+                {
+                    message = "Jelöld ki a vezetőket!";
+                    newTab = Szerepek;
+                }
+                else if (k.Any(p => p.Nem == Nem.Undefined))
+                {
+                    message = "Még nem válogattad ki a lányokat és a fiúkat!";
+                    newTab = LanyokFiuk;
+                }
+                if (message != null)
+                {
+                    MessageBox.Show(message);
+                    ((TabControl)sender).SelectedItem = newTab;
+                }
+            }
+        }
     }
 }

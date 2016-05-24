@@ -16,8 +16,8 @@
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         <FrameworkElement x:Key="DataContextProxy" DataContext="{Binding}"/> <!-- hack, see http://stackoverflow.com/questions/7660967-->
     </Window.Resources>
-    <TabControl>
-        <TabItem Header="1. Résztvevők">
+    <TabControl SelectionChanged="TabControl_SelectionChanged">
+        <TabItem Header="1. Résztvevők" Name="Resztvevok">
             <DockPanel>
                 <DockPanel DockPanel.Dock="Top" LastChildFill="False">
                     <Label DockPanel.Dock="Left" Content="Vedd fel a résztvevőket!"/>
@@ -31,44 +31,8 @@
                     <view:MaterialButton Click="AddPerson" DockPanel.Dock="Right" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="10"/>
                 </Grid>
             </DockPanel>
-        </TabItem>
-        <TabItem Header="2. Életkor" IsEnabled="{Binding PeopleNotEmpty}">
-            <DockPanel>
-                <Label DockPanel.Dock="Top" Content="Add meg az életkorokat!"/>
-                <DataGrid ItemsSource="{Binding KiscsoportbaOsztando}" CanUserAddRows="False" CanUserDeleteRows="False" AutoGenerateColumns="False">
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Binding="{Binding Name}" Header="Név" IsReadOnly="True"/>
-                        <DataGridTextColumn Binding="{Binding BirthYear}" Header="Születési év"/>
-                        <DataGridTextColumn Binding="{Binding Age}" Header="Kor"/>
-                    </DataGrid.Columns>
-                </DataGrid>
-            </DockPanel>
-        </TabItem>
-        <TabItem Header="3. Lányok-fiúk" IsEnabled="{Binding PeopleNotEmpty}">
-            <DockPanel>
-                <Label DockPanel.Dock="Top" Content="Válogasd szét a lányokat és a fiúkat!"/>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-                    <Label Grid.Column="0" Grid.Row="0" Content="Lányok"/>
-                    <Label Grid.Column="2" Grid.Row="0" Content="Fiúk"/>
-                    <view:DnDItemsControl Grid.Column="0" Grid.Row="1" ItemsSource="{Binding Lanyok}" Margin="5"
-                                          dd:DragDrop.DropHandler="{Binding}" x:Name="Lanyok"/>
-                    <view:DnDItemsControl Grid.Column="1" Grid.Row="1" ItemsSource="{Binding Nullnemuek}" Margin="5"
-                                          dd:DragDrop.DropHandler="{Binding}" x:Name="Nullnemuek"/>
-                    <view:DnDItemsControl Grid.Column="2" Grid.Row="1" ItemsSource="{Binding Fiuk}" Margin="5"
-                                          dd:DragDrop.DropHandler="{Binding}" x:Name="Fiuk"/>
-                </Grid>
-            </DockPanel>
-        </TabItem>
-        <TabItem Header="4. Szerepek" IsEnabled="{Binding PeopleNotEmpty}">
+        </TabItem>        
+        <TabItem Header="2. Szerepek" IsEnabled="{Binding PeopleNotEmpty}" Name="Szerepek">
             <DockPanel>
                 <Label DockPanel.Dock="Top" Content="Csoportosítsd a résztvevőket!"/>
                 <Grid>
@@ -108,7 +72,43 @@
                 </Grid>
             </DockPanel>
         </TabItem>
-        <TabItem Header="5. Újoncok"  IsEnabled="{Binding PeopleNotEmpty}">
+        <TabItem Header="3. Életkor" IsEnabled="{Binding PeopleNotEmpty}" Name="Eletkorok">
+            <DockPanel>
+                <Label DockPanel.Dock="Top" Content="Add meg az életkorokat!"/>
+                <DataGrid ItemsSource="{Binding KiscsoportbaOsztando}" CanUserAddRows="False" CanUserDeleteRows="False" AutoGenerateColumns="False">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Binding="{Binding Name}" Header="Név" IsReadOnly="True"/>
+                        <DataGridTextColumn Binding="{Binding BirthYear}" Header="Születési év"/>
+                        <DataGridTextColumn Binding="{Binding Age}" Header="Kor"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </DockPanel>
+        </TabItem>
+        <TabItem Header="4. Lányok-fiúk" IsEnabled="{Binding PeopleNotEmpty}" Name="LanyokFiuk">
+            <DockPanel>
+                <Label DockPanel.Dock="Top" Content="Válogasd szét a lányokat és a fiúkat!"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Label Grid.Column="0" Grid.Row="0" Content="Lányok"/>
+                    <Label Grid.Column="2" Grid.Row="0" Content="Fiúk"/>
+                    <view:DnDItemsControl Grid.Column="0" Grid.Row="1" ItemsSource="{Binding Lanyok}" Margin="5"
+                                          dd:DragDrop.DropHandler="{Binding}" x:Name="Lanyok"/>
+                    <view:DnDItemsControl Grid.Column="1" Grid.Row="1" ItemsSource="{Binding Nullnemuek}" Margin="5"
+                                          dd:DragDrop.DropHandler="{Binding}" x:Name="Nullnemuek"/>
+                    <view:DnDItemsControl Grid.Column="2" Grid.Row="1" ItemsSource="{Binding Fiuk}" Margin="5"
+                                          dd:DragDrop.DropHandler="{Binding}" x:Name="Fiuk"/>
+                </Grid>
+            </DockPanel>
+        </TabItem>        
+        <TabItem Header="5. Újoncok"  IsEnabled="{Binding PeopleNotEmpty}" Name="UjoncokTab">
             <DockPanel>
                 <Label DockPanel.Dock="Top" Content="Kinek az újonca?"/>
                 <ContentControl Visibility="Collapsed" Content="{StaticResource DataContextProxy}"/> <!-- hack part 2 -->
@@ -122,7 +122,7 @@
                 </DataGrid>
             </DockPanel>
         </TabItem>
-        <TabItem Header="6. Megszorítások" IsEnabled="{Binding PeopleNotEmpty}">
+        <TabItem Header="6. Megszorítások" IsEnabled="{Binding PeopleNotEmpty}" Name="Megszoritasok">
             <DockPanel>
                 <DockPanel DockPanel.Dock="Top" LastChildFill="False">
                     <Label DockPanel.Dock="Left" Content="Megkötések a kiscsoportbeosztáshoz"/>
@@ -137,7 +137,6 @@
                                 </Binding>
                             </TextBox.Text>
                         </TextBox>
-                        <Button Content="Mehet" Click="ApplyMaxAgeDifference"/>
                     </StackPanel>
                 </DockPanel>
                 <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
@@ -186,6 +185,9 @@
                     </ItemsControl.Template>
                 </ItemsControl>
             </DockPanel>
+        </TabItem>
+        <TabItem Header="7. Kiscsoportbeosztás" Name="Kiscsoportbeoszto">
+            
         </TabItem>
     </TabControl>
 </Window>
