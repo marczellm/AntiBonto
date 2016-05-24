@@ -14,7 +14,8 @@
     </Window.DataContext>
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-        <FrameworkElement x:Key="DataContextProxy" DataContext="{Binding}"/> <!-- hack, see http://stackoverflow.com/questions/7660967-->
+        <FrameworkElement x:Key="DataContextProxy" DataContext="{Binding}"/>
+        <!-- hack, see http://stackoverflow.com/questions/7660967-->
     </Window.Resources>
     <TabControl SelectionChanged="TabControl_SelectionChanged">
         <TabItem Header="1. Résztvevők" Name="Resztvevok">
@@ -31,7 +32,7 @@
                     <view:MaterialButton Click="AddPerson" DockPanel.Dock="Right" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="10"/>
                 </Grid>
             </DockPanel>
-        </TabItem>        
+        </TabItem>
         <TabItem Header="2. Szerepek" IsEnabled="{Binding PeopleNotEmpty}" Name="Szerepek">
             <DockPanel>
                 <Label DockPanel.Dock="Top" Content="Csoportosítsd a résztvevőket!"/>
@@ -107,11 +108,12 @@
                                           dd:DragDrop.DropHandler="{Binding}" x:Name="Fiuk"/>
                 </Grid>
             </DockPanel>
-        </TabItem>        
+        </TabItem>
         <TabItem Header="5. Újoncok"  IsEnabled="{Binding PeopleNotEmpty}" Name="UjoncokTab">
             <DockPanel>
                 <Label DockPanel.Dock="Top" Content="Kinek az újonca?"/>
-                <ContentControl Visibility="Collapsed" Content="{StaticResource DataContextProxy}"/> <!-- hack part 2 -->
+                <ContentControl Visibility="Collapsed" Content="{StaticResource DataContextProxy}"/>
+                <!-- hack part 2 -->
                 <DataGrid ItemsSource="{Binding Ujoncok}" CanUserAddRows="False" CanUserDeleteRows="False" AutoGenerateColumns="False">
                     <DataGrid.Columns>
                         <DataGridTextColumn Binding="{Binding Name}" Header="Név" IsReadOnly="True"/>
@@ -155,7 +157,7 @@
                         <Button.Content>
                             <TextBlock Text="+" Margin="0,-11,0,0"/>
                         </Button.Content>
-                    </view:MaterialButton>                    
+                    </view:MaterialButton>
                 </StackPanel>
                 <ItemsControl ItemsSource="{Binding CustomEdges}" Margin="5">
                     <ItemsControl.ItemTemplate>
@@ -187,7 +189,37 @@
             </DockPanel>
         </TabItem>
         <TabItem Header="7. Kiscsoportbeosztás" Name="Kiscsoportbeoszto">
-            
+            <DockPanel>
+                <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+                    <Button Content="Auto" Padding="5"/>
+                </StackPanel>
+                <Grid Name="Kiscsoportok">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <view:DnDItemsControl Grid.Row="0" Grid.Column="0" ItemsSource="{Binding Kiscsoportok[0]}" Margin="5" dd:DragDrop.DropHandler="{Binding}" x:Name="kcs1"/>
+                    <view:DnDItemsControl Grid.Row="0" Grid.Column="1" ItemsSource="{Binding Kiscsoportok[1]}" Margin="5" dd:DragDrop.DropHandler="{Binding}" x:Name="kcs2"/>
+                    <view:DnDItemsControl Grid.Row="0" Grid.Column="2" ItemsSource="{Binding Kiscsoportok[2]}" Margin="5" dd:DragDrop.DropHandler="{Binding}" x:Name="kcs3"/>
+                    <view:DnDItemsControl Grid.Row="0" Grid.Column="3" ItemsSource="{Binding Kiscsoportok[3]}" Margin="5" dd:DragDrop.DropHandler="{Binding}" x:Name="kcs4"/>
+                    <view:DnDItemsControl Grid.Row="0" Grid.Column="4" ItemsSource="{Binding Kiscsoportok[4]}" Margin="5" dd:DragDrop.DropHandler="{Binding}" x:Name="kcs5"/>
+                    <view:DnDItemsControl Grid.Row="0" Grid.Column="5" ItemsSource="{Binding Kiscsoportok[5]}" Margin="5" dd:DragDrop.DropHandler="{Binding}" x:Name="kcs6"/>
+                    <view:DnDItemsControl Grid.Row="1" Grid.Column="0" ItemsSource="{Binding Kiscsoportok[6]}" Margin="5" dd:DragDrop.DropHandler="{Binding}" x:Name="kcs7"/>
+                    <view:DnDItemsControl Grid.Row="1" Grid.Column="1" ItemsSource="{Binding Kiscsoportok[7]}" Margin="5" dd:DragDrop.DropHandler="{Binding}" x:Name="kcs8"/>
+                    <view:DnDItemsControl Grid.Row="1" Grid.Column="2" ItemsSource="{Binding Kiscsoportok[8]}" Margin="5" dd:DragDrop.DropHandler="{Binding}" x:Name="kcs9"/>
+                    <view:DnDItemsControl Grid.Row="1" Grid.Column="3" ItemsSource="{Binding Kiscsoportok[9]}" Margin="5" dd:DragDrop.DropHandler="{Binding}" x:Name="kcs10"/>
+                    <view:DnDItemsControl Grid.Row="1" Grid.Column="4" ItemsSource="{Binding Kiscsoportok[10]}" Margin="5" dd:DragDrop.DropHandler="{Binding}" x:Name="kcs11"/>
+                    <view:DnDItemsControl Grid.Row="1" Grid.Column="5" ItemsSource="{Binding Kiscsoportok[11]}" Margin="5" dd:DragDrop.DropHandler="{Binding}" x:Name="kcs12"/>
+                </Grid>
+            </DockPanel>
         </TabItem>
     </TabControl>
 </Window>

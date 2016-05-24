@@ -63,7 +63,7 @@ namespace AntiBonto
                     Type = PersonType.Teamtag;
             }
         }
-        private int kcs;
+        private int kcs = -1;
         public int Kiscsoport
         {
             get { return kcs; }
