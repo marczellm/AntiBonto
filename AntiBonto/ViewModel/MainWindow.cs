@@ -294,16 +294,6 @@ namespace AntiBonto.ViewModel
             get { return edge ?? (edge = new Edge()); }
             set { edge = value; RaisePropertyChanged(); }
         }
-        public ICollectionView CustomEdges
-        {
-            get
-            {
-                CollectionViewSource cvs = new CollectionViewSource { Source = Edges, IsLiveFilteringRequested = true, LiveFilteringProperties = { "Custom" } };
-                cvs.View.Filter = e => ((Edge)e).Custom;
-                cvs.View.CollectionChanged += EmptyEventHandler;
-                return cvs.View;
-            }
-        }
         private int maxAgeDifference = 100;
         public int MaxAgeDifference
         {

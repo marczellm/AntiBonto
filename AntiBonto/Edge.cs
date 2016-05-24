@@ -8,6 +8,5 @@ namespace AntiBonto
         public Person[] Persons { get; set; } = new Person[2];
         public bool Dislike { get; set; }
         public string Reason { get; set; }
-        public bool Custom { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.Win32;
+﻿using AntiBonto.View;
+using Microsoft.Win32;
 using System;
 using System.IO;
 using System.Linq;
@@ -22,11 +23,13 @@ namespace AntiBonto
             InitializeComponent();
             Closing += MainWindow_Closing;
             Loaded += MainWindow_Loaded;
+            kcs = new DnDItemsControl[] { kcs1, kcs2, kcs3, kcs4, kcs5, kcs6, kcs7, kcs8, kcs9, kcs10, kcs11, kcs12};
             string folder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "AntiBonto");
             if (!Directory.Exists(folder))
                 Directory.CreateDirectory(folder);
             filepath = Path.Combine(folder, "state.xml");
         }
+        private DnDItemsControl[] kcs;
         private string filepath;
         private AppData AppData
         {
@@ -209,7 +212,17 @@ namespace AntiBonto
                     MessageBox.Show(message);
                     ((TabControl)sender).SelectedItem = newTab;
                 }
+                else
+                {
+                    for (int i = 0; i < kcs.Count(); i++)
+                        kcs[i].Visibility = i < viewModel.Kiscsoportvezetok.OfType<Person>().Count() ? Visibility.Visible : Visibility.Collapsed;
+                }
             }
+        }
+
+        private void Magic(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

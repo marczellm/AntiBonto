@@ -159,7 +159,7 @@
                         </Button.Content>
                     </view:MaterialButton>
                 </StackPanel>
-                <ItemsControl ItemsSource="{Binding CustomEdges}" Margin="5">
+                <ItemsControl ItemsSource="{Binding Edges}" Margin="5">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal" ToolTip="{Binding Reason}">
@@ -191,7 +191,7 @@
         <TabItem Header="7. Kiscsoportbeosztás" Name="Kiscsoportbeoszto">
             <DockPanel>
                 <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
-                    <Button Content="Auto" Padding="5"/>
+                    <Button Content="Auto" Padding="5" Click="Magic"/>
                 </StackPanel>
                 <Grid Name="Kiscsoportok">
                     <Grid.ColumnDefinitions>
