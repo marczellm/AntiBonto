@@ -17,7 +17,7 @@ namespace AntiBonto
             Workbook file = excel.Workbooks.Open(filename);
             try
             {
-                bool isHVKezelo = file.Worksheets.OfType<Worksheet>().Any(s => s.Name == "Alapadatok");
+                bool isHVKezelo = file.Worksheets.Cast<Worksheet>().Any(s => s.Name == "Alapadatok");
                 Worksheet sheet = isHVKezelo ? file.Worksheets["Alapadatok"] : file.Worksheets[1];
                 sheet.Unprotect();
                 Range range = sheet.UsedRange,

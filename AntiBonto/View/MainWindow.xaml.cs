@@ -166,7 +166,7 @@ namespace AntiBonto
                 string message = null;
                 var newTab = e.AddedItems[0];
                 var v = viewModel;
-                var k = viewModel.KiscsoportbaOsztando.OfType<Person>().ToList();
+                var k = viewModel.KiscsoportbaOsztando.Cast<Person>().ToList();
                 if (v.People.Count() == 0)
                 {
                     message = "Nincsenek résztvevők!";
@@ -215,7 +215,7 @@ namespace AntiBonto
                 else
                 {
                     for (int i = 0; i < kcs.Count(); i++)
-                        kcs[i].Visibility = i < viewModel.Kiscsoportvezetok.OfType<Person>().Count() ? Visibility.Visible : Visibility.Collapsed;
+                        kcs[i].Visibility = i < viewModel.Kiscsoportvezetok.Cast<Person>().Count() ? Visibility.Visible : Visibility.Collapsed;
                 }
             }
         }

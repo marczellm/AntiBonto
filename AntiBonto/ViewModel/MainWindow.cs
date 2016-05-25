@@ -49,7 +49,7 @@ namespace AntiBonto.ViewModel
         {
             get
             {
-                var ppl = KiscsoportbaOsztando.OfType<Person>().ToList();
+                var ppl = KiscsoportbaOsztando.Cast<Person>().ToList();
                 return PeopleNotEmpty && ppl.All(p => p.Nem != Nem.Undefined && (p.Type != PersonType.Ujonc || p.KinekAzUjonca != null) && p.Age > 0 && p.Age < 100)
                     && !Kiscsoportvezetok.IsEmpty && !Ujoncok.IsEmpty && !Team.IsEmpty && Fiuvezeto != null && Lanyvezeto != null && Zeneteamvezeto != null;
             }
@@ -280,7 +280,7 @@ namespace AntiBonto.ViewModel
         }
         public ICollectionView[] Kiscsoportok
         {
-            get { return Enumerable.Range(0, Kiscsoportvezetok.OfType<Person>().Count()).Select(i => Kiscsoport(i)).ToArray(); }
+            get { return Enumerable.Range(0, Kiscsoportvezetok.Cast<Person>().Count()).Select(i => Kiscsoport(i)).ToArray(); }
         }
         private ObservableCollection2<Edge> edges = new ObservableCollection2<Edge>();
         public ObservableCollection2<Edge> Edges

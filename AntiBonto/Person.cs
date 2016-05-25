@@ -1,5 +1,6 @@
 ﻿using AntiBonto.ViewModel;
 using System;
+using System.Collections.Generic;
 using System.Xml.Serialization;
 
 namespace AntiBonto
@@ -78,6 +79,9 @@ namespace AntiBonto
         {
             get { return kinekAzUjonca; }
             set { kinekAzUjonca = value;  RaisePropertyChanged(); }
-        }        
+        }
+
+        internal List<Person> kivelIgen = new List<Person>(), kivelNem = new List<Person>();
+        
     }
 }
