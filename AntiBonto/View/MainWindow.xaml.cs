@@ -3,6 +3,7 @@ using Microsoft.Win32;
 using System;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -149,19 +150,9 @@ namespace AntiBonto
             viewModel.Edges.Clear();
         }
 
-        private void ApplyMaxAgeDifference(object sender, RoutedEventArgs e)
-        {
-            var v = viewModel;
-            v.Edges.RemoveAll(edge => edge.Reason == "Korkülönbség");
-            foreach (Person p1 in v.KiscsoportbaOsztando)
-                foreach (Person p2 in v.KiscsoportbaOsztando)
-                    if (Math.Abs(p1.Age - p2.Age) > v.MaxAgeDifference)
-                        v.Edges.Add(new Edge { Persons = new Person [] { p1, p2 }, Dislike = true, Reason = "Korkülönbség", Custom=false });
-        }
-
         private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (e.AddedItems[0] == Kiscsoportbeoszto)
+            if (e.AddedItems.Count > 0 && e.AddedItems[0] == Kiscsoportbeoszto)
             {
                 string message = null;
                 var newTab = e.AddedItems[0];
@@ -215,14 +206,21 @@ namespace AntiBonto
                 else
                 {
                     for (int i = 0; i < kcs.Count(); i++)
-                        kcs[i].Visibility = i < viewModel.Kiscsoportvezetok.Cast<Person>().Count() ? Visibility.Visible : Visibility.Collapsed;
+                    {
+                        var kcsn = viewModel.Kiscsoportvezetok.Cast<Person>().Count();
+                        kcs[i].Visibility = i < kcsn ? Visibility.Visible : Visibility.Collapsed;
+                        kcs[i].IsEnabled = i < kcsn;
+                    }
                 }
             }
         }
 
-        private void Magic(object sender, RoutedEventArgs e)
+        private async void Magic(object sender, RoutedEventArgs e)
         {
-
+            LoadingAnimation2.Visibility = Visibility.Visible;
+            var algorithms = new Algorithms(viewModel);
+            await Task.Run(() => algorithms.NaiveFirstFit());
+            LoadingAnimation2.Visibility = Visibility.Collapsed;
         }
     }
 }

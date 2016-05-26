@@ -9,5 +9,8 @@ namespace AntiBonto.View
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(DnDItemsControl), new FrameworkPropertyMetadata(typeof(DnDItemsControl)));
         }
+        public bool BoldKiscsoportvezetok { get; set; } = false;
+        public static readonly DependencyProperty BoldKiscsoportvezetokProperty =
+            DependencyProperty.Register("BoldKiscsoportvezetok", typeof(bool), typeof(DnDItemsControl));
     }
 }

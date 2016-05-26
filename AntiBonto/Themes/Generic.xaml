@@ -1,14 +1,15 @@
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="clr-namespace:AntiBonto.View"
+    xmlns:view="clr-namespace:AntiBonto.View"
     xmlns:dd="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop">
 
-    <!--This file is the definition of the drag-and-drop enabled ItemsControl -->
+    <!-- Definition of the drag-and-drop enabled ItemsControl -->
+    <view:BoolToFontWeightConverter x:Key="BoolToFontWeightConverter"/>
     <DataTemplate x:Key="adorner">
         <Button Content="{Binding Name}" Margin="0,0,5,5" Padding="3" Name="PersonButton"/>
     </DataTemplate>
-    <Style TargetType="{x:Type local:DnDItemsControl}">
+    <Style TargetType="{x:Type view:DnDItemsControl}">
         <Setter Property="ItemsPanel">
             <Setter.Value>
                 <ItemsPanelTemplate>
@@ -19,13 +20,24 @@
         <Setter Property="ItemTemplate">
             <Setter.Value>
                 <DataTemplate>
-                    <Label Content="{Binding Name}" Margin="0,0,5,5" Padding="3" Name="PersonButton" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+                    <Label Content="{Binding Name}" Margin="0,0,5,5" Padding="3" Name="PersonButton" 
+                           Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
+                        <Label.Resources>
+                            <Style TargetType="Label">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding BoldKiscsoportvezetok, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}" Value="True">
+                                        <Setter Property="FontWeight" Value="{Binding Kiscsoportvezeto, Converter={StaticResource BoolToFontWeightConverter}}"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Label.Resources>
+                    </Label>
                 </DataTemplate>
             </Setter.Value>
         </Setter>
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="{x:Type local:DnDItemsControl}">
+                <ControlTemplate TargetType="{x:Type view:DnDItemsControl}">
                     <!-- Background="White" needed for drop to work -->
                     <Border BorderThickness="1" CornerRadius="3" BorderBrush="Gray" Padding="5" Background="White">
                         <ItemsPresenter/>
@@ -38,7 +50,7 @@
         <Setter Property="dd:DragDrop.DragAdornerTemplate" Value="{StaticResource adorner}"/>
     </Style>
 
-    <Style TargetType="{x:Type local:MaterialButton}">
+    <Style TargetType="{x:Type view:MaterialButton}">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
