@@ -56,7 +56,7 @@ namespace AntiBonto
                     RecursiveSet(q, kiscsoport);
         }
 
-        private bool Conflicts(Person p, int kiscsoport)
+        public bool Conflicts(Person p, int kiscsoport)
         {
             var kcs = d.Kiscsoport(kiscsoport).Cast<Person>();
             return kcs.Count() >= k 
@@ -105,7 +105,7 @@ namespace AntiBonto
             upk = (int)Math.Ceiling(u / (double)m); // újonc per kiscsoport
             tpk = (int)Math.Ceiling(t / (double)m); // teamtag per kiscsoport
             fpk = (int)Math.Ceiling(f / (double)m); // fiú per kiscsoport
-            lpk = (int)Math.Ceiling(f / (double)l); // lány per kiscsoport
+            lpk = (int)Math.Ceiling(l / (double)m); // lány per kiscsoport
 
             while (true) // generate random orderings of People and run the first-fit coloring until it is complete
             {

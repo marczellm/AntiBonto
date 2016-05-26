@@ -80,6 +80,11 @@ namespace AntiBonto.ViewModel
             var kit = (Person)dropInfo.Data;
             if (kit.Nem == Nem.Fiu && hova.Name == "Lanyvezeto" || kit.Nem == Nem.Lany && hova.Name == "Fiuvezeto")
                 dropInfo.Effects = DragDropEffects.None;
+            else if (hova.Name.StartsWith("kcs"))
+            {
+                int kcsn = Int32.Parse(hova.Name.Remove(0, 3)) - 1;
+                dropInfo.Effects = (kit.Kiscsoportvezeto || Algorithm.Conflicts(kit, kcsn)) ? DragDropEffects.None : DragDropEffects.Move;
+            }
             else
                 dropInfo.Effects = DragDropEffects.Move;
         }
@@ -300,5 +305,6 @@ namespace AntiBonto.ViewModel
             get { return maxAgeDifference; }
             set { maxAgeDifference = value; RaisePropertyChanged(); }
         }
+        public Algorithms Algorithm { get; set; }
     }
 }

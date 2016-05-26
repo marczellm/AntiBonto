@@ -211,6 +211,7 @@ namespace AntiBonto
                         kcs[i].Visibility = i < kcsn ? Visibility.Visible : Visibility.Collapsed;
                         kcs[i].IsEnabled = i < kcsn;
                     }
+                    viewModel.Algorithm = new Algorithms(viewModel);
                 }
             }
         }
@@ -218,8 +219,8 @@ namespace AntiBonto
         private async void Magic(object sender, RoutedEventArgs e)
         {
             LoadingAnimation2.Visibility = Visibility.Visible;
-            var algorithms = new Algorithms(viewModel);
-            await Task.Run(() => algorithms.NaiveFirstFit());
+            var alg = viewModel.Algorithm;        
+            await Task.Run(() => alg.NaiveFirstFit());
             LoadingAnimation2.Visibility = Visibility.Collapsed;
         }
     }

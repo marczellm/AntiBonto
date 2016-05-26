@@ -6,6 +6,7 @@
 
     <!-- Definition of the drag-and-drop enabled ItemsControl -->
     <view:BoolToFontWeightConverter x:Key="BoolToFontWeightConverter"/>
+    <view:PersonTypeToColorConverter x:Key="PersonTypeToColorConverter"/>
     <DataTemplate x:Key="adorner">
         <Button Content="{Binding Name}" Margin="0,0,5,5" Padding="3" Name="PersonButton"/>
     </DataTemplate>
@@ -25,8 +26,9 @@
                         <Label.Resources>
                             <Style TargetType="Label">
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding BoldKiscsoportvezetok, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}" Value="True">
+                                    <DataTrigger Binding="{Binding KiscsoportView, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}" Value="True">
                                         <Setter Property="FontWeight" Value="{Binding Kiscsoportvezeto, Converter={StaticResource BoolToFontWeightConverter}}"/>
+                                        <Setter Property="Foreground" Value="{Binding Type, Converter={StaticResource PersonTypeToColorConverter}}"/>
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
