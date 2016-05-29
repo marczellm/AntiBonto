@@ -81,7 +81,6 @@ namespace AntiBonto
             set { kinekAzUjonca = value;  RaisePropertyChanged(); }
         }
 
-        internal List<Person> kivelIgen = new List<Person>(), kivelNem = new List<Person>();
-        
+        internal List<Person> kivelIgen = new List<Person>(), kivelNem = new List<Person>();        
     }
 }

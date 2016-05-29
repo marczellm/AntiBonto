@@ -193,7 +193,7 @@ namespace AntiBonto
                     message = "Jelöld ki a vezetőket!";
                     newTab = Szerepek;
                 }
-                else if (k.Any(p => p.Nem == Nem.Undefined))
+                else if (LanyokFiuk.Visibility == Visibility.Visible && k.Any(p => p.Nem == Nem.Undefined))
                 {
                     message = "Még nem válogattad ki a lányokat és a fiúkat!";
                     newTab = LanyokFiuk;

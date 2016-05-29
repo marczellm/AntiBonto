@@ -85,7 +85,7 @@
                 </DataGrid>
             </DockPanel>
         </TabItem>
-        <TabItem Header="4. Lányok-fiúk" IsEnabled="{Binding PeopleNotEmpty}" Name="LanyokFiuk">
+        <TabItem Visibility="Collapsed" Header="4. Lányok-fiúk" IsEnabled="{Binding PeopleNotEmpty}" Name="LanyokFiuk">
             <DockPanel>
                 <Label DockPanel.Dock="Top" Content="Válogasd szét a lányokat és a fiúkat!"/>
                 <Grid>
@@ -109,7 +109,7 @@
                 </Grid>
             </DockPanel>
         </TabItem>
-        <TabItem Header="5. Újoncok"  IsEnabled="{Binding PeopleNotEmpty}" Name="UjoncokTab">
+        <TabItem Header="4. Újoncok"  IsEnabled="{Binding PeopleNotEmpty}" Name="UjoncokTab">
             <DockPanel>
                 <Label DockPanel.Dock="Top" Content="Kinek az újonca?"/>
                 <ContentControl Visibility="Collapsed" Content="{StaticResource DataContextProxy}"/>
@@ -124,7 +124,7 @@
                 </DataGrid>
             </DockPanel>
         </TabItem>
-        <TabItem Header="6. Megszorítások" IsEnabled="{Binding PeopleNotEmpty}" Name="Megszoritasok">
+        <TabItem Header="5. Megszorítások" IsEnabled="{Binding PeopleNotEmpty}" Name="Megszoritasok">
             <DockPanel>
                 <DockPanel DockPanel.Dock="Top" LastChildFill="False">
                     <Label DockPanel.Dock="Left" Content="Megkötések a kiscsoportbeosztáshoz"/>
@@ -188,7 +188,7 @@
                 </ItemsControl>
             </DockPanel>
         </TabItem>
-        <TabItem Header="7. Kiscsoportbeosztás" Name="Kiscsoportbeoszto">
+        <TabItem Header="6. Kiscsoportbeosztás" Name="Kiscsoportbeoszto">
             <DockPanel>
                 <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
                     <Button Content="Auto" Padding="5" Click="Magic"/>

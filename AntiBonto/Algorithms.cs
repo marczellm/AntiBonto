@@ -24,7 +24,6 @@ namespace AntiBonto
         {
             foreach(Person p in d.People)
             {
-                p.Kiscsoport = -1;
                 p.kivelIgen.Clear();
                 p.kivelNem.Clear();
             }
