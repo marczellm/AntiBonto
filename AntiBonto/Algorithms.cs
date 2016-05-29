@@ -59,12 +59,43 @@ namespace AntiBonto
         public bool Conflicts(Person p, int kiscsoport)
         {
             var kcs = d.Kiscsoport(kiscsoport).Cast<Person>();
-            return kcs.Count() >= k 
-                || kcs.Count(q => q.Type == PersonType.Ujonc) >= upk
-                || kcs.Count(q => q.Type == PersonType.Teamtag) >= tpk
-//                || kcs.Count(q => q.Nem == Nem.Lany) >= lpk
-//                || kcs.Count(q => q.Nem == Nem.Fiu) >= fpk
+            return p.Kiscsoportvezeto || kcs.Count() >= k
+                || (kcs.Count(q => q.Type == PersonType.Ujonc) >= upk && p.Type == PersonType.Ujonc)
+                || (kcs.Count(q => q.Type == PersonType.Teamtag) >= tpk && p.Type == PersonType.Teamtag)
                 || kcs.Any(q => q.kivelNem.Contains(p) || Math.Abs(q.Age - p.Age) > d.MaxAgeDifference);
+        }
+
+        public bool Conflicts(Person p, int kiscsoport, out string message)
+        {
+            var kcs = d.Kiscsoport(kiscsoport).Cast<Person>();
+            message = null;
+            if (p.Kiscsoportvezeto)
+                message = "Nem lehet egy csoportban két kiscsoportvezető!";
+            else if (kcs.Count() >= k)
+                message = "Nem lehet a kiscsoportban több ember";
+            else if (kcs.Count(q => q.Type == PersonType.Ujonc) >= upk && p.Type == PersonType.Ujonc)
+                message = "Nem lehet a kiscsoportban több újonc";
+            else if (kcs.Count(q => q.Type == PersonType.Teamtag) >= tpk && p.Type == PersonType.Teamtag)
+                message = "Nem lehet a kiscsoportban több teamtag";
+            else
+            {
+                Person r = kcs.FirstOrDefault(q => q.kivelNem.Contains(p));
+                if (r != null)
+                {
+                    Edge edge = d.Edges.FirstOrDefault(e => e.Dislike && e.Persons.Contains(p) && e.Persons.Contains(r)) ?? new Edge { Persons = new Person[] { p, r }, Dislike = true, Reason = "az újonca" };
+                    message = edge.ToString();                    
+                }
+                else
+                {
+                    r = kcs.FirstOrDefault(q => Math.Abs(q.Age - p.Age) > d.MaxAgeDifference);
+                    if (r != null)
+                    {
+                        Edge edge = new Edge { Persons = new Person[] { p, r }, Dislike = true, Reason = "a korkülönbség nagyobb, mint " + d.MaxAgeDifference };
+                        message = edge.ToString();
+                    }
+                }
+            }
+            return message != null;
         }
 
         /// <summary>

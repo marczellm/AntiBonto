@@ -83,7 +83,9 @@ namespace AntiBonto.ViewModel
             else if (hova.Name.StartsWith("kcs"))
             {
                 int kcsn = Int32.Parse(hova.Name.Remove(0, 3)) - 1;
-                dropInfo.Effects = (kit.Kiscsoportvezeto || Algorithm.Conflicts(kit, kcsn)) ? DragDropEffects.None : DragDropEffects.Move;
+                string message = null;
+                dropInfo.Effects = (kcsn != kit.Kiscsoport && Algorithm.Conflicts(kit, kcsn, out message)) ? DragDropEffects.None : DragDropEffects.Move;
+                Status = dropInfo.DestinationText = message;
             }
             else
                 dropInfo.Effects = DragDropEffects.Move;
@@ -306,5 +308,11 @@ namespace AntiBonto.ViewModel
             set { maxAgeDifference = value; RaisePropertyChanged(); }
         }
         public Algorithms Algorithm { get; set; }
+        private string status = "";
+        public string Status
+        {
+            get { return status; }
+            set { status = value; RaisePropertyChanged(); }
+        }
     }
 }

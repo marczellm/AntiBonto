@@ -194,6 +194,9 @@
                     <Button Content="Auto" Padding="5" Click="Magic"/>
                     <hammer:SpinningWheel Radius="9" CircleRadius="2.5" Visibility="Hidden" Name="LoadingAnimation2"  Margin="20,0,0,0"/>
                 </StackPanel>
+                <StatusBar DockPanel.Dock="Bottom">
+                    <StatusBarItem Content="{Binding Status}" MinHeight="22"/>
+                </StatusBar>
                 <Grid Name="Kiscsoportok">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
