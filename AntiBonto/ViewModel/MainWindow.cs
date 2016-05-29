@@ -301,7 +301,7 @@ namespace AntiBonto.ViewModel
             get { return edge ?? (edge = new Edge()); }
             set { edge = value; RaisePropertyChanged(); }
         }
-        private int maxAgeDifference = 100;
+        private int maxAgeDifference = 8;
         public int MaxAgeDifference
         {
             get { return maxAgeDifference; }

@@ -10,8 +10,8 @@ namespace AntiBonto.View
         {
             if (value is string)
             {
-                double number;
-                if (!Double.TryParse((value as string), out number))
+                int number;
+                if (!Int32.TryParse((value as string), out number))
                     return new ValidationResult(false, "");
             }
 

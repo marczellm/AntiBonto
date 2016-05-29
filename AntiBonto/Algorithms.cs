@@ -1,6 +1,8 @@
-﻿using System;
+﻿using MoreLinq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 
 namespace AntiBonto
 {
@@ -100,7 +102,7 @@ namespace AntiBonto
         /// <summary>
         /// Randomly shuffles a list using the Fisher-Yates shuffle.
         /// </summary>
-        private static void Shuffle<T>(IList<T> list)
+        private static IList<T> Shuffle<T>(IList<T> list)
         {
             int n = list.Count;
             while (n > 1)
@@ -111,19 +113,23 @@ namespace AntiBonto
                 list[k] = list[n];
                 list[n] = value;
             }
+            return list;
         }
         /// <summary>
         /// Generates all possible permutations of an enumerable
         /// </summary>
-        static IEnumerable<IEnumerable<T>> GetPermutations<T>(IEnumerable<T> list, int length)
+        private static IEnumerable<IEnumerable<T>> GetPermutations<T>(IEnumerable<T> list, int length)
         {
             if (length == 1) return list.Select(t => new T[] { t });
             return GetPermutations(list, length - 1).SelectMany(t => list.Where(e => !t.Contains(e)), (t1, t2) => t1.Concat(new T[] { t2 }));
         }
 
-        public void NaiveFirstFit()
+        /// <returns>whether the algorithm was successful</returns>
+        public bool NaiveFirstFit(CancellationToken? ct = null)
         {
             m = 0; // kiscsoportok száma
+            foreach (Person p in Beosztando)
+                p.Kiscsoport = -1;
             foreach (Person p in Kiscsoportvezetok)
                 RecursiveSet(p, m++);
             n = Beosztando.Count(); // kiscsoportba osztandók száma
@@ -137,23 +143,45 @@ namespace AntiBonto
             fpk = (int)Math.Ceiling(f / (double)m); // fiú per kiscsoport
             lpk = (int)Math.Ceiling(l / (double)m); // lány per kiscsoport
 
-            while (true) // generate random orderings of People and run the first-fit coloring until it is complete
+            bool kesz = false;
+            Shuffle(Beosztando);
+            foreach (var perm in GetPermutations(Beosztando, Beosztando.Count)) // generate all possible orderings of People and run the first-fit coloring until it is complete
             {
                 try
                 {
-                    foreach (Person p in Beosztando)
+                    ct?.ThrowIfCancellationRequested();
+                    foreach (Person p in perm)
                         if (!p.Kiscsoportvezeto)
-                            RecursiveSet(p, Enumerable.Range(0, m).First(i => !Conflicts(p, i)));
+                        {
+                            var options = Enumerable.Range(0, m).Where(i => !Conflicts(p, i));
+                            // ha újonc, akkor próbáljuk olyan helyre tenni, ahol még kevés újonc van
+                            // különben ahol még kevesen vannak
+                            if (p.Type == PersonType.Ujonc)
+                            {
+                                var z = options.Min(i => d.Kiscsoport(i).Cast<Person>().Count(q => q.Type == PersonType.Ujonc));
+                                RecursiveSet(p, options.MinBy(i => d.Kiscsoport(i).Cast<Person>().Count(q => q.Type == PersonType.Ujonc)));
+                            }
+                            else
+                                RecursiveSet(p, options.MinBy(i => d.Kiscsoport(i).Cast<Person>().Count()));
+                        }
+                    kesz = true;
                     break;
                 }
-                catch
+                catch (InvalidOperationException) // Nincs olyan kiscsoport, ahova be lehetne tenni => elölről kezdjük
                 {
                     foreach (Person p in Beosztando)
                         if (!p.Kiscsoportvezeto)
                             p.Kiscsoport = -1;
-                    Shuffle(Beosztando);
+                    foreach (Person p in Kiscsoportvezetok)
+                        RecursiveSet(p, p.Kiscsoport);
+                }
+                catch (OperationCanceledException) // Megnyomták a Cancel gombot
+                {
+                    break;
                 }
             }
+
+            return kesz;
         }
     }
 }

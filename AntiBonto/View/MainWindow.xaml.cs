@@ -3,6 +3,7 @@ using Microsoft.Win32;
 using System;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -32,6 +33,7 @@ namespace AntiBonto
         }
         private DnDItemsControl[] kcs;
         private string filepath;
+        private CancellationTokenSource cts;
         private AppData AppData
         {
             get { return new AppData { Persons = viewModel.People.ToArray(), Edges = viewModel.Edges.ToArray() }; }
@@ -218,10 +220,33 @@ namespace AntiBonto
 
         private async void Magic(object sender, RoutedEventArgs e)
         {
+            viewModel.Status = "";
+            if (viewModel.MaxAgeDifference < 8
+                && MessageBox.Show("8-nál kisebb maximális korkülönbséget állítottál be. Végtelen sokáig fog tartani a beosztás. Akarod folytatni?", "", MessageBoxButton.YesNo) == MessageBoxResult.No)
+                    return;
             LoadingAnimation2.Visibility = Visibility.Visible;
-            var alg = viewModel.Algorithm;        
-            await Task.Run(() => alg.NaiveFirstFit());
+            var alg = viewModel.Algorithm;
+            var btn = (Button)sender;
+            btn.Click -= Magic;
+            var oldContent = btn.Content;
+            btn.Content = "Cancel";
+            RoutedEventHandler handler;
+            using (cts = new CancellationTokenSource())
+            {
+                handler = (ender, se) => cts.Cancel();
+                btn.Click += handler;
+                CancellationToken ct = cts.Token;
+                try
+                {
+                    if (!await Task.Run(() => alg.NaiveFirstFit(ct), ct))
+                        viewModel.Status = "Nem sikerült az automatikus beosztás!";
+                }
+                catch (AggregateException) { }
+            }
             LoadingAnimation2.Visibility = Visibility.Collapsed;
+            btn.Click -= handler;
+            btn.Click += Magic;
+            btn.Content = oldContent;            
         }
     }
 }
