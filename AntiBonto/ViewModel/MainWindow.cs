@@ -116,6 +116,8 @@ namespace AntiBonto.ViewModel
                 p.Kiscsoportvezeto = false;
             if (hova.Name.StartsWith("kcs"))
                 p.Kiscsoport = Int32.Parse(hova.Name.Remove(0, 3)) - 1;
+            if (hova.Name == "nokcs")
+                p.Kiscsoport = -1;
         }
         private ObservableCollection2<Person> people = new ObservableCollection2<Person>();
         public ObservableCollection2<Person> People
@@ -289,6 +291,7 @@ namespace AntiBonto.ViewModel
         {
             get { return Enumerable.Range(0, Kiscsoportvezetok.Cast<Person>().Count()).Select(i => Kiscsoport(i)).ToArray(); }
         }
+        public ICollectionView NoKiscsoport { get { return Kiscsoport(-1); } }
         private ObservableCollection2<Edge> edges = new ObservableCollection2<Edge>();
         public ObservableCollection2<Edge> Edges
         {

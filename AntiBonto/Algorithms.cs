@@ -145,12 +145,12 @@ namespace AntiBonto
 
             bool kesz = false;
             Shuffle(Beosztando);
-            foreach (var perm in GetPermutations(Beosztando, Beosztando.Count)) // generate all possible orderings of People and run the first-fit coloring until it is complete
+            while (!kesz) // generate random orderings of People and run the first-fit coloring until it is complete
             {
                 try
                 {
                     ct?.ThrowIfCancellationRequested();
-                    foreach (Person p in perm)
+                    foreach (Person p in Beosztando)
                         if (!p.Kiscsoportvezeto)
                         {
                             var options = Enumerable.Range(0, m).Where(i => !Conflicts(p, i));
@@ -165,7 +165,6 @@ namespace AntiBonto
                                 RecursiveSet(p, options.MinBy(i => d.Kiscsoport(i).Cast<Person>().Count()));
                         }
                     kesz = true;
-                    break;
                 }
                 catch (InvalidOperationException) // Nincs olyan kiscsoport, ahova be lehetne tenni => elölről kezdjük
                 {
@@ -174,6 +173,7 @@ namespace AntiBonto
                             p.Kiscsoport = -1;
                     foreach (Person p in Kiscsoportvezetok)
                         RecursiveSet(p, p.Kiscsoport);
+                    Shuffle(Beosztando);
                 }
                 catch (OperationCanceledException) // Megnyomták a Cancel gombot
                 {
