@@ -84,7 +84,7 @@ namespace AntiBonto
                 if (r != null)
                 {
                     Edge edge = d.Edges.FirstOrDefault(e => e.Dislike && e.Persons.Contains(p) && e.Persons.Contains(r)) ?? new Edge { Persons = new Person[] { p, r }, Dislike = true, Reason = "az újonca" };
-                    message = edge.ToString();                    
+                    message = edge.ToString();
                 }
                 else
                 {

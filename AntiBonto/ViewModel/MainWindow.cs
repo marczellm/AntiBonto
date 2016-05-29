@@ -55,8 +55,7 @@ namespace AntiBonto.ViewModel
             }
         }
         public MainWindow()
-        {
-            people.CollectionChanged += People_CollectionChanged;            
+        {         
         }
         /// <summary>
         /// So we need to keep them up to date
@@ -119,11 +118,16 @@ namespace AntiBonto.ViewModel
             if (hova.Name == "nokcs")
                 p.Kiscsoport = -1;
         }
-        private ObservableCollection2<Person> people = new ObservableCollection2<Person>();
+        private ObservableCollection2<Person> people;
         public ObservableCollection2<Person> People
         {
             get
             {
+                if (people == null)
+                {
+                    people = new ObservableCollection2<Person>();
+                    people.CollectionChanged += People_CollectionChanged;                    
+                }
                 return people;
             }
             private set

@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Xml.Serialization;
 
@@ -212,6 +213,8 @@ namespace AntiBonto
                         var kcsn = viewModel.Kiscsoportvezetok.Cast<Person>().Count();
                         kcs[i].Visibility = i < kcsn ? Visibility.Visible : Visibility.Collapsed;
                         kcs[i].IsEnabled = i < kcsn;
+                        if (i < kcsn)
+                            BindingOperations.GetBindingExpression(kcs[i], ItemsControl.ItemsSourceProperty).UpdateTarget();
                     }
                     viewModel.Algorithm = new Algorithms(viewModel);
                 }
