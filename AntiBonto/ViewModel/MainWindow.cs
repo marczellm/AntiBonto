@@ -121,7 +121,7 @@ namespace AntiBonto.ViewModel
                 RaisePropertyChanged("PeopleNotEmpty");
             }
         }
-        private bool kiscsoportInited = false;
+        private volatile bool kiscsoportInited = false;
         internal void InitKiscsoport()
         {
             if (kiscsoportInited)
@@ -315,9 +315,13 @@ namespace AntiBonto.ViewModel
             }
         }
         private List<ICollectionView> kiscsoportok = new List<ICollectionView>();
-        public ICollectionView[] Kiscsoportok
+        public List<ICollectionView> Kiscsoportok
         {
-            get { return kiscsoportok.ToArray(); }
+            get { return kiscsoportok; }
+        }
+        public IEnumerable<Person> Kiscsoport(int i)
+        {
+            return People.Where(p => p.Type != PersonType.Egyeb && p.Kiscsoport == i);
         }
         public ICollectionView NoKiscsoport { get { return nokiscsoport; } }
         private ObservableCollection2<Edge> edges;

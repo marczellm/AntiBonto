@@ -72,7 +72,7 @@ namespace AntiBonto
 
         public bool Conflicts(Person p, int kiscsoport)
         {
-            var kcs = d.Kiscsoportok[kiscsoport].Cast<Person>();
+            var kcs = d.Kiscsoport(kiscsoport);
             return p.Kiscsoportvezeto || kcs.Count() >= k
                 || (kcs.Count(q => q.Type == PersonType.Ujonc) >= upk && p.Type == PersonType.Ujonc)
                 || (kcs.Count(q => q.Type == PersonType.Teamtag) >= tpk && p.Type == PersonType.Teamtag)
@@ -81,7 +81,7 @@ namespace AntiBonto
 
         public bool Conflicts(Person p, int kiscsoport, out string message)
         {
-            var kcs = d.Kiscsoportok[kiscsoport].Cast<Person>();
+            var kcs = d.Kiscsoport(kiscsoport);
             message = null;
             if (p.Kiscsoportvezeto)
                 message = "Nem lehet egy csoportban két kiscsoportvezető!";
@@ -161,11 +161,11 @@ namespace AntiBonto
                             // különben ahol még kevesen vannak
                             if (p.Type == PersonType.Ujonc)
                             {
-                                var z = options.Min(i => d.Kiscsoportok[i].Cast<Person>().Count(q => q.Type == PersonType.Ujonc));
-                                RecursiveSet(p, options.MinBy(i => d.Kiscsoportok[i].Cast<Person>().Count(q => q.Type == PersonType.Ujonc)));
+                                var z = options.Min(i => d.Kiscsoport(i).Count(q => q.Type == PersonType.Ujonc));
+                                RecursiveSet(p, options.MinBy(i => d.Kiscsoport(i).Count(q => q.Type == PersonType.Ujonc)));
                             }
                             else
-                                RecursiveSet(p, options.MinBy(i => d.Kiscsoportok[i].Cast<Person>().Count()));
+                                RecursiveSet(p, options.MinBy(i => d.Kiscsoport(i).Count()));
                         }
                     kesz = true;
                 }

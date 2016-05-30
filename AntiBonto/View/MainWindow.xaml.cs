@@ -221,7 +221,7 @@ namespace AntiBonto
         {
             viewModel.Status = "";
             if (viewModel.MaxAgeDifference < 8
-                && MessageBox.Show("8-nál kisebb maximális korkülönbséget állítottál be. Végtelen sokáig fog tartani a beosztás. Akarod folytatni?", "", MessageBoxButton.YesNo) == MessageBoxResult.No)
+                && MessageBox.Show("8-nál kisebb maximális korkülönbséget állítottál be. Végtelen sokáig tarthat a beosztás. Akarod folytatni?", "", MessageBoxButton.YesNo) == MessageBoxResult.No)
                     return;
             LoadingAnimation2.Visibility = Visibility.Visible;
             var alg = viewModel.Algorithm;
