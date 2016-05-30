@@ -166,11 +166,6 @@ namespace AntiBonto
                     message = "Nincsenek résztvevők!";
                     newTab = Resztvevok;
                 }                
-                else if (k.Any(p => p.Type == PersonType.Ujonc && p.KinekAzUjonca == null))
-                {
-                    message = "Kinek az újonca " + k.First(p => p.Type == PersonType.Ujonc && p.KinekAzUjonca == null) + "?";
-                    newTab = UjoncokTab;
-                }
                 else if (k.Any(p => p.Age < 0 || p.Age > 100))
                 {
                     message = "Állítsd be az életkorokat!";
@@ -208,14 +203,15 @@ namespace AntiBonto
                 }
                 else
                 {
+                    viewModel.InitKiscsoport();
+                    var kcsn = viewModel.Kiscsoportvezetok.Cast<Person>().Count();
                     for (int i = 0; i < kcs.Count(); i++)
                     {
-                        var kcsn = viewModel.Kiscsoportvezetok.Cast<Person>().Count();
                         kcs[i].Visibility = i < kcsn ? Visibility.Visible : Visibility.Collapsed;
-                        kcs[i].IsEnabled = i < kcsn;
+                        kcs[i].IsEnabled = i < kcsn;                        
                         if (i < kcsn)
                             BindingOperations.GetBindingExpression(kcs[i], ItemsControl.ItemsSourceProperty).UpdateTarget();
-                    }
+                    }                    
                     viewModel.Algorithm = new Algorithms(viewModel);
                 }
             }

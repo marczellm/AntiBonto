@@ -20,6 +20,18 @@ namespace AntiBonto
             Beosztando = d.KiscsoportbaOsztando.Cast<Person>().ToList();
             Kiscsoportvezetok = d.Kiscsoportvezetok.Cast<Person>().ToList();
             UpdateEdges();
+
+            m = Kiscsoportvezetok.Count();
+            n = Beosztando.Count(); // kiscsoportba osztandók száma
+            u = Ujoncok.Count(); // újoncok száma
+            t = Team.Count(); // team létszáma
+            k = (int)Math.Ceiling(n / (double)m); // kiscsoportok létszáma
+            int f = Beosztando.Where(p => p.Nem == Nem.Fiu).Count();
+            int l = Beosztando.Where(p => p.Nem == Nem.Lany).Count();
+            upk = (int)Math.Ceiling(u / (double)m); // újonc per kiscsoport
+            tpk = (int)Math.Ceiling(t / (double)m); // teamtag per kiscsoport
+            fpk = (int)Math.Ceiling(f / (double)m); // fiú per kiscsoport
+            lpk = (int)Math.Ceiling(l / (double)m); // lány per kiscsoport
         }
 
         private void UpdateEdges()
@@ -30,10 +42,11 @@ namespace AntiBonto
                 p.kivelNem.Clear();
             }
             foreach (Person p in Ujoncok)
-            {
-                p.kivelNem.Add(p.KinekAzUjonca);
-                p.KinekAzUjonca.kivelNem.Add(p);
-            }
+                if (p.KinekAzUjonca != null)
+                {
+                    p.kivelNem.Add(p.KinekAzUjonca);
+                    p.KinekAzUjonca.kivelNem.Add(p);
+                }
             foreach (Edge e in d.Edges)
             {
                 if (e.Dislike)
@@ -59,7 +72,7 @@ namespace AntiBonto
 
         public bool Conflicts(Person p, int kiscsoport)
         {
-            var kcs = d.Kiscsoport(kiscsoport).Cast<Person>();
+            var kcs = d.Kiscsoportok[kiscsoport].Cast<Person>();
             return p.Kiscsoportvezeto || kcs.Count() >= k
                 || (kcs.Count(q => q.Type == PersonType.Ujonc) >= upk && p.Type == PersonType.Ujonc)
                 || (kcs.Count(q => q.Type == PersonType.Teamtag) >= tpk && p.Type == PersonType.Teamtag)
@@ -68,7 +81,7 @@ namespace AntiBonto
 
         public bool Conflicts(Person p, int kiscsoport, out string message)
         {
-            var kcs = d.Kiscsoport(kiscsoport).Cast<Person>();
+            var kcs = d.Kiscsoportok[kiscsoport].Cast<Person>();
             message = null;
             if (p.Kiscsoportvezeto)
                 message = "Nem lehet egy csoportban két kiscsoportvezető!";
@@ -131,17 +144,7 @@ namespace AntiBonto
             foreach (Person p in Beosztando)
                 p.Kiscsoport = -1;
             foreach (Person p in Kiscsoportvezetok)
-                RecursiveSet(p, m++);
-            n = Beosztando.Count(); // kiscsoportba osztandók száma
-            u = Ujoncok.Count(); // újoncok száma
-            t = Team.Count(); // team létszáma
-            k = (int)Math.Ceiling(n / (double)m); // kiscsoportok létszáma
-            int f = Beosztando.Where(p => p.Nem == Nem.Fiu).Count();
-            int l = Beosztando.Where(p => p.Nem == Nem.Lany).Count();
-            upk = (int)Math.Ceiling(u / (double)m); // újonc per kiscsoport
-            tpk = (int)Math.Ceiling(t / (double)m); // teamtag per kiscsoport
-            fpk = (int)Math.Ceiling(f / (double)m); // fiú per kiscsoport
-            lpk = (int)Math.Ceiling(l / (double)m); // lány per kiscsoport
+                RecursiveSet(p, m++);           
 
             bool kesz = false;
             Shuffle(Beosztando);
@@ -158,11 +161,11 @@ namespace AntiBonto
                             // különben ahol még kevesen vannak
                             if (p.Type == PersonType.Ujonc)
                             {
-                                var z = options.Min(i => d.Kiscsoport(i).Cast<Person>().Count(q => q.Type == PersonType.Ujonc));
-                                RecursiveSet(p, options.MinBy(i => d.Kiscsoport(i).Cast<Person>().Count(q => q.Type == PersonType.Ujonc)));
+                                var z = options.Min(i => d.Kiscsoportok[i].Cast<Person>().Count(q => q.Type == PersonType.Ujonc));
+                                RecursiveSet(p, options.MinBy(i => d.Kiscsoportok[i].Cast<Person>().Count(q => q.Type == PersonType.Ujonc)));
                             }
                             else
-                                RecursiveSet(p, options.MinBy(i => d.Kiscsoport(i).Cast<Person>().Count()));
+                                RecursiveSet(p, options.MinBy(i => d.Kiscsoportok[i].Cast<Person>().Count()));
                         }
                     kesz = true;
                 }

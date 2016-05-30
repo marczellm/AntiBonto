@@ -41,22 +41,7 @@ namespace AntiBonto.ViewModel
         public bool PeopleNotEmpty
         {
             get { return People.Count() != 0; }
-        }
-        /// <summary>
-        /// Shouldn't be used as a binding source because it's quite slow
-        /// </summary>
-        private bool ReadyForAction
-        {
-            get
-            {
-                var ppl = KiscsoportbaOsztando.Cast<Person>().ToList();
-                return PeopleNotEmpty && ppl.All(p => p.Nem != Nem.Undefined && (p.Type != PersonType.Ujonc || p.KinekAzUjonca != null) && p.Age > 0 && p.Age < 100)
-                    && !Kiscsoportvezetok.IsEmpty && !Ujoncok.IsEmpty && !Team.IsEmpty && Fiuvezeto != null && Lanyvezeto != null && Zeneteamvezeto != null;
-            }
-        }
-        public MainWindow()
-        {         
-        }
+        }       
         /// <summary>
         /// So we need to keep them up to date
         /// </summary>
@@ -66,7 +51,6 @@ namespace AntiBonto.ViewModel
             RaisePropertyChanged("Zeneteamvezeto");
             RaisePropertyChanged("Fiuvezeto");
             RaisePropertyChanged("Lanyvezeto");
-            RaisePropertyChanged("ReadyForAction");
             RaisePropertyChanged("Kiscsoportok");
         }
         /// <summary>
@@ -75,16 +59,16 @@ namespace AntiBonto.ViewModel
         public void DragOver(IDropInfo dropInfo)
         {
             dropInfo.DropTargetAdorner = null;
-            var hova = (FrameworkElement) dropInfo.VisualTarget;
-            var kit = (Person)dropInfo.Data;
-            if (kit.Nem == Nem.Fiu && hova.Name == "Lanyvezeto" || kit.Nem == Nem.Lany && hova.Name == "Fiuvezeto")
+            var target = (FrameworkElement) dropInfo.VisualTarget;
+            var p = (Person)dropInfo.Data;
+            if (p.Nem == Nem.Fiu && target.Name == "Lanyvezeto" || p.Nem == Nem.Lany && target.Name == "Fiuvezeto")
                 dropInfo.Effects = DragDropEffects.None;
-            else if (hova.Name.StartsWith("kcs"))
+            else if (target.Name.StartsWith("kcs"))
             {
-                int kcsn = Int32.Parse(hova.Name.Remove(0, 3)) - 1;
+                int kcsn = Int32.Parse(target.Name.Remove(0, 3)) - 1;
                 string message = null;
-                dropInfo.Effects = (kcsn != kit.Kiscsoport && Algorithm.Conflicts(kit, kcsn, out message)) ? DragDropEffects.None : DragDropEffects.Move;
-                Status = dropInfo.DestinationText = message;
+                dropInfo.Effects = (kcsn != p.Kiscsoport && Algorithm.Conflicts(p, kcsn, out message)) ? DragDropEffects.None : DragDropEffects.Move;
+                Status = message;
             }
             else
                 dropInfo.Effects = DragDropEffects.Move;
@@ -94,16 +78,16 @@ namespace AntiBonto.ViewModel
         /// </summary>
         public void Drop(IDropInfo dropInfo)
         {
-            var hova = (FrameworkElement) dropInfo.VisualTarget;
-            var honnan = (FrameworkElement)dropInfo.DragInfo.VisualSource;
+            var target = (FrameworkElement)dropInfo.VisualTarget;
+            var source = (FrameworkElement)dropInfo.DragInfo.VisualSource;
             Person p = (Person)dropInfo.Data;
-            switch(hova.Name)
+            switch(target.Name)
             {
                 case "Fiuk": p.Nem = Nem.Fiu; break;
                 case "Lanyok": p.Nem = Nem.Lany; break;
                 case "Nullnemuek": p.Nem = Nem.Undefined; break;
                 case "Team": p.Type = PersonType.Teamtag; break;
-                case "Zeneteam": p.Type = PersonType.Zeneteamtag; break;
+                case "Zeneteam": if (p.Type != PersonType.Fiuvezeto && p.Type != PersonType.Lanyvezeto) p.Type = PersonType.Zeneteamtag; break;
                 case "Ujoncok": p.Type = PersonType.Ujonc; break;
                 case "Zeneteamvezeto": Zeneteamvezeto = p; break;
                 case "Lanyvezeto": Lanyvezeto = p; break;
@@ -111,11 +95,11 @@ namespace AntiBonto.ViewModel
                 case "Kiscsoportvezetok": p.Kiscsoportvezeto = true; break;
                 case "Egyeb": p.Type = PersonType.Egyeb; break;             
             }
-            if (honnan.Name == "Kiscsoportvezetok" && (hova.Name == "Team" || hova.Name == "Ujoncok" || hova.Name=="Egyeb"))
+            if (source.Name == "Kiscsoportvezetok" && (target.Name == "Team" || target.Name == "Ujoncok" || target.Name=="Egyeb"))
                 p.Kiscsoportvezeto = false;
-            if (hova.Name.StartsWith("kcs"))
-                p.Kiscsoport = Int32.Parse(hova.Name.Remove(0, 3)) - 1;
-            if (hova.Name == "nokcs")
+            if (target.Name.StartsWith("kcs"))
+                p.Kiscsoport = Int32.Parse(target.Name.Remove(0, 3)) - 1;
+            if (target.Name == "nokcs")
                 p.Kiscsoport = -1;
         }
         private ObservableCollection2<Person> people;
@@ -126,7 +110,7 @@ namespace AntiBonto.ViewModel
                 if (people == null)
                 {
                     people = new ObservableCollection2<Person>();
-                    people.CollectionChanged += People_CollectionChanged;                    
+                    people.CollectionChanged += People_CollectionChanged;
                 }
                 return people;
             }
@@ -137,101 +121,151 @@ namespace AntiBonto.ViewModel
                 RaisePropertyChanged("PeopleNotEmpty");
             }
         }
-       public ICollectionView Fiuk
+        private bool kiscsoportInited = false;
+        internal void InitKiscsoport()
+        {
+            if (kiscsoportInited)
+                return;
+            for (int i = 0; i < 15; i++)
+            {
+                CollectionViewSource cvs = new CollectionViewSource { Source = People, IsLiveFilteringRequested = true, LiveFilteringProperties = { "Kiscsoport" } };
+                cvs.View.Filter = p => ((Person)p).Kiscsoport == i;
+                cvs.View.CollectionChanged += EmptyEventHandler;
+                kiscsoportok.Add(cvs.View);
+            }
+            CollectionViewSource cvss = new CollectionViewSource { Source = People, IsLiveFilteringRequested = true, LiveFilteringProperties = { "Kiscsoport", "Type" } };
+            cvss.View.Filter = p => ((Person)p).Kiscsoport == -1 && ((Person)p).Type != PersonType.Egyeb;
+            cvss.View.CollectionChanged += EmptyEventHandler;
+            nokiscsoport = cvss.View;
+            kiscsoportInited = true;
+            RaisePropertyChanged("Kiscsoportok");
+            RaisePropertyChanged("NoKiscsoport");
+        }
+        private ICollectionView fiuk, lanyok, nullnemuek, ujoncok, team, zeneteam, kiscsoportvezetok, egyeb, kiscsoportbaosztando, nokiscsoport;
+        public ICollectionView Fiuk
         {
             get
             {
-                CollectionViewSource cvs = new CollectionViewSource { Source = People, IsLiveFilteringRequested = true, LiveFilteringProperties = { "Nem" } };
-                cvs.View.Filter = p => ((Person)p).Nem == Nem.Fiu;
-                cvs.View.CollectionChanged += EmptyEventHandler;
-                return cvs.View;
+                if (fiuk == null)
+                {
+                    CollectionViewSource cvs = new CollectionViewSource { Source = People, IsLiveFilteringRequested = true, LiveFilteringProperties = { "Nem" } };
+                    cvs.View.Filter = p => ((Person)p).Nem == Nem.Fiu;
+                    cvs.View.CollectionChanged += EmptyEventHandler;
+                    fiuk = cvs.View;
+                }
+                return fiuk;
             }
         }
         public ICollectionView Lanyok
         {
             get
             {
-                CollectionViewSource cvs = new CollectionViewSource { Source = People, IsLiveFilteringRequested = true, LiveFilteringProperties = { "Nem" } };
-                cvs.View.Filter = p => ((Person)p).Nem == Nem.Lany;
-                cvs.View.CollectionChanged += EmptyEventHandler;
-                return cvs.View;
+                if (lanyok == null)
+                {
+                    CollectionViewSource cvs = new CollectionViewSource { Source = People, IsLiveFilteringRequested = true, LiveFilteringProperties = { "Nem" } };
+                    cvs.View.Filter = p => ((Person)p).Nem == Nem.Lany;
+                    cvs.View.CollectionChanged += EmptyEventHandler;
+                    lanyok = cvs.View;
+                }
+                return lanyok;
             }
         }
         public ICollectionView Nullnemuek
         {
             get
             {
-                CollectionViewSource cvs = new CollectionViewSource { Source = People, IsLiveFilteringRequested = true, LiveFilteringProperties = { "Nem", "Type" } };
-                cvs.View.Filter = p => ((Person)p).Nem == Nem.Undefined && ((Person)p).Type != PersonType.Egyeb;
-                cvs.View.CollectionChanged += EmptyEventHandler;
-                return cvs.View;
+                if (nullnemuek == null)
+                {
+                    CollectionViewSource cvs = new CollectionViewSource { Source = People, IsLiveFilteringRequested = true, LiveFilteringProperties = { "Nem", "Type" } };
+                    cvs.View.Filter = p => ((Person)p).Nem == Nem.Undefined && ((Person)p).Type != PersonType.Egyeb;
+                    cvs.View.CollectionChanged += EmptyEventHandler;
+                    nullnemuek = cvs.View;
+                }
+                return nullnemuek;
             }
         }
         public ICollectionView Ujoncok
         {
             get
             {
-                CollectionViewSource cvs = new CollectionViewSource { Source = People, IsLiveFilteringRequested = true, LiveFilteringProperties = { "Type" } };
-                cvs.View.Filter = p => ((Person)p).Type == PersonType.Ujonc;
-                cvs.View.CollectionChanged += EmptyEventHandler;
-                return cvs.View;
+                if (ujoncok == null)
+                {
+                    CollectionViewSource cvs = new CollectionViewSource { Source = People, IsLiveFilteringRequested = true, LiveFilteringProperties = { "Type" } };
+                    cvs.View.Filter = p => ((Person)p).Type == PersonType.Ujonc;
+                    cvs.View.CollectionChanged += EmptyEventHandler;
+                    ujoncok = cvs.View;
+                }
+                return ujoncok;
             }
         }     
-
-        /// <summary>
-        /// Adding this seems to fix a bug (see http://stackoverflow.com/questions/37394151), although I have no idea why
-        /// </summary>
-        private void EmptyEventHandler(object sender, NotifyCollectionChangedEventArgs e)
-        { }
-
         public ICollectionView Team
         {
             get
             {
-                CollectionViewSource cvs = new CollectionViewSource { Source = People, IsLiveFilteringRequested = true, LiveFilteringProperties = { "Type" } };                
-                cvs.View.Filter = p => ((Person)p).Type != PersonType.Egyeb && ((Person)p).Type != PersonType.Ujonc;
-                cvs.View.CollectionChanged += EmptyEventHandler;
-                return cvs.View;
+                if (team == null)
+                {
+                    CollectionViewSource cvs = new CollectionViewSource { Source = People, IsLiveFilteringRequested = true, LiveFilteringProperties = { "Type" } };
+                    cvs.View.Filter = p => ((Person)p).Type != PersonType.Egyeb && ((Person)p).Type != PersonType.Ujonc;
+                    cvs.View.CollectionChanged += EmptyEventHandler;
+                    team = cvs.View;
+                }
+                return team;
             }
         }
         public ICollectionView Egyeb
         {
             get
             {
-                CollectionViewSource cvs = new CollectionViewSource { Source = People, IsLiveFilteringRequested = true, LiveFilteringProperties = { "Type" } };
-                cvs.View.Filter = p => ((Person)p).Type == PersonType.Egyeb;
-                cvs.View.CollectionChanged += EmptyEventHandler;
-                return cvs.View;
+                if (egyeb == null)
+                {
+                    CollectionViewSource cvs = new CollectionViewSource { Source = People, IsLiveFilteringRequested = true, LiveFilteringProperties = { "Type" } };
+                    cvs.View.Filter = p => ((Person)p).Type == PersonType.Egyeb;
+                    cvs.View.CollectionChanged += EmptyEventHandler;
+                    egyeb = cvs.View;
+                }
+                return egyeb;
             }
         }
         public ICollectionView Kiscsoportvezetok
         {
             get
             {
-                CollectionViewSource cvs = new CollectionViewSource { Source = People, IsLiveFilteringRequested = true, LiveFilteringProperties = { "Kiscsoportvezeto" } };
-                cvs.View.Filter = p => ((Person)p).Kiscsoportvezeto;
-                cvs.View.CollectionChanged += EmptyEventHandler;
-                return cvs.View;
+                if (kiscsoportvezetok == null)
+                {
+                    CollectionViewSource cvs = new CollectionViewSource { Source = People, IsLiveFilteringRequested = true, LiveFilteringProperties = { "Kiscsoportvezeto" } };
+                    cvs.View.Filter = p => ((Person)p).Kiscsoportvezeto;
+                    cvs.View.CollectionChanged += EmptyEventHandler;
+                    kiscsoportvezetok = cvs.View;
+                }
+                return kiscsoportvezetok;
             }
         }
         public ICollectionView KiscsoportbaOsztando
         {
             get
             {
-                CollectionViewSource cvs = new CollectionViewSource { Source = People, IsLiveFilteringRequested = true, LiveFilteringProperties = { "Type" } };
-                cvs.View.Filter = p => ((Person)p).Type != PersonType.Egyeb;
-                cvs.View.CollectionChanged += EmptyEventHandler;
-                return cvs.View;
+                if (kiscsoportbaosztando == null)
+                {
+                    CollectionViewSource cvs = new CollectionViewSource { Source = People, IsLiveFilteringRequested = true, LiveFilteringProperties = { "Type" } };
+                    cvs.View.Filter = p => ((Person)p).Type != PersonType.Egyeb;
+                    cvs.View.CollectionChanged += EmptyEventHandler;
+                    kiscsoportbaosztando = cvs.View;
+                }
+                return kiscsoportbaosztando;
             }
         }
         public ICollectionView Zeneteam
         {
             get
             {
-                CollectionViewSource cvs = new CollectionViewSource { Source = People, IsLiveFilteringRequested = true, LiveFilteringProperties = { "Type" } };
-                cvs.View.Filter = p => ((Person)p).Type == PersonType.Zeneteamtag;
-                cvs.View.CollectionChanged += EmptyEventHandler;
-                return cvs.View;
+                if (zeneteam == null)
+                {
+                    CollectionViewSource cvs = new CollectionViewSource { Source = People, IsLiveFilteringRequested = true, LiveFilteringProperties = { "Type" } };
+                    cvs.View.Filter = p => ((Person)p).Type == PersonType.Zeneteamtag;
+                    cvs.View.CollectionChanged += EmptyEventHandler;
+                    zeneteam = cvs.View;
+                }
+                return zeneteam;
             }
         }
         public Person Zeneteamvezeto
@@ -248,8 +282,6 @@ namespace AntiBonto.ViewModel
                 RaisePropertyChanged();
                 RaisePropertyChanged("Fiuvezeto");
                 RaisePropertyChanged("Lanyvezeto");
-                RaisePropertyChanged("ReadyForAction");
-
             }
         }
         public Person Fiuvezeto
@@ -265,7 +297,6 @@ namespace AntiBonto.ViewModel
                 value.Type = PersonType.Fiuvezeto;
                 RaisePropertyChanged();
                 RaisePropertyChanged("Zeneteamvezeto");
-                RaisePropertyChanged("ReadyForAction");
             }
         }
         public Person Lanyvezeto
@@ -281,25 +312,18 @@ namespace AntiBonto.ViewModel
                 value.Type = PersonType.Lanyvezeto;
                 RaisePropertyChanged();
                 RaisePropertyChanged("Zeneteamvezeto");
-                RaisePropertyChanged("ReadyForAction");
             }
         }
-        public ICollectionView Kiscsoport(int i)
-        {
-            CollectionViewSource cvs = new CollectionViewSource { Source = People, IsLiveFilteringRequested = true, LiveFilteringProperties = { "Kiscsoport", "Type"} };
-            cvs.View.Filter = p => ((Person)p).Kiscsoport == i && ((Person)p).Type != PersonType.Egyeb;
-            cvs.View.CollectionChanged += EmptyEventHandler;
-            return cvs.View;
-        }
+        private List<ICollectionView> kiscsoportok = new List<ICollectionView>();
         public ICollectionView[] Kiscsoportok
         {
-            get { return Enumerable.Range(0, Kiscsoportvezetok.Cast<Person>().Count()).Select(i => Kiscsoport(i)).ToArray(); }
+            get { return kiscsoportok.ToArray(); }
         }
-        public ICollectionView NoKiscsoport { get { return Kiscsoport(-1); } }
-        private ObservableCollection2<Edge> edges = new ObservableCollection2<Edge>();
+        public ICollectionView NoKiscsoport { get { return nokiscsoport; } }
+        private ObservableCollection2<Edge> edges;
         public ObservableCollection2<Edge> Edges
         {
-            get { return edges; }
+            get { return edges ?? (edges = new ObservableCollection2<Edge>()); }
             private set { edges = value; RaisePropertyChanged(); }
         }
         private Edge edge;
@@ -321,5 +345,11 @@ namespace AntiBonto.ViewModel
             get { return status; }
             set { status = value; RaisePropertyChanged(); }
         }
+        /// <summary>
+        /// Adding this seems to fix a bug (see http://stackoverflow.com/questions/37394151), although I have no idea why
+        /// </summary>
+        private void EmptyEventHandler(object sender, NotifyCollectionChangedEventArgs e)
+        { }
+
     }
 }
