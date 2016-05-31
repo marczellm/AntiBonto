@@ -1,0 +1,118 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<asmv1:assembly xsi:schemaLocation="urn:schemas-microsoft-com:asm.v1 assembly.adaptive.xsd" manifestVersion="1.0" xmlns:asmv1="urn:schemas-microsoft-com:asm.v1" xmlns="urn:schemas-microsoft-com:asm.v2" xmlns:asmv2="urn:schemas-microsoft-com:asm.v2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:co.v1="urn:schemas-microsoft-com:clickonce.v1" xmlns:asmv3="urn:schemas-microsoft-com:asm.v3" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" xmlns:co.v2="urn:schemas-microsoft-com:clickonce.v2">
+  <asmv1:assemblyIdentity name="AntiBonto.exe" version="1.0.0.0" publicKeyToken="9b400be73d8305e3" language="neutral" processorArchitecture="msil" type="win32" />
+  <application />
+  <entryPoint>
+    <assemblyIdentity name="AntiBonto" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
+    <commandLine file="AntiBonto.exe" parameters="" />
+  </entryPoint>
+  <trustInfo>
+    <security>
+      <applicationRequestMinimum>
+        <PermissionSet version="1" class="System.Security.NamedPermissionSet" Name="LocalIntranet" Description="Default rights given to applications on the local intranet" Unrestricted="true" ID="Custom" SameSite="site" />
+        <defaultAssemblyRequest permissionSetReference="Custom" />
+      </applicationRequestMinimum>
+      <requestedPrivileges xmlns="urn:schemas-microsoft-com:asm.v3">
+        <!-- UAC Manifest Options
+             If you want to change the Windows User Account Control level replace the 
+             requestedExecutionLevel node with one of the following.
+
+        <requestedExecutionLevel  level="asInvoker" uiAccess="false" />
+        <requestedExecutionLevel  level="requireAdministrator" uiAccess="false" />
+        <requestedExecutionLevel  level="highestAvailable" uiAccess="false" />
+
+            Specifying requestedExecutionLevel element will disable file and registry virtualization. 
+            Remove this element if your application requires this virtualization for backwards
+            compatibility.
+        -->
+        <requestedExecutionLevel level="asInvoker" uiAccess="false" />
+      </requestedPrivileges>
+    </security>
+  </trustInfo>
+  <dependency>
+    <dependentOS>
+      <osVersionInfo>
+        <os majorVersion="5" minorVersion="1" buildNumber="2600" servicePackMajor="0" />
+      </osVersionInfo>
+    </dependentOS>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="preRequisite" allowDelayedBinding="true">
+      <assemblyIdentity name="Microsoft.Windows.CommonLanguageRuntime" version="4.0.30319.0" />
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="AntiBonto.exe" size="156072">
+      <assemblyIdentity name="AntiBonto" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>poy8YL9NjBXAoz/6VA/AyWqOWD/EO2DAkg9dEE7ArC8=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="GongSolutions.Wpf.DragDrop.dll" size="65024">
+      <assemblyIdentity name="GongSolutions.Wpf.DragDrop" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>sAtMRRLh47AEGjvuWE8WMTJdY8JSrpwEg1hlu6gVk6E=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Hammer.SpinningWheel.dll" size="12288">
+      <assemblyIdentity name="Hammer.SpinningWheel" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>Mu4eCm0OctuHZowyuaFMdEvislGamonvaCdg48Yw4yc=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="MoreLinq.dll" size="64512">
+      <assemblyIdentity name="MoreLinq" version="1.4.18916.0" publicKeyToken="384D532D7E88985D" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>rlN/uG+0KZI+clANuh77D1fNmL8EyMVUOAfDOzPZ76Q=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <file name="AntiBonto.exe.config" size="189">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>6N7MliNbVJSIAIPrecIshMbZ7zEoKLr5SQvud4LDUOw=</dsig:DigestValue>
+    </hash>
+  </file>
+  <compatibility xmlns="urn:schemas-microsoft-com:compatibility.v1">
+    <application>
+      <!-- A list of the Windows versions that this application has been tested on and is
+           is designed to work with. Uncomment the appropriate elements and Windows will 
+           automatically selected the most compatible environment. -->
+      <!-- Windows Vista -->
+      <!--<supportedOS Id="{e2011457-1546-43c5-a5fe-008deee3d3f0}" />-->
+      <!-- Windows 7 -->
+      <!--<supportedOS Id="{35138b9a-5d96-4fbd-8e2d-a2440225f93a}" />-->
+      <!-- Windows 8 -->
+      <!--<supportedOS Id="{4a2f28e3-53b9-4441-ba9c-d69d4a4a6e38}" />-->
+      <!-- Windows 8.1 -->
+      <!--<supportedOS Id="{1f676c76-80e1-4239-95bb-83d0f6d0da78}" />-->
+      <!-- Windows 10 -->
+      <!--<supportedOS Id="{8e0f7a12-bfb3-4fe8-b9a5-48fd50a15a9a}" />-->
+    </application>
+  </compatibility>
+<publisherIdentity name="CN=Marci\Márton" issuerKeyHash="b35dc50757826320904a36fe3527bc4825249382" /><Signature Id="StrongNameSignature" xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha256" /><Reference URI=""><Transforms><Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" /><Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" /><DigestValue>5j2Zj0nZw10DFL7KpymNdmXzxoyUdRLsjnM8SUanaSk=</DigestValue></Reference></SignedInfo><SignatureValue>Kxh3qaNgZf5ftTtDux5T7JfN4ORxEChVlZM9VUyZhTCAmTsAmd5FGHOCqgD7qxzEG9/Kvz8H86iTMQJf3prnncsPb+4bqPeZA14upz+p89KrZ8DMNzSg9CKtSQa1zFjv15RTCKhbbZExkzXpzbdU71ZKex5zdp9JWYiz8/WLjfo=</SignatureValue><KeyInfo Id="StrongNameKeyInfo"><KeyValue><RSAKeyValue><Modulus>mFPNqJLcsQEmqnE2efsJd6EWfJzH1M4ZW/qKg10iLlqMH7d36E9yNj/wQWHOuqZW0t8+DbgcMJ6aJ9dQimCCy65qdIRpJ/X3uCyysOvbCY15KQc+vWD0/7pJelwMiCLdcXydI/XFKWm0JtIQ0ws1Vg5sCmEiwn8enUsm32aYdv0=</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><msrel:RelData xmlns:msrel="http://schemas.microsoft.com/windows/rel/2005/reldata"><r:license xmlns:r="urn:mpeg:mpeg21:2003:01-REL-R-NS" xmlns:as="http://schemas.microsoft.com/windows/pki/2005/Authenticode"><r:grant><as:ManifestInformation Hash="2969a746493c738eec1275948cc6f365768d29a7cabe14035dc3d9498f993de6" Description="" Url=""><as:assemblyIdentity name="AntiBonto.exe" version="1.0.0.0" publicKeyToken="9b400be73d8305e3" language="neutral" processorArchitecture="msil" type="win32" /></as:ManifestInformation><as:SignedBy /><as:AuthenticodePublisher><as:X509SubjectName>CN=Marci\Márton</as:X509SubjectName></as:AuthenticodePublisher></r:grant><r:issuer><Signature Id="AuthenticodeSignature" xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha256" /><Reference URI=""><Transforms><Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" /><Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" /><DigestValue>LDn7R2IkDsoQENVVexHfiFhy9ksrVY2gQGifBNQXTb4=</DigestValue></Reference></SignedInfo><SignatureValue>GL0R8RMX5tkRSusXY0Maq8scakwl7a+frYIQzBMTye3rAiIUN22VOTu3hVaxALsOksyfbua3oD6AwRFYk+arhTJ0raj9uG8Jv9EDS2wx8yX1bD9NCSe177MHv/T/6ZRz4xVyOLOnjMVEnxUR9FTZ7AQxSDhkTPYnZdWAZMeRLT0=</SignatureValue><KeyInfo><KeyValue><RSAKeyValue><Modulus>mFPNqJLcsQEmqnE2efsJd6EWfJzH1M4ZW/qKg10iLlqMH7d36E9yNj/wQWHOuqZW0t8+DbgcMJ6aJ9dQimCCy65qdIRpJ/X3uCyysOvbCY15KQc+vWD0/7pJelwMiCLdcXydI/XFKWm0JtIQ0ws1Vg5sCmEiwn8enUsm32aYdv0=</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><X509Data><X509Certificate>MIIByTCCATKgAwIBAgIQGKTUO2x0FbZILtEHbNtY1TANBgkqhkiG9w0BAQsFADAjMSEwHwYDVQQDHhgATQBhAHIAYwBpAFwATQDhAHIAdABvAG4wHhcNMTYwNTMxMTEyNDI3WhcNMTcwNTMxMTcyNDI3WjAjMSEwHwYDVQQDHhgATQBhAHIAYwBpAFwATQDhAHIAdABvAG4wgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBAJhTzaiS3LEBJqpxNnn7CXehFnycx9TOGVv6ioNdIi5ajB+3d+hPcjY/8EFhzrqmVtLfPg24HDCemifXUIpggsuuanSEaSf197gssrDr2wmNeSkHPr1g9P+6SXpcDIgi3XF8nSP1xSlptCbSENMLNVYObAphIsJ/Hp1LJt9mmHb9AgMBAAEwDQYJKoZIhvcNAQELBQADgYEABYIGlVWz5CBvp1jQ0IR2bJZjNANfjT2tnbFaxcrgsepwS786JRkCaAUJzN87Xe+R6glClTe02FlRz7rIDBDRuZbTNlsoP11Up1SDPOVW9UGGdaWNf24PTwxdNHbKawGlVcRrBSwz4r0zBa70aGHAS2c6UBTyLc6Kwo9f2oemG8E=</X509Certificate></X509Data></KeyInfo></Signature></r:issuer></r:license></msrel:RelData></KeyInfo></Signature></asmv1:assembly>
