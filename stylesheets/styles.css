@@ -220,6 +220,7 @@ header ul li + li + li {
 header ul a strong {
   font-size:14px;
   display:block;
+  padding-top:2px;
   color:#222;
 }
 
