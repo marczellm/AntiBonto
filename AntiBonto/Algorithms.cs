@@ -167,6 +167,7 @@ namespace AntiBonto
                             else
                                 RecursiveSet(p, options.MinBy(i => d.Kiscsoport(i).Count()));
                         }
+                    Renumber();
                     kesz = true;
                 }
                 catch (InvalidOperationException) // Nincs olyan kiscsoport, ahova be lehetne tenni => elölről kezdjük
@@ -185,6 +186,42 @@ namespace AntiBonto
             }
 
             return kesz;
+        }
+
+        /// <summary>
+        /// Renumbers the share groups so that the weekend leaders and the music team leader are in the groups with the lowest number
+        /// </summary>
+        private void Renumber()
+        {
+            int l = d.Lanyvezeto.Kiscsoport;
+            foreach (Person p in d.Kiscsoport(l).ToList())
+                p.Kiscsoport = -l - 2;
+            foreach (Person p in d.Kiscsoport(0).ToList())
+                p.Kiscsoport = l;
+            foreach (Person p in d.Kiscsoport(-l - 2).ToList())
+                p.Kiscsoport = 0;
+
+            int f = d.Fiuvezeto.Kiscsoport;
+            if (f != l)
+            {
+                foreach (Person p in d.Kiscsoport(f).ToList())
+                    p.Kiscsoport = -f - 2;
+                foreach (Person p in d.Kiscsoport(1).ToList())
+                    p.Kiscsoport = f;
+                foreach (Person p in d.Kiscsoport(-f - 2).ToList())
+                    p.Kiscsoport = 1;
+            }
+
+            int z = d.Zeneteamvezeto.Kiscsoport;
+            if (z != l && z != f)
+            {
+                foreach (Person p in d.Kiscsoport(z).ToList())
+                    p.Kiscsoport = -z - 2;
+                foreach (Person p in d.Kiscsoport(2).ToList())
+                    p.Kiscsoport = z;
+                foreach (Person p in d.Kiscsoport(-z - 2).ToList())
+                    p.Kiscsoport = 2;
+            }
         }
     }
 }

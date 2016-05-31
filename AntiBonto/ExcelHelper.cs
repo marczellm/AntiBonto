@@ -96,9 +96,9 @@ namespace AntiBonto
                     c[i, 3] = p.Nickname;
                     c[i, 4] = (int) p.Type;
                     if (p.Type != PersonType.Egyeb)
-                        c[i, 5] = p.Kiscsoport;
+                        c[i, 5] = p.Kiscsoport + 1;
                     if (p.Kiscsoportvezeto)
-                        c[i, 6] = p.Kiscsoport;
+                        c[i, 6] = p.Kiscsoport + 1;
                     i++;
                 }
             }
