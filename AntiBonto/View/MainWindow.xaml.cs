@@ -62,6 +62,7 @@ namespace AntiBonto
                     catch { } // If for example the XML is written by a previous version of this app, we shouldn't attempt to load it
                 }
             }
+            Console.WriteLine("MainWindow loaded");
         }
 
         private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -219,10 +220,7 @@ namespace AntiBonto
 
         private async void Magic(object sender, RoutedEventArgs e)
         {
-            viewModel.Status = "";
-            if (viewModel.MaxAgeDifference < 8
-                && MessageBox.Show("8-nál kisebb maximális korkülönbséget állítottál be. Végtelen sokáig tarthat a beosztás. Akarod folytatni?", "", MessageBoxButton.YesNo) == MessageBoxResult.No)
-                    return;
+            viewModel.Status = "";            
             LoadingAnimation2.Visibility = Visibility.Visible;
             var alg = viewModel.Algorithm;
             var btn = (Button)sender;
@@ -246,6 +244,13 @@ namespace AntiBonto
             btn.Click -= handler;
             btn.Click += Magic;
             btn.Content = oldContent;            
+        }
+
+        private void ClearGroups(object sender, RoutedEventArgs e)
+        {
+            foreach (Person p in viewModel.KiscsoportbaOsztando)
+                if (!p.Kiscsoportvezeto)
+                    p.Kiscsoport = -1;
         }
     }
 }

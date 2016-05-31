@@ -130,7 +130,7 @@
                     <Label DockPanel.Dock="Left" Content="Megkötések a kiscsoportbeosztáshoz"/>
                     <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
                         <Label Content="Legnagyobb megengedett korkülönbség"/>
-                        <TextBox MinWidth="20" ToolTip="Sajnos 8-nál kisebbet nem érdemes megadni">
+                        <TextBox MinWidth="20">
                             <TextBox.Text>
                                 <Binding Path="MaxAgeDifference">
                                     <Binding.ValidationRules>
@@ -190,10 +190,11 @@
         </TabItem>
         <TabItem Header="6. Kiscsoportbeosztás" Name="Kiscsoportbeoszto">
             <DockPanel>
-                <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
-                    <Button Content="Auto" Padding="5" Click="Magic"/>
-                    <hammer:SpinningWheel Radius="9" CircleRadius="2.5" Visibility="Hidden" Name="LoadingAnimation2"  Margin="20,0,0,0"/>
-                </StackPanel>
+                <DockPanel DockPanel.Dock="Top" LastChildFill="False" Width="Auto">
+                    <Button Content="Auto" Padding="5" Click="Magic" DockPanel.Dock="Left"/>
+                    <hammer:SpinningWheel Radius="9" CircleRadius="2.5" Visibility="Hidden" Name="LoadingAnimation2" Margin="20,0,0,0" DockPanel.Dock="Left"/>
+                    <Button Content="Törlés" Padding="5" Click="ClearGroups" DockPanel.Dock="Right"/>
+                </DockPanel>
                 <StatusBar DockPanel.Dock="Bottom">
                     <StatusBarItem Content="{Binding Status}" MinHeight="22"/>
                 </StatusBar>

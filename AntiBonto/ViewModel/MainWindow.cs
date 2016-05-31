@@ -70,6 +70,11 @@ namespace AntiBonto.ViewModel
                 dropInfo.Effects = (kcsn != p.Kiscsoport && Algorithm.Conflicts(p, kcsn, out message)) ? DragDropEffects.None : DragDropEffects.Move;
                 Status = message;
             }
+            else if (target.Name.Contains("kcs") && p.Kiscsoportvezeto)
+            {
+                dropInfo.Effects = DragDropEffects.None;
+                Status = "A kiscsoportvezetők nem mozgathatók!";
+            }
             else
                 dropInfo.Effects = DragDropEffects.Move;
         }
@@ -126,17 +131,13 @@ namespace AntiBonto.ViewModel
         {
             if (kiscsoportInited)
                 return;
-            for (int i = 0; i < 15; i++)
-            {
-                CollectionViewSource cvs = new CollectionViewSource { Source = People, IsLiveFilteringRequested = true, LiveFilteringProperties = { "Kiscsoport" } };
-                cvs.View.Filter = p => ((Person)p).Kiscsoport == i;
-                cvs.View.CollectionChanged += EmptyEventHandler;
-                kiscsoportok.Add(cvs.View);
-            }
+            kiscsoportok = Enumerable.Range(0, 15).Select(i => KiscsoportCollectionView(i)).ToList();
+            
             CollectionViewSource cvss = new CollectionViewSource { Source = People, IsLiveFilteringRequested = true, LiveFilteringProperties = { "Kiscsoport", "Type" } };
             cvss.View.Filter = p => ((Person)p).Kiscsoport == -1 && ((Person)p).Type != PersonType.Egyeb;
             cvss.View.CollectionChanged += EmptyEventHandler;
             nokiscsoport = cvss.View;
+
             kiscsoportInited = true;
             RaisePropertyChanged("Kiscsoportok");
             RaisePropertyChanged("NoKiscsoport");
@@ -314,7 +315,14 @@ namespace AntiBonto.ViewModel
                 RaisePropertyChanged("Zeneteamvezeto");
             }
         }
-        private List<ICollectionView> kiscsoportok = new List<ICollectionView>();
+        private List<ICollectionView> kiscsoportok;
+        private ICollectionView KiscsoportCollectionView(int i)
+        {
+            CollectionViewSource cvs = new CollectionViewSource { Source = People, IsLiveFilteringRequested = true, LiveFilteringProperties = { "Kiscsoport" } };
+            cvs.View.Filter = p => ((Person)p).Kiscsoport == i;
+            cvs.View.CollectionChanged += EmptyEventHandler;
+            return cvs.View;
+        }
         public List<ICollectionView> Kiscsoportok
         {
             get { return kiscsoportok; }
