@@ -23,7 +23,7 @@
                 <DockPanel DockPanel.Dock="Top" LastChildFill="False">
                     <Label DockPanel.Dock="Left" Content="Vedd fel a résztvevőket!"/>
                     <Button Content="Excel fájl betöltése" Click="LoadXLS" Padding="5" Name="OnlyButton" DockPanel.Dock="Left"/>
-                    <hammer:SpinningWheel Radius="9" CircleRadius="2.5" Visibility="Hidden" Name="LoadingAnimation" DockPanel.Dock="Left" Margin="20,0,0,0"/>
+                    <hammer:SpinningWheel Radius="9" CircleRadius="2.5" Visibility="Hidden" Name="XLSLoadingAnimation" DockPanel.Dock="Left" Margin="20,0,0,0"/>
                     <Button Content="Törlés" DockPanel.Dock="Right" Click="Reset" Padding="5"/>
                 </DockPanel>
                 <Label Target="{Binding ElementName=PeopleView}" Content="Résztvevők" DockPanel.Dock="Top"/>
@@ -191,9 +191,11 @@
         <TabItem Header="6. Kiscsoportbeosztás" Name="Kiscsoportbeoszto">
             <DockPanel>
                 <DockPanel DockPanel.Dock="Top" LastChildFill="False" Width="Auto">
-                    <Button Content="Auto" Padding="5" Click="Magic" DockPanel.Dock="Left"/>
-                    <hammer:SpinningWheel Radius="9" CircleRadius="2.5" Visibility="Hidden" Name="LoadingAnimation2" Margin="20,0,0,0" DockPanel.Dock="Left"/>
-                    <Button Content="Törlés" Padding="5" Click="ClearGroups" DockPanel.Dock="Right"/>
+                    <Button Content="Magic" Padding="5" Click="Magic" DockPanel.Dock="Left"/>
+                    <hammer:SpinningWheel Radius="9" CircleRadius="2.5" Visibility="Hidden" Name="MagicAnimation" Margin="20,0,0,0" DockPanel.Dock="Left"/>
+                    <hammer:SpinningWheel Radius="9" CircleRadius="2.5" Visibility="Hidden" Name="XLSSavingAnimation" Margin="20,0,20,0" DockPanel.Dock="Right"/>
+                    <Button Content="Mentés" Padding="5" Margin="5,0,0,0" Click="SaveXLS" DockPanel.Dock="Right"/>
+                    <Button Content="Törlés" Padding="5" Click="ClearGroups" DockPanel.Dock="Right"/>                    
                 </DockPanel>
                 <StatusBar DockPanel.Dock="Bottom">
                     <StatusBarItem Content="{Binding Status}" MinHeight="22"/>

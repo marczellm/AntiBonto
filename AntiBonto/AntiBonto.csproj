@@ -97,9 +97,9 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Edge.cs" />
+    <Compile Include="ViewModel\Edge.cs" />
     <Compile Include="ExcelHelper.cs" />
-    <Compile Include="Person.cs" />
+    <Compile Include="ViewModel\Person.cs" />
     <Compile Include="ViewModel\MainWindow.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />
     <Compile Include="View\BoolToFontWeightConverter.cs" />
@@ -129,6 +129,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <Resource Include="Resources\hetvegekezelo.xlsm" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>

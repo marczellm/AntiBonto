@@ -27,6 +27,7 @@ namespace AntiBonto
     public class Person: ViewModelBase
     {
         public string Name { get; set; }
+        public string Nickname { get; set; }
 
         private int _birthYear = DateTime.Now.Year;
         public int BirthYear

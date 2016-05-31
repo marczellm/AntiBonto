@@ -1,6 +1,7 @@
 ﻿using Microsoft.Office.Interop.Excel;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace AntiBonto
@@ -8,9 +9,11 @@ namespace AntiBonto
     public class ExcelHelper
     {
         /// <summary>
-        /// Háttérben megnyitja az Excelt és kiolvassa a résztvevők adatait.
+        /// Opens Excel in the background and reads available data about attendants.
+        /// 
+        /// Does not use OpenXML SDK because this way we can support the old binary formats too.
         /// </summary>
-        /// <returns>a beolvasott emberek listáját</returns>
+        /// <returns>a list of people</returns>
         public static List<Person> LoadXLS(string filename)
         {
             var excel = new Microsoft.Office.Interop.Excel.Application();
@@ -24,7 +27,6 @@ namespace AntiBonto
                  col1 = range.Columns[1],
                  col2 = range.Columns[2];
                 List<Person> ppl = new List<Person>();
-                var r = new Random();
                 foreach (string val in col1.Value)
                     ppl.Add(new Person { Name = val });
                 if (col1.Count == col2.Count)
@@ -36,13 +38,19 @@ namespace AntiBonto
                 ppl.RemoveAll(s => String.IsNullOrWhiteSpace(s.Name));
                 if (isHVKezelo)
                 {
-                    Range col4 = range.Columns[4];
                     int i = 0;
-                    foreach (var s in col4.Value)
+                    foreach (var s in range.Columns[3].Value)
                     {
                         if (i >= ppl.Count)
                             break;
-                        int x=0;
+                        ppl[i++].Nickname = s;
+                    }
+                    i = 0;
+                    foreach (var s in range.Columns[4].Value)
+                    {
+                        if (i >= ppl.Count)
+                            break;
+                        int x = 0;
                         if (s is string)
                             Int32.TryParse(s, out x);
                         else if (s is double || s is int)
@@ -60,5 +68,45 @@ namespace AntiBonto
                 excel.Quit();
             }
         }
+
+        public static void SaveXLS(string filename, IEnumerable<Person> people)
+        {
+            Uri uri = new Uri("/Resources/hetvegekezelo.xlsm", UriKind.Relative);
+
+            using (var stream = System.Windows.Application.GetResourceStream(uri).Stream)
+            using (var f = File.Create(filename))
+            {
+                stream.CopyTo(f);
+            }
+            var excel = new Microsoft.Office.Interop.Excel.Application { Visible = true };
+            Workbook file = excel.Workbooks.Open(filename);
+            try
+            {
+                Worksheet sheet = file.Worksheets["Alapadatok"];
+                sheet.Activate();
+                sheet.Unprotect();
+                Range c = sheet.Cells;
+                int i = 2;
+                foreach (Person p in people)
+                {
+                    c[i, 1].Activate();
+                    string[] nev = p.Name.Split(new Char[] { ' ' }, 2);
+                    c[i, 1] = nev[0];
+                    c[i, 2] = nev[1];
+                    c[i, 3] = p.Nickname;
+                    c[i, 4] = (int) p.Type;
+                    if (p.Type != PersonType.Egyeb)
+                        c[i, 5] = p.Kiscsoport;
+                    if (p.Kiscsoportvezeto)
+                        c[i, 6] = p.Kiscsoport;
+                    i++;
+                }
+            }
+            finally
+            {
+                file.Save();
+            }
+        }
     }
 }
+

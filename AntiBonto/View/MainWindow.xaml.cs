@@ -86,7 +86,7 @@ namespace AntiBonto
                 MessageBox.Show("Excel nincs telepítve!");
                 return;
             }
-            LoadingAnimation.Visibility = Visibility.Visible;
+            XLSLoadingAnimation.Visibility = Visibility.Visible;
             var dialog = new OpenFileDialog
             {
                 Filter = "Excel|*.xls;*.xlsx;*.xlsm",
@@ -100,7 +100,7 @@ namespace AntiBonto
                 viewModel.People.Clear();
                 viewModel.People.AddRange(ExcelHelper.LoadXLS(dialog.FileName));
             }
-            LoadingAnimation.Visibility = Visibility.Hidden;
+            XLSLoadingAnimation.Visibility = Visibility.Hidden;
         }
 
         /// <summary>
@@ -221,7 +221,7 @@ namespace AntiBonto
         private async void Magic(object sender, RoutedEventArgs e)
         {
             viewModel.Status = "";            
-            LoadingAnimation2.Visibility = Visibility.Visible;
+            MagicAnimation.Visibility = Visibility.Visible;
             var alg = viewModel.Algorithm;
             var btn = (Button)sender;
             btn.Click -= Magic;
@@ -240,7 +240,7 @@ namespace AntiBonto
                 }
                 catch (AggregateException) { }
             }
-            LoadingAnimation2.Visibility = Visibility.Collapsed;
+            MagicAnimation.Visibility = Visibility.Collapsed;
             btn.Click -= handler;
             btn.Click += Magic;
             btn.Content = oldContent;            
@@ -251,6 +251,28 @@ namespace AntiBonto
             foreach (Person p in viewModel.KiscsoportbaOsztando)
                 if (!p.Kiscsoportvezeto)
                     p.Kiscsoport = -1;
+        }
+        private void SaveXLS(object sender, RoutedEventArgs e)
+        {
+            if (Type.GetTypeFromProgID("Excel.Application") == null)
+            {
+                MessageBox.Show("Excel nincs telepítve!");
+                return;
+            }
+            XLSSavingAnimation.Visibility = Visibility.Visible;
+            var dialog = new SaveFileDialog
+            {
+                DefaultExt = ".xlsm",
+                Filter = "Excel|*.xls;*.xlsx;*.xlsm",
+                DereferenceLinks = true,
+                AddExtension = true,
+                CheckPathExists = true
+            };
+            if (dialog.ShowDialog(this) == true)
+            {
+                ExcelHelper.SaveXLS(dialog.FileName, viewModel.People);
+            }
+            XLSSavingAnimation.Visibility = Visibility.Hidden;
         }
     }
 }
