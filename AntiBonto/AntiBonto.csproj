@@ -15,7 +15,7 @@
     <WarningLevel>4</WarningLevel>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <IsWebBootstrapper>true</IsWebBootstrapper>
-    <PublishUrl>publish\</PublishUrl>
+    <PublishUrl>ftp://ftp.virtualpro.hu/htdocs/wp-content/uploads/AntiBonto/</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
@@ -25,7 +25,7 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>https://cdn.rawgit.com/marczellm/AntiBonto/master/AntiBonto/publish/publish.htm/</InstallUrl>
+    <InstallUrl>http://www.antiochia.hu/wp-content/uploads/AntiBonto/</InstallUrl>
     <ProductName>AntiBonto</ProductName>
     <PublisherName>Marczell Márton</PublisherName>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
