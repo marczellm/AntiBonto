@@ -143,9 +143,9 @@
                     </StackPanel>
                 </DockPanel>
                 <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
-                    <ComboBox ItemsSource="{Binding KiscsoportbaOsztando}" IsEditable="False" SelectedItem="{Binding Edge.Persons[0]}" MinWidth="100"/>
+                    <ComboBox ItemsSource="{Binding KiscsoportbaOsztando}" IsEditable="False" SelectedValue="{Binding Edge.Persons[0]}" MinWidth="100" IsSynchronizedWithCurrentItem="False"/>
                     <Label Content=" és "/>
-                    <ComboBox ItemsSource="{Binding KiscsoportbaOsztando}" IsEditable="False" SelectedItem="{Binding Edge.Persons[1]}" MinWidth="100"/>
+                    <ComboBox ItemsSource="{Binding KiscsoportbaOsztando}" IsEditable="False" SelectedValue="{Binding Edge.Persons[1]}" MinWidth="100" IsSynchronizedWithCurrentItem="False"/>
                     <ComboBox IsEditable="False" SelectedValue="{Binding Edge.Dislike}" SelectedValuePath="Tag" MinWidth="100" Margin="5,0,0,0">
                         <ComboBox.Items>
                             <ComboBoxItem Content="együtt kell legyenek" Tag="False"/>

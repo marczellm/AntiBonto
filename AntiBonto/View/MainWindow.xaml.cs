@@ -138,8 +138,11 @@ namespace AntiBonto
 
         private void AddEdge(object sender, RoutedEventArgs e)
         {
-            viewModel.Edges.Add(viewModel.Edge);
-            viewModel.Edge = new Edge();
+            if (viewModel.Edge.Persons[0] != viewModel.Edge.Persons[1])
+            {
+                viewModel.Edges.Add(viewModel.Edge);
+                viewModel.Edge = new Edge();
+            }
         }
 
         private void RemoveEdge(object sender, RoutedEventArgs e)
