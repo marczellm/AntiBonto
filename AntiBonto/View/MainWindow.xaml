@@ -51,7 +51,7 @@
                         <ColumnDefinition/>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
-                    <Label Grid.Row="2" Grid.Column="0" Content="Kiscsoportvezetők"/>
+                    <Label Grid.Row="2" Grid.Column="0" Content="Kiscsoportvezetők (max. 12)"/>
                     <Label                              Content="Lány vezető"/>
                     <Label Grid.Column="1"              Content="Fiú vezető"/>
                     <Label Grid.Column="3" Grid.Row="2" Content="Zeneteamvezető"/>
