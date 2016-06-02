@@ -52,24 +52,25 @@
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
                     <Label Grid.Row="2" Grid.Column="0" Content="Kiscsoportvezetők"/>
-                    <Label Content="Lány vezető"/>
-                    <Label Grid.Column="1" Content="Fiú vezető"/>
+                    <Label                              Content="Lány vezető"/>
+                    <Label Grid.Column="1"              Content="Fiú vezető"/>
                     <Label Grid.Column="3" Grid.Row="2" Content="Zeneteamvezető"/>
                     <Label Grid.Row="4" Grid.Column="0" Content="Újoncok"/>
                     <Label Grid.Row="4" Grid.Column="1" Content="Team"/>
                     <Label Grid.Row="4" Grid.Column="2" Content="Egyéb résztvevők"/>
                     <Label Grid.Row="4" Grid.Column="3" Content="Zeneteam"/>
                     <view:DnDItemsControl Grid.Row="3" Grid.Column="0" ItemsSource="{Binding Kiscsoportvezetok}" Margin="5" dd:DragDrop.DropHandler="{Binding}" x:Name="Kiscsoportvezetok" Grid.ColumnSpan="3"/>
-                    <Label                Grid.Row="1" Content="{Binding Lanyvezeto}"                            Margin="5" Padding="3" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
-                                                                                                                 dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding}" x:Name="Lanyvezeto"/>
-                    <Label                Grid.Row="1" Grid.Column="1" Content="{Binding Fiuvezeto}"             Margin="5" Padding="3" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
-                                                                                                                 dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding}" x:Name="Fiuvezeto"/>
-                    <Label                Grid.Row="3" Grid.Column="3" Content="{Binding Zeneteamvezeto}"        Margin="5" Padding="3" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
-                                                                                                                 dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding}" x:Name="Zeneteamvezeto"/>
                     <view:DnDItemsControl Grid.Row="5" Grid.Column="0" ItemsSource="{Binding Ujoncok}"           Margin="5" dd:DragDrop.DropHandler="{Binding}" x:Name="Ujoncok"/>
                     <view:DnDItemsControl Grid.Row="5" Grid.Column="1" ItemsSource="{Binding Team}"              Margin="5" dd:DragDrop.DropHandler="{Binding}" x:Name="Team"/>
                     <view:DnDItemsControl Grid.Row="5" Grid.Column="3" ItemsSource="{Binding Zeneteam}"          Margin="5" dd:DragDrop.DropHandler="{Binding}" x:Name="Zeneteam"/>
                     <view:DnDItemsControl Grid.Row="5" Grid.Column="2" ItemsSource="{Binding Egyeb}"             Margin="5" dd:DragDrop.DropHandler="{Binding}" x:Name="Egyeb"/>
+                    <Label Grid.Row="1" Content="{Binding Lanyvezeto}" x:Name="Lanyvezeto" Margin="5" Padding="3" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+                           dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding}" dd:DragDrop.DragAdornerTemplate="{StaticResource adorner}"/>
+                    <Label Grid.Row="1" Grid.Column="1" Content="{Binding Fiuvezeto}" x:Name="Fiuvezeto" Margin="5" Padding="3" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+                           dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding}" dd:DragDrop.DragAdornerTemplate="{StaticResource adorner}"/>
+                    <Label Grid.Row="3" Grid.Column="3" Content="{Binding Zeneteamvezeto}" x:Name="Zeneteamvezeto" Margin="5" Padding="3" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+                           dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding}" dd:DragDrop.DragAdornerTemplate="{StaticResource adorner}"/>
+
                 </Grid>
             </DockPanel>
         </TabItem>

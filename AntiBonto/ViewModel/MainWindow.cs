@@ -60,6 +60,11 @@ namespace AntiBonto.ViewModel
         {
             dropInfo.DropTargetAdorner = null;
             var target = (FrameworkElement) dropInfo.VisualTarget;
+            if (!(dropInfo.Data is Person))
+            {
+                dropInfo.Effects = DragDropEffects.None;
+                return;
+            }
             var p = (Person)dropInfo.Data;
             if (p.Nem == Nem.Fiu && target.Name == "Lanyvezeto" || p.Nem == Nem.Lany && target.Name == "Fiuvezeto")
                 dropInfo.Effects = DragDropEffects.None;
