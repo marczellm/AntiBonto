@@ -41,7 +41,11 @@ namespace AntiBonto.ViewModel
         public bool PeopleNotEmpty
         {
             get { return People.Count() != 0; }
-        }       
+        }
+        public bool BeosztasKesz
+        {
+            get { return !Kiscsoport(-1).Any(); }
+        }
         /// <summary>
         /// So we need to keep them up to date
         /// </summary>
@@ -114,6 +118,12 @@ namespace AntiBonto.ViewModel
                 p.Kiscsoport = Int32.Parse(target.Name.Remove(0, 3)) - 1;
             if (target.Name == "nokcs")
                 p.Kiscsoport = -1;
+            if (target.Name == "Ujoncok" || target.Name == "Egyeb")
+            {
+                RaisePropertyChanged("Fiuvezeto");
+                RaisePropertyChanged("Lanyvezeto");
+                RaisePropertyChanged("Zeneteamvezeto");
+            }
         }
         private ObservableCollection2<Person> people;
         public ObservableCollection2<Person> People
@@ -141,10 +151,9 @@ namespace AntiBonto.ViewModel
                 return;
             kiscsoportok = Enumerable.Range(0, 15).Select(i => KiscsoportCollectionView(i)).ToList();
             
-            CollectionViewSource cvss = new CollectionViewSource { Source = People, IsLiveFilteringRequested = true, LiveFilteringProperties = { "Kiscsoport", "Type" } };
-            cvss.View.Filter = p => ((Person)p).Kiscsoport == -1 && ((Person)p).Type != PersonType.Egyeb;
-            cvss.View.CollectionChanged += EmptyEventHandler;
-            nokiscsoport = cvss.View;
+            nokiscsoport = KiscsoportCollectionView(-1);
+            nokiscsoport.CollectionChanged -= EmptyEventHandler;
+            nokiscsoport.CollectionChanged += (s, e) => RaisePropertyChanged("BeosztasKesz");
 
             kiscsoportInited = true;
             RaisePropertyChanged("Kiscsoportok");
@@ -326,8 +335,8 @@ namespace AntiBonto.ViewModel
         private List<ICollectionView> kiscsoportok;
         private ICollectionView KiscsoportCollectionView(int i)
         {
-            CollectionViewSource cvs = new CollectionViewSource { Source = People, IsLiveFilteringRequested = true, LiveFilteringProperties = { "Kiscsoport" } };
-            cvs.View.Filter = p => ((Person)p).Kiscsoport == i;
+            CollectionViewSource cvs = new CollectionViewSource { Source = People, IsLiveFilteringRequested = true, LiveFilteringProperties = { "Kiscsoport", "Type" } };
+            cvs.View.Filter = p => ((Person)p).Kiscsoport == i && ((Person)p).Type != PersonType.Egyeb;
             cvs.View.CollectionChanged += EmptyEventHandler;
             return cvs.View;
         }

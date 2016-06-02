@@ -195,7 +195,7 @@
                     <Button Content="Magic" Padding="5" Click="Magic" DockPanel.Dock="Left"/>
                     <hammer:SpinningWheel Radius="9" CircleRadius="2.5" Visibility="Hidden" Name="MagicAnimation" Margin="20,0,0,0" DockPanel.Dock="Left"/>
                     <hammer:SpinningWheel Radius="9" CircleRadius="2.5" Visibility="Hidden" Name="XLSSavingAnimation" Margin="20,0,20,0" DockPanel.Dock="Right"/>
-                    <Button Content="Mentés" Padding="5" Margin="5,0,0,0" Click="SaveXLS" DockPanel.Dock="Right"/>
+                    <Button Content="Mentés" Padding="5" Margin="5,0,0,0" Click="SaveXLS" DockPanel.Dock="Right" IsEnabled="{Binding BeosztasKesz}"/>
                     <Button Content="Törlés" Padding="5" Click="ClearGroups" DockPanel.Dock="Right"/>                    
                 </DockPanel>
                 <StatusBar DockPanel.Dock="Bottom">
