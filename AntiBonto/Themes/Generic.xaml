@@ -8,7 +8,7 @@
     <view:BoolToFontWeightConverter x:Key="BoolToFontWeightConverter"/>
     <view:PersonTypeToColorConverter x:Key="PersonTypeToColorConverter"/>
     <DataTemplate x:Key="adorner">
-        <Button Content="{Binding Name}" Margin="0,0,5,5" Padding="3" Name="PersonButton"/>
+        <Label Content="{Binding Name}" Margin="0,0,5,5" Padding="3" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
     </DataTemplate>
     <Style TargetType="{x:Type view:DnDItemsControl}">
         <Setter Property="ItemsPanel">

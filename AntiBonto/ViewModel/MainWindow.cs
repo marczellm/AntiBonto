@@ -91,7 +91,10 @@ namespace AntiBonto.ViewModel
                 case "Fiuk": p.Nem = Nem.Fiu; break;
                 case "Lanyok": p.Nem = Nem.Lany; break;
                 case "Nullnemuek": p.Nem = Nem.Undefined; break;
-                case "Team": p.Type = PersonType.Teamtag; break;
+                case "Team":
+                    if (source.Name != "Kiscsoportvezetok")
+                        p.Type = PersonType.Teamtag;
+                break;
                 case "Zeneteam": if (p.Type != PersonType.Fiuvezeto && p.Type != PersonType.Lanyvezeto) p.Type = PersonType.Zeneteamtag; break;
                 case "Ujoncok": p.Type = PersonType.Ujonc; break;
                 case "Zeneteamvezeto": Zeneteamvezeto = p; break;
