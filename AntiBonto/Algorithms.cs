@@ -144,45 +144,42 @@ namespace AntiBonto
             foreach (Person p in Beosztando)
                 p.Kiscsoport = -1;
             foreach (Person p in Kiscsoportvezetok)
-                RecursiveSet(p, m++);           
+                RecursiveSet(p, m++);
 
             bool kesz = false;
-            Shuffle(Beosztando);
-            while (!kesz) // generate random orderings of People and run the first-fit coloring until it is complete
+            while (!kesz && ct?.IsCancellationRequested != true) // generate random orderings of People and run the first-fit coloring until it is complete or cancelled
             {
-                try
+                kesz = true;
+                Shuffle(Beosztando);
+                foreach (Person p in Beosztando)
                 {
-                    ct?.ThrowIfCancellationRequested();
-                    foreach (Person p in Beosztando)
-                        if (!p.Kiscsoportvezeto)
-                        {
-                            var options = Enumerable.Range(0, m).Where(i => !Conflicts(p, i));
-                            // ha újonc, akkor próbáljuk olyan helyre tenni, ahol még kevés újonc van
-                            // különben ahol még kevesen vannak
-                            if (p.Type == PersonType.Ujonc)
-                            {
+                    if (!p.Kiscsoportvezeto)
+                    {
+                        var options = Enumerable.Range(0, m).Where(i => !Conflicts(p, i));
+                        if (options.Any())
+                        {   
+                            if (p.Type == PersonType.Ujonc) // ha újonc, akkor próbáljuk olyan helyre tenni, ahol még kevés újonc van
+                            {   
                                 var z = options.Min(i => d.Kiscsoport(i).Count(q => q.Type == PersonType.Ujonc));
                                 RecursiveSet(p, options.MinBy(i => d.Kiscsoport(i).Count(q => q.Type == PersonType.Ujonc)));
                             }
-                            else
+                            else // különben ahol még kevesen vannak
                                 RecursiveSet(p, options.MinBy(i => d.Kiscsoport(i).Count()));
                         }
-                    Renumber();
-                    kesz = true;
+                        else // Nincs olyan kiscsoport, ahova be lehetne tenni => elölről kezdjük
+                        {
+                            foreach (Person q in Beosztando)
+                                if (!q.Kiscsoportvezeto)
+                                    q.Kiscsoport = -1;
+                            foreach (Person q in Kiscsoportvezetok)
+                                RecursiveSet(q, q.Kiscsoport);
+                            kesz = false;
+                            break;
+                        }
+                    }
                 }
-                catch (InvalidOperationException) // Nincs olyan kiscsoport, ahova be lehetne tenni => elölről kezdjük
-                {
-                    foreach (Person p in Beosztando)
-                        if (!p.Kiscsoportvezeto)
-                            p.Kiscsoport = -1;
-                    foreach (Person p in Kiscsoportvezetok)
-                        RecursiveSet(p, p.Kiscsoport);
-                    Shuffle(Beosztando);
-                }
-                catch (OperationCanceledException) // Megnyomták a Cancel gombot
-                {
-                    break;
-                }
+                if (kesz)
+                    Renumber();      
             }
 
             return kesz;
