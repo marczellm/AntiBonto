@@ -1,6 +1,7 @@
 ﻿using AntiBonto.View;
 using Microsoft.Win32;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -79,8 +80,10 @@ namespace AntiBonto
         /// <summary>
         /// Event handler
         /// </summary>
-        private void LoadXLS(object sender, RoutedEventArgs e)
+        private async void LoadXLS(object sender, RoutedEventArgs e)
         {
+            var btn = (Button)sender;
+            btn.Click -= LoadXLS;
             if (Type.GetTypeFromProgID("Excel.Application") == null)
             {
                 MessageBox.Show("Excel nincs telepítve!");
@@ -98,9 +101,10 @@ namespace AntiBonto
             if (dialog.ShowDialog(this) == true)
             {
                 viewModel.People.Clear();
-                viewModel.People.AddRange(ExcelHelper.LoadXLS(dialog.FileName));
+                viewModel.People.AddRange(await Task.Run<List<Person>>(() => ExcelHelper.LoadXLS(dialog.FileName)));
             }
             XLSLoadingAnimation.Visibility = Visibility.Hidden;
+            btn.Click += LoadXLS;
         }
 
         /// <summary>

@@ -22,7 +22,7 @@
             <DockPanel>
                 <DockPanel DockPanel.Dock="Top" LastChildFill="False">
                     <Label DockPanel.Dock="Left" Content="Vedd fel a résztvevőket!"/>
-                    <Button Content="Excel fájl betöltése" Click="LoadXLS" Padding="5" Name="OnlyButton" DockPanel.Dock="Left"/>
+                    <Button Content="Excel fájl betöltése" Click="LoadXLS" Padding="5" DockPanel.Dock="Left"/>
                     <hammer:SpinningWheel Radius="9" CircleRadius="2.5" Visibility="Hidden" Name="XLSLoadingAnimation" DockPanel.Dock="Left" Margin="20,0,0,0"/>
                     <Button Content="Törlés" DockPanel.Dock="Right" Click="Reset" Padding="5"/>
                 </DockPanel>
