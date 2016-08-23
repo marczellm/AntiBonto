@@ -99,21 +99,32 @@ namespace AntiBonto.ViewModel
             {
                 case "Fiuk": p.Nem = Nem.Fiu; break;
                 case "Lanyok": p.Nem = Nem.Lany; break;
-                case "Nullnemuek": p.Nem = Nem.Undefined; break;
-                case "Team":
-                    if (source.Name != "Kiscsoportvezetok")
-                        p.Type = PersonType.Teamtag;
-                break;
-                case "Zeneteam": if (p.Type != PersonType.Fiuvezeto && p.Type != PersonType.Lanyvezeto) p.Type = PersonType.Zeneteamtag; break;
+                case "Nullnemuek": p.Nem = Nem.Undefined; break;                
                 case "Ujoncok": p.Type = PersonType.Ujonc; break;
                 case "Zeneteamvezeto": Zeneteamvezeto = p; break;
                 case "Lanyvezeto": Lanyvezeto = p; break;
                 case "Fiuvezeto": Fiuvezeto = p; break;
-                case "Kiscsoportvezetok": p.Kiscsoportvezeto = true; break;
-                case "Egyeb": p.Type = PersonType.Egyeb; break;             
+                case "Egyeb": p.Type = PersonType.Egyeb; break;
+
+                case "Team":
+                    if (source.Name != "Kiscsoportvezetok")
+                        p.Type = PersonType.Teamtag;
+                    break;
+                case "Zeneteam":
+                    if (p.Type != PersonType.Fiuvezeto && p.Type != PersonType.Lanyvezeto)
+                        p.Type = PersonType.Zeneteamtag;
+                    break;
+                case "Kiscsoportvezetok":
+                    p.Kiscsoportvezeto = true;
+                    p.Kiscsoport = Kiscsoportvezetok.Cast<Person>().Count();
+                    break;          
             }
-            if (source.Name == "Kiscsoportvezetok" && (target.Name == "Team" || target.Name == "Ujoncok" || target.Name=="Egyeb"))
+            if (source.Name == "Kiscsoportvezetok" && (target.Name == "Team" || target.Name == "Ujoncok" || target.Name == "Egyeb"))
+            {
                 p.Kiscsoportvezeto = false;
+                foreach (Person q in Kiscsoport(p.Kiscsoport))
+                    q.Kiscsoport = -1;
+            }
             if (target.Name.StartsWith("kcs"))
                 p.Kiscsoport = Int32.Parse(target.Name.Remove(0, 3)) - 1;
             if (target.Name == "nokcs")
