@@ -81,7 +81,23 @@ namespace AntiBonto
             get { return kinekAzUjonca; }
             set { kinekAzUjonca = value;  RaisePropertyChanged(); }
         }
-
-        internal List<Person> kivelIgen = new List<Person>(), kivelNem = new List<Person>();        
+        internal int transitiveBFFCount = 0; // including themselves
+        internal List<Person> kivelIgen = new List<Person>(), kivelNem = new List<Person>();
+        internal void ComputeTransitiveBFFCount()
+        {
+            transitiveBFFCount = 0;
+            HashSet<Person> visitedSet = new HashSet<Person>();
+            Queue<Person> queue = new Queue<Person>();
+            queue.Enqueue(this);
+            while (queue.Count > 0)
+            {
+                transitiveBFFCount++;
+                Person p = queue.Dequeue();
+                visitedSet.Add(p);
+                foreach (Person q in p.kivelIgen)
+                    if (!visitedSet.Contains(q))
+                        queue.Enqueue(q);
+            }
+        }
     }
 }

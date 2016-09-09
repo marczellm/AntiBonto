@@ -59,7 +59,9 @@ namespace AntiBonto
                     e.Persons[0].kivelIgen.Add(e.Persons[1]);
                     e.Persons[1].kivelIgen.Add(e.Persons[0]);
                 }
-            }            
+            }
+            foreach (Person p in Beosztando)
+                p.ComputeTransitiveBFFCount();
         }
 
         private void RecursiveSet(Person p, int kiscsoport)
@@ -73,7 +75,7 @@ namespace AntiBonto
         public bool Conflicts(Person p, int kiscsoport)
         {
             var kcs = d.Kiscsoport(kiscsoport);
-            return p.Kiscsoportvezeto || kcs.Count() + p.kivelIgen.Count() + 1 > k
+            return p.Kiscsoportvezeto || kcs.Count() + p.transitiveBFFCount > k
                 || (kcs.Count(q => q.Type == PersonType.Ujonc) >= upk && p.Type == PersonType.Ujonc)
                 || (kcs.Count(q => q.Type == PersonType.Teamtag) >= tpk && p.Type == PersonType.Teamtag)
                 || kcs.Any(q => q.kivelNem.Contains(p) || Math.Abs(q.Age - p.Age) > d.MaxAgeDifference);
