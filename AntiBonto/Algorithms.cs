@@ -73,11 +73,11 @@ namespace AntiBonto
         public bool Conflicts(Person p, int kiscsoport)
         {
             var kcs = d.Kiscsoport(kiscsoport);
-            return p.Kiscsoportvezeto || kcs.Count() >= k
+            return p.Kiscsoportvezeto || kcs.Count() + p.kivelIgen.Count() + 1 > k
                 || (kcs.Count(q => q.Type == PersonType.Ujonc) >= upk && p.Type == PersonType.Ujonc)
                 || (kcs.Count(q => q.Type == PersonType.Teamtag) >= tpk && p.Type == PersonType.Teamtag)
                 || kcs.Any(q => q.kivelNem.Contains(p) || Math.Abs(q.Age - p.Age) > d.MaxAgeDifference);
-        }
+            }
 
         public bool Conflicts(Person p, int kiscsoport, out string message)
         {

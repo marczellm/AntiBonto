@@ -135,8 +135,13 @@ namespace AntiBonto
             if (e.Key == Key.Enter)
             {
                 TextBox textBox = (TextBox)sender;
-                ((Person)textBox.Tag).Name = textBox.Text;
-                ((ContentControl)textBox.Parent).Content = textBox.Text;
+                if (textBox.Text.Contains(' '))
+                {
+                    ((Person)textBox.Tag).Name = textBox.Text;
+                    ((ContentControl)textBox.Parent).Content = textBox.Text;
+                }
+                else
+                    MessageBox.Show("Kell legyen vezetékneve és keresztneve is!");
             }
         }
 

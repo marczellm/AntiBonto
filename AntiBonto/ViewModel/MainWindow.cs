@@ -64,6 +64,7 @@ namespace AntiBonto.ViewModel
         {
             dropInfo.DropTargetAdorner = null;
             var target = (FrameworkElement) dropInfo.VisualTarget;
+            var source = (FrameworkElement)dropInfo.DragInfo.VisualSource;
             if (!(dropInfo.Data is Person))
             {
                 dropInfo.Effects = DragDropEffects.None;
@@ -86,6 +87,9 @@ namespace AntiBonto.ViewModel
             }
             else
                 dropInfo.Effects = DragDropEffects.Move;
+
+            if (source.Name == "PeopleView")
+                AddOrRemovePersonButtonText = "×";
         }
         /// <summary>
         /// Make the necessary data changes upon drop
@@ -117,7 +121,10 @@ namespace AntiBonto.ViewModel
                 case "Kiscsoportvezetok":
                     p.Kiscsoportvezeto = true;
                     p.Kiscsoport = Kiscsoportvezetok.Cast<Person>().Count();
-                    break;          
+                    break;
+                case "AddOrRemovePersonButton":
+                    People.Remove(p);
+                    break;
             }
             if (source.Name == "Kiscsoportvezetok" && (target.Name == "Team" || target.Name == "Ujoncok" || target.Name == "Egyeb"))
             {
@@ -135,6 +142,7 @@ namespace AntiBonto.ViewModel
                 RaisePropertyChanged("Lanyvezeto");
                 RaisePropertyChanged("Zeneteamvezeto");
             }
+            AddOrRemovePersonButtonText = "+";
         }
         private ObservableCollection2<Person> people;
         public ObservableCollection2<Person> People
@@ -390,6 +398,11 @@ namespace AntiBonto.ViewModel
         /// </summary>
         private void EmptyEventHandler(object sender, NotifyCollectionChangedEventArgs e)
         { }
-
+        private string addOrRemovePersonButtonText = "+";
+        public string AddOrRemovePersonButtonText
+        {
+            get { return addOrRemovePersonButtonText; }
+            set { addOrRemovePersonButtonText = value; RaisePropertyChanged(); }
+        }
     }
 }
