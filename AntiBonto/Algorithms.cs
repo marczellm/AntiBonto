@@ -161,10 +161,7 @@ namespace AntiBonto
                         if (options.Any())
                         {   
                             if (p.Type == PersonType.Ujonc) // ha újonc, akkor próbáljuk olyan helyre tenni, ahol még kevés újonc van
-                            {   
-                                var z = options.Min(i => d.Kiscsoport(i).Count(q => q.Type == PersonType.Ujonc));
-                                RecursiveSet(p, options.MinBy(i => d.Kiscsoport(i).Count(q => q.Type == PersonType.Ujonc)));
-                            }
+                                RecursiveSet(p, options.MinBy(i => d.Kiscsoport(i).Count(q => q.Type == PersonType.Ujonc)));                            
                             else // különben ahol még kevesen vannak
                                 RecursiveSet(p, options.MinBy(i => d.Kiscsoport(i).Count()));
                         }

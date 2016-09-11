@@ -1,4 +1,5 @@
 ﻿using AntiBonto.View;
+using GongSolutions.Wpf.DragDrop;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Media.Animation;
 using System.Xml.Serialization;
 
 namespace AntiBonto
@@ -64,6 +66,8 @@ namespace AntiBonto
                 }
             }
             Console.WriteLine("MainWindow loaded");
+            
+            GongSolutions.Wpf.DragDrop.DragDrop.SetDragHandler(PeopleView, new DragHandler { Animation = (Storyboard)Resources["ButtonRotateBackAnimation"] });
         }
 
         private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -285,6 +289,21 @@ namespace AntiBonto
                 ExcelHelper.SaveXLS(dialog.FileName, viewModel.People);
             }
             XLSSavingAnimation.Visibility = Visibility.Hidden;
+        }
+    }
+
+    public class DragHandler : DefaultDragHandler
+    {
+        public Storyboard Animation { get; set; }
+        public override void DragCancelled()
+        {
+            base.DragCancelled();
+            Animation.Begin();
+        }
+        public override void Dropped(IDropInfo dropInfo)
+        {
+            base.Dropped(dropInfo);
+            Animation.Begin();
         }
     }
 }

@@ -63,7 +63,7 @@ namespace AntiBonto.ViewModel
         public void DragOver(IDropInfo dropInfo)
         {
             dropInfo.DropTargetAdorner = null;
-            var target = (FrameworkElement) dropInfo.VisualTarget;
+            var target = (FrameworkElement)dropInfo.VisualTarget;
             var source = (FrameworkElement)dropInfo.DragInfo.VisualSource;
             if (!(dropInfo.Data is Person))
             {
@@ -85,11 +85,10 @@ namespace AntiBonto.ViewModel
                 dropInfo.Effects = DragDropEffects.None;
                 Status = "A kiscsoportvezetők nem mozgathatók!";
             }
+            else if (source.Name == "PeopleView" && target.Name != "PeopleView" && target.Name != "AddOrRemovePersonButton")
+                dropInfo.Effects = DragDropEffects.None;
             else
-                dropInfo.Effects = DragDropEffects.Move;
-
-            if (source.Name == "PeopleView")
-                AddOrRemovePersonButtonText = "×";
+                dropInfo.Effects = DragDropEffects.Move;            
         }
         /// <summary>
         /// Make the necessary data changes upon drop
@@ -142,7 +141,6 @@ namespace AntiBonto.ViewModel
                 RaisePropertyChanged("Lanyvezeto");
                 RaisePropertyChanged("Zeneteamvezeto");
             }
-            AddOrRemovePersonButtonText = "+";
         }
         private ObservableCollection2<Person> people;
         public ObservableCollection2<Person> People
@@ -398,11 +396,5 @@ namespace AntiBonto.ViewModel
         /// </summary>
         private void EmptyEventHandler(object sender, NotifyCollectionChangedEventArgs e)
         { }
-        private string addOrRemovePersonButtonText = "+";
-        public string AddOrRemovePersonButtonText
-        {
-            get { return addOrRemovePersonButtonText; }
-            set { addOrRemovePersonButtonText = value; RaisePropertyChanged(); }
-        }
     }
 }
