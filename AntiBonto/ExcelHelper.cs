@@ -55,7 +55,10 @@ namespace AntiBonto
                             Int32.TryParse(s, out x);
                         else if (s is double || s is int)
                             x = (int)s;
-                        ppl[i++].Type = (PersonType)x;
+                        if (Enum.IsDefined(typeof(PersonType), x))
+                            ppl[i++].Type = (PersonType)x;
+                        else
+                            i++;
                     }
                 }
                 if (ppl[0].Name.Contains("név"))

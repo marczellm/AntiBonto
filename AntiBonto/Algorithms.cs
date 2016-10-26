@@ -19,7 +19,7 @@ namespace AntiBonto
             Team = d.Team.Cast<Person>().ToList();
             Beosztando = d.KiscsoportbaOsztando.Cast<Person>().ToList();
             Kiscsoportvezetok = d.Kiscsoportvezetok.Cast<Person>().ToList();
-            UpdateEdges();
+            ConvertEdges();
 
             m = Kiscsoportvezetok.Count();
             n = Beosztando.Count(); // kiscsoportba osztandók száma
@@ -34,7 +34,11 @@ namespace AntiBonto
             lpk = (int)Math.Ceiling(l / (double)m); // lány per kiscsoport
         }
 
-        private void UpdateEdges()
+        /// <summary>
+        /// Convert the standalone Edge representation of constraints
+        /// to one that lists incompatible and must-go-together people in properties of the Person object.
+        /// </summary>
+        private void ConvertEdges()
         {
             foreach(Person p in d.People)
             {
@@ -56,14 +60,22 @@ namespace AntiBonto
                 }
                 else
                 {
-                    e.Persons[0].kivelIgen.Add(e.Persons[1]);
-                    e.Persons[1].kivelIgen.Add(e.Persons[0]);
+                    // We can safely leave out edges pointing towards group leaders,
+                    // because the first step of the algorithm calls RecursiveSet on them.
+                    // If we don't exclude these edges, group leaders may get reassigned later.
+                    if (!e.Persons[1].Kiscsoportvezeto)
+                        e.Persons[0].kivelIgen.Add(e.Persons[1]);
+                    if (!e.Persons[0].Kiscsoportvezeto)
+                        e.Persons[1].kivelIgen.Add(e.Persons[0]);
                 }
             }
             foreach (Person p in Beosztando)
                 p.ComputeTransitiveBFFCount();
         }
 
+        /// <summary>
+        /// Recursively assign the given group number to the person and all of their BFFs.
+        /// </summary>
         private void RecursiveSet(Person p, int kiscsoport)
         {
             p.Kiscsoport = kiscsoport;
@@ -139,6 +151,11 @@ namespace AntiBonto
             return GetPermutations(list, length - 1).SelectMany(t => list.Where(e => !t.Contains(e)), (t1, t2) => t1.Concat(new T[] { t2 }));
         }
 
+        /// <summary>
+        /// Runs a naive first fit algorithm to determine a proper "graph coloring".
+        /// The success of such an algorithm depends only on the given ordering of nodes.
+        /// This implementation randomly shuffles the nodes when backtracking.
+        /// </summary>
         /// <returns>whether the algorithm was successful</returns>
         public bool NaiveFirstFit(CancellationToken? ct = null)
         {
@@ -147,6 +164,7 @@ namespace AntiBonto
                 p.Kiscsoport = -1;
             foreach (Person p in Kiscsoportvezetok)
                 RecursiveSet(p, m++);
+            Beosztando.RemoveAll((Person p) => p.Kiscsoport != -1);
 
             bool kesz = false;
             while (!kesz && ct?.IsCancellationRequested != true) // generate random orderings of People and run the first-fit coloring until it is complete or cancelled
@@ -162,7 +180,7 @@ namespace AntiBonto
                         {   
                             if (p.Type == PersonType.Ujonc) // ha újonc, akkor próbáljuk olyan helyre tenni, ahol még kevés újonc van
                                 RecursiveSet(p, options.MinBy(i => d.Kiscsoport(i).Count(q => q.Type == PersonType.Ujonc)));                            
-                            else // különben ahol még kevesen vannak
+                            else // különben ahol kevés ember van
                                 RecursiveSet(p, options.MinBy(i => d.Kiscsoport(i).Count()));
                         }
                         else // Nincs olyan kiscsoport, ahova be lehetne tenni => elölről kezdjük

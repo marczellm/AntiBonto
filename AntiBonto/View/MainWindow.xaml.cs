@@ -54,7 +54,7 @@ namespace AntiBonto
                     try
                     {
                         AppData = (AppData)xs.Deserialize(file);
-                        // The XML serializer doesn't handle object references, so we replace Person copies with references by name
+                        // The XML serializer doesn't handle object references, so we replace Person references by name with copies
                         foreach (Edge edge in viewModel.Edges)
                             for (int i = 0; i < edge.Persons.Count(); i++)
                                 edge.Persons[i] = viewModel.People.Single(p => p.Name == edge.Persons[i].Name);
@@ -104,8 +104,15 @@ namespace AntiBonto
             };
             if (dialog.ShowDialog(this) == true)
             {
+                viewModel.Edges.Clear();
                 viewModel.People.Clear();
-                viewModel.People.AddRange(await Task.Run<List<Person>>(() => ExcelHelper.LoadXLS(dialog.FileName)));
+                viewModel.People.AddRange(await Task.Run<List<Person>>(() => {
+                    try { return ExcelHelper.LoadXLS(dialog.FileName); }
+                    catch {
+                        MessageBox.Show("Hiba az Excel fájl olvasásakor");
+                        return new List<Person>();
+                    }
+                }));
             }
             XLSLoadingAnimation.Visibility = Visibility.Hidden;
             btn.Click += LoadXLS;
@@ -151,7 +158,9 @@ namespace AntiBonto
 
         private void AddEdge(object sender, RoutedEventArgs e)
         {
-            if (viewModel.Edge.Persons[0] != viewModel.Edge.Persons[1])
+            if (viewModel.Edge.Persons[0].Kiscsoportvezeto && viewModel.Edge.Persons[1].Kiscsoportvezeto)
+                MessageBox.Show("Mindketten kiscsoportvezetők!");
+            else if (viewModel.Edge.Persons[0] != viewModel.Edge.Persons[1])
             {
                 viewModel.Edges.Add(viewModel.Edge);
                 viewModel.Edge = new Edge();
@@ -268,6 +277,7 @@ namespace AntiBonto
                 if (!p.Kiscsoportvezeto)
                     p.Kiscsoport = -1;
         }
+
         private void SaveXLS(object sender, RoutedEventArgs e)
         {
             if (Type.GetTypeFromProgID("Excel.Application") == null)
