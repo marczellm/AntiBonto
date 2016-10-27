@@ -11,6 +11,7 @@
         <Label Content="{Binding Name}" Margin="0,0,5,5" Padding="3" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
     </DataTemplate>
     <Style TargetType="{x:Type view:DnDItemsControl}">
+        <Setter Property="Margin" Value="5"/>
         <Setter Property="ItemsPanel">
             <Setter.Value>
                 <ItemsPanelTemplate>
@@ -26,7 +27,7 @@
                         <Label.Resources>
                             <Style TargetType="Label">
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding KiscsoportView, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}" Value="True">
+                                    <DataTrigger Binding="{Binding ColorByType, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}" Value="True">
                                         <Setter Property="FontWeight" Value="{Binding Kiscsoportvezeto, Converter={StaticResource BoolToFontWeightConverter}}"/>
                                         <Setter Property="Foreground" Value="{Binding Type, Converter={StaticResource PersonTypeToColorConverter}}"/>
                                     </DataTrigger>

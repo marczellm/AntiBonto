@@ -7,6 +7,7 @@ using System.Linq;
 using System.Windows.Data;
 using System.Windows;
 using System;
+using System.Windows.Controls;
 
 namespace AntiBonto.ViewModel
 {
@@ -141,7 +142,10 @@ namespace AntiBonto.ViewModel
                 RaisePropertyChanged("Lanyvezeto");
                 RaisePropertyChanged("Zeneteamvezeto");
             }
+
+            ExtraDropCases(source, target, p);
         }
+        
         private ObservableCollection2<Person> people;
         public ObservableCollection2<Person> People
         {
@@ -396,5 +400,33 @@ namespace AntiBonto.ViewModel
         /// </summary>
         private void EmptyEventHandler(object sender, NotifyCollectionChangedEventArgs e)
         { }
+
+        /// <summary>
+        /// Represents groups in which no two persons should get assigned to the same sharing group.
+        /// </summary>
+        public ObservableCollection2<ObservableCollection2<Person>> MutuallyExclusiveGroups { get; } = new ObservableCollection2<ObservableCollection2<Person>> { new ObservableCollection2<Person>() };
+
+        #region Extras
+        // 20HV: Minden szentendrei újonc mellett legyen szentendrei régenc
+        public ObservableCollection2<Person> Szentendre { get; } = new ObservableCollection2<Person>();
+        private void ExtraDropCases(FrameworkElement source, FrameworkElement target, Person p)
+        {
+            if (target.Name == "Zugliget" || target.Name == "Szentendre")
+            {
+                Szentendre.Remove(p);
+                MutuallyExclusiveGroups[0].Remove(p);
+                var list = (ObservableCollection<Person>)((ItemsControl)target).ItemsSource;
+                if (!list.Contains(p))
+                {
+                    if (list.Count < Kiscsoportvezetok.Cast<Person>().Count())
+                        list.Add(p);
+                    else
+                        MessageBox.Show("Nincs ennyi kiscsoport!");
+                }
+            }
+            if ((source.Name == "Zugliget" || source.Name == "Szentendre") && source != target)
+                ((ObservableCollection<Person>)((ItemsControl)source).ItemsSource).Remove(p);
+        }
+        #endregion
     }
 }

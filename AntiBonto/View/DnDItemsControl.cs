@@ -9,8 +9,8 @@ namespace AntiBonto.View
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(DnDItemsControl), new FrameworkPropertyMetadata(typeof(DnDItemsControl)));
         }
-        public bool KiscsoportView { get; set; } = false;
-        public static readonly DependencyProperty KiscsoportViewProperty =
-            DependencyProperty.Register("KiscsoportView", typeof(bool), typeof(DnDItemsControl));
+        public bool ColorByType { get; set; } = false;
+        public static readonly DependencyProperty ColorByTypeProperty =
+            DependencyProperty.Register("ColorByType", typeof(bool), typeof(DnDItemsControl));
     }
 }

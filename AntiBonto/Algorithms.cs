@@ -19,7 +19,6 @@ namespace AntiBonto
             Team = d.Team.Cast<Person>().ToList();
             Beosztando = d.KiscsoportbaOsztando.Cast<Person>().ToList();
             Kiscsoportvezetok = d.Kiscsoportvezetok.Cast<Person>().ToList();
-            ConvertEdges();
 
             m = Kiscsoportvezetok.Count();
             n = Beosztando.Count(); // kiscsoportba osztandók száma
@@ -32,11 +31,16 @@ namespace AntiBonto
             tpk = (int)Math.Ceiling(t / (double)m); // teamtag per kiscsoport
             fpk = (int)Math.Ceiling(f / (double)m); // fiú per kiscsoport
             lpk = (int)Math.Ceiling(l / (double)m); // lány per kiscsoport
+
+            ExtraInitialization();
+            ConvertEdges();
         }
 
         /// <summary>
         /// Convert the standalone Edge representation of constraints
         /// to one that lists incompatible and must-go-together people in properties of the Person object.
+        /// 
+        /// This new representation also includes additional inferred constraints from Ujoncok and MutuallyExclusiveGroups.
         /// </summary>
         private void ConvertEdges()
         {
@@ -51,6 +55,14 @@ namespace AntiBonto
                     p.kivelNem.Add(p.KinekAzUjonca);
                     p.KinekAzUjonca.kivelNem.Add(p);
                 }
+            foreach (ICollection<Person> group in d.MutuallyExclusiveGroups)
+                foreach (Person p in group)
+                    foreach (Person q in group)
+                        if (p != q)
+                        {
+                            p.kivelNem.Add(q);
+                            q.kivelNem.Add(p);
+                        }            
             foreach (Edge e in d.Edges)
             {
                 if (e.Dislike)
@@ -69,6 +81,7 @@ namespace AntiBonto
                         e.Persons[1].kivelIgen.Add(e.Persons[0]);
                 }
             }
+            ExtraEdges();
             foreach (Person p in Beosztando)
                 p.ComputeTransitiveBFFCount();
         }
@@ -171,6 +184,7 @@ namespace AntiBonto
             {
                 kesz = true;
                 Shuffle(Beosztando);
+                ExtraPreparation();
                 foreach (Person p in Beosztando)
                 {
                     if (!p.Kiscsoportvezeto)
@@ -237,5 +251,32 @@ namespace AntiBonto
                     p.Kiscsoport = 2;
             }
         }
+
+        #region Extras
+        // 20. HV: Minden szentendrei újonc mellett legyen szentendrei régenc
+        private List<Person> szentendreiUjoncok, szentendreiRegencek;
+        private void ExtraInitialization()
+        {
+            szentendreiUjoncok = d.Szentendre.Intersect(Ujoncok).ToList();
+            szentendreiRegencek = d.Szentendre.Except(Ujoncok).ToList();
+        }
+        private void ExtraEdges()
+        {
+            Shuffle(szentendreiRegencek);
+            Shuffle(szentendreiUjoncok);
+            for (int i = 0; i < szentendreiUjoncok.Count; i++)
+            {
+                var p = szentendreiUjoncok[i];
+                var q = szentendreiRegencek[i % szentendreiRegencek.Count];
+                p.kivelIgen.Add(q);
+                q.kivelIgen.Add(p);
+            }
+        }
+        private void ExtraPreparation()
+        {
+            if (szentendreiRegencek?.Any() == true && szentendreiUjoncok?.Any() == true)
+                ConvertEdges();
+        }       
+        #endregion
     }
 }

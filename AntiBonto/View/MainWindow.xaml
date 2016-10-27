@@ -82,16 +82,16 @@
                     <Label Grid.Row="4" Grid.Column="1" Content="Team"/>
                     <Label Grid.Row="4" Grid.Column="2" Content="Egyéb résztvevők"/>
                     <Label Grid.Row="4" Grid.Column="3" Content="Zeneteam"/>
-                    <view:DnDItemsControl Grid.Row="3" Grid.Column="0" ItemsSource="{Binding Kiscsoportvezetok}" Margin="5" dd:DragDrop.DropHandler="{Binding}" x:Name="Kiscsoportvezetok" Grid.ColumnSpan="3"/>
-                    <view:DnDItemsControl Grid.Row="5" Grid.Column="0" ItemsSource="{Binding Ujoncok}"           Margin="5" dd:DragDrop.DropHandler="{Binding}" x:Name="Ujoncok"/>
-                    <view:DnDItemsControl Grid.Row="5" Grid.Column="1" ItemsSource="{Binding Team}"              Margin="5" dd:DragDrop.DropHandler="{Binding}" x:Name="Team"/>
-                    <view:DnDItemsControl Grid.Row="5" Grid.Column="3" ItemsSource="{Binding Zeneteam}"          Margin="5" dd:DragDrop.DropHandler="{Binding}" x:Name="Zeneteam"/>
-                    <view:DnDItemsControl Grid.Row="5" Grid.Column="2" ItemsSource="{Binding Egyeb}"             Margin="5" dd:DragDrop.DropHandler="{Binding}" x:Name="Egyeb"/>
-                    <Label Grid.Row="1" Content="{Binding Lanyvezeto}" x:Name="Lanyvezeto" Margin="5" Padding="3" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+                    <view:DnDItemsControl Grid.Row="3" Grid.Column="0" ItemsSource="{Binding Kiscsoportvezetok}" dd:DragDrop.DropHandler="{Binding}" x:Name="Kiscsoportvezetok" Grid.ColumnSpan="3"/>
+                    <view:DnDItemsControl Grid.Row="5" Grid.Column="0" ItemsSource="{Binding Ujoncok}"           dd:DragDrop.DropHandler="{Binding}" x:Name="Ujoncok"/>
+                    <view:DnDItemsControl Grid.Row="5" Grid.Column="1" ItemsSource="{Binding Team}"              dd:DragDrop.DropHandler="{Binding}" x:Name="Team"/>
+                    <view:DnDItemsControl Grid.Row="5" Grid.Column="3" ItemsSource="{Binding Zeneteam}"          dd:DragDrop.DropHandler="{Binding}" x:Name="Zeneteam"/>
+                    <view:DnDItemsControl Grid.Row="5" Grid.Column="2" ItemsSource="{Binding Egyeb}"             dd:DragDrop.DropHandler="{Binding}" x:Name="Egyeb"/>
+                    <Label Grid.Row="1" Content="{Binding Lanyvezeto}" x:Name="Lanyvezeto" Padding="3" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
                            dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding}" dd:DragDrop.DragAdornerTemplate="{StaticResource adorner}"/>
-                    <Label Grid.Row="1" Grid.Column="1" Content="{Binding Fiuvezeto}" x:Name="Fiuvezeto" Margin="5" Padding="3" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+                    <Label Grid.Row="1" Grid.Column="1" Content="{Binding Fiuvezeto}" x:Name="Fiuvezeto" Padding="3" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
                            dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding}" dd:DragDrop.DragAdornerTemplate="{StaticResource adorner}"/>
-                    <Label Grid.Row="3" Grid.Column="3" Content="{Binding Zeneteamvezeto}" x:Name="Zeneteamvezeto" Margin="5" Padding="3" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+                    <Label Grid.Row="3" Grid.Column="3" Content="{Binding Zeneteamvezeto}" x:Name="Zeneteamvezeto" Padding="3" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
                            dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding}" dd:DragDrop.DragAdornerTemplate="{StaticResource adorner}"/>
 
                 </Grid>
@@ -124,11 +124,11 @@
                     </Grid.RowDefinitions>
                     <Label Grid.Column="0" Grid.Row="0" Content="Lányok"/>
                     <Label Grid.Column="2" Grid.Row="0" Content="Fiúk"/>
-                    <view:DnDItemsControl Grid.Column="0" Grid.Row="1" ItemsSource="{Binding Lanyok}" Margin="5"
+                    <view:DnDItemsControl Grid.Column="0" Grid.Row="1" ItemsSource="{Binding Lanyok}"
                                           dd:DragDrop.DropHandler="{Binding}" x:Name="Lanyok"/>
-                    <view:DnDItemsControl Grid.Column="1" Grid.Row="1" ItemsSource="{Binding Nullnemuek}" Margin="5"
+                    <view:DnDItemsControl Grid.Column="1" Grid.Row="1" ItemsSource="{Binding Nullnemuek}"
                                           dd:DragDrop.DropHandler="{Binding}" x:Name="Nullnemuek"/>
-                    <view:DnDItemsControl Grid.Column="2" Grid.Row="1" ItemsSource="{Binding Fiuk}" Margin="5"
+                    <view:DnDItemsControl Grid.Column="2" Grid.Row="1" ItemsSource="{Binding Fiuk}"
                                           dd:DragDrop.DropHandler="{Binding}" x:Name="Fiuk"/>
                 </Grid>
             </DockPanel>
@@ -212,7 +212,28 @@
                 </ItemsControl>
             </DockPanel>
         </TabItem>
-        <TabItem Header="6. Kiscsoportbeosztás" Name="Kiscsoportbeoszto">
+        <TabItem Header="6. 20HV extrák" IsEnabled="{Binding PeopleNotEmpty}" Name="HV20Tab">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Label Content="Zugliget"/>
+                <Label Content="Szentendre" Grid.Column="1"/>
+                <view:DnDItemsControl Grid.Row="1" ItemsSource="{Binding MutuallyExclusiveGroups[0]}" x:Name="Zugliget"
+                                      dd:DragDrop.DropHandler="{Binding}" ColorByType="True"/>
+                <view:DnDItemsControl Grid.Row="1" Grid.Column="1" ItemsSource="{Binding Szentendre}" x:Name="Szentendre"
+                                      dd:DragDrop.DropHandler="{Binding}" ColorByType="True"/>
+                <view:DnDItemsControl Grid.Row="2" Grid.ColumnSpan="2" ItemsSource="{Binding KiscsoportbaOsztando}" x:Name="HV20All"
+                                      dd:DragDrop.DropHandler="{Binding}" ColorByType="True"/>
+            </Grid>
+        </TabItem>
+        <TabItem Header="7. Kiscsoportbeosztás" Name="Kiscsoportbeoszto">
             <DockPanel>
                 <DockPanel DockPanel.Dock="Top" LastChildFill="False" Width="Auto">
                     <Button Content="Magic" Padding="5" Click="Magic" DockPanel.Dock="Left"/>
@@ -245,7 +266,7 @@
                             <Style TargetType="view:DnDItemsControl">
                                 <Setter Property="Margin" Value="5"/>
                                 <Setter Property="dd:DragDrop.DropHandler" Value="{Binding}"/>
-                                <Setter Property="KiscsoportView" Value="True"/>
+                                <Setter Property="ColorByType" Value="True"/>
                             </Style>
                         </ResourceDictionary>
                     </Grid.Resources>
