@@ -81,22 +81,28 @@ namespace AntiBonto
             get { return kinekAzUjonca; }
             set { kinekAzUjonca = value;  RaisePropertyChanged(); }
         }
-        internal int transitiveBFFCount = 0; // including themselves
-        internal List<Person> kivelIgen = new List<Person>(), kivelNem = new List<Person>();
-        internal void ComputeTransitiveBFFCount()
+        internal HashSet<Person> kivelIgen = new HashSet<Person>(), kivelNem = new HashSet<Person>();
+        
+        /// <summary>
+        /// Traverse the graphs defined by kivelIgen and kivelNem.
+        /// Collect the transitively related nodes into these sets so that no further recursive traversal is needed during the algorithm.
+        /// </summary>
+        internal void CollectRecursiveEdges()
         {
-            transitiveBFFCount = 0;
             HashSet<Person> visitedSet = new HashSet<Person>();
             Queue<Person> queue = new Queue<Person>();
-            queue.Enqueue(this);
+            foreach (Person p in kivelIgen)
+                queue.Enqueue(p);            
             while (queue.Count > 0)
             {
-                transitiveBFFCount++;
                 Person p = queue.Dequeue();
+                kivelIgen.Add(p);
                 visitedSet.Add(p);
                 foreach (Person q in p.kivelIgen)
                     if (!visitedSet.Contains(q))
                         queue.Enqueue(q);
+                foreach (Person q in p.kivelNem)
+                    kivelNem.Add(q);
             }
         }
     }

@@ -6,7 +6,7 @@ using System.Threading;
 
 namespace AntiBonto
 {
-    class Algorithms
+    public class Algorithms
     {
         private ViewModel.MainWindow d;
         private List<Person> Ujoncok, Team, Beosztando, Kiscsoportvezetok;
@@ -55,7 +55,16 @@ namespace AntiBonto
                     p.kivelNem.Add(p.KinekAzUjonca);
                     p.KinekAzUjonca.kivelNem.Add(p);
                 }
-            foreach (ICollection<Person> group in d.MutuallyExclusiveGroups)
+            // Split up the MutuallyExclusiveGroups to groups no bigger than m
+            List<List<Person>> mutuallyExclusiveGroups = new List<List<Person>>();
+            foreach (IList<Person> group in d.MutuallyExclusiveGroups)
+                for (int i=0, j=i; i<group.Count; i++, j=i%m)
+                {
+                    if (j==0)
+                        mutuallyExclusiveGroups.Add(new List<Person>());
+                    mutuallyExclusiveGroups.Last().Add(group[i]);
+                }
+            foreach (ICollection<Person> group in mutuallyExclusiveGroups)
                 foreach (Person p in group)
                     foreach (Person q in group)
                         if (p != q)
@@ -83,24 +92,23 @@ namespace AntiBonto
             }
             ExtraEdges();
             foreach (Person p in Beosztando)
-                p.ComputeTransitiveBFFCount();
+                p.CollectRecursiveEdges();
         }
 
         /// <summary>
-        /// Recursively assign the given group number to the person and all of their BFFs.
+        /// Assign the given group number to the person and all of their BFFs.
         /// </summary>
-        private void RecursiveSet(Person p, int kiscsoport)
+        private void AssignToKiscsoport(Person p, int kiscsoport)
         {
             p.Kiscsoport = kiscsoport;
             foreach (Person q in p.kivelIgen)
-                if (q.Kiscsoport != kiscsoport)
-                    RecursiveSet(q, kiscsoport);
+                q.Kiscsoport = kiscsoport;
         }
 
         public bool Conflicts(Person p, int kiscsoport)
         {
             var kcs = d.Kiscsoport(kiscsoport);
-            return p.Kiscsoportvezeto || kcs.Count() + p.transitiveBFFCount > k
+            return p.Kiscsoportvezeto || kcs.Count() + p.kivelIgen.Count + 1 > k
                 || (kcs.Count(q => q.Type == PersonType.Ujonc) >= upk && p.Type == PersonType.Ujonc)
                 || (kcs.Count(q => q.Type == PersonType.Teamtag) >= tpk && p.Type == PersonType.Teamtag)
                 || kcs.Any(q => q.kivelNem.Contains(p) || Math.Abs(q.Age - p.Age) > d.MaxAgeDifference);
@@ -112,7 +120,7 @@ namespace AntiBonto
             message = null;
             if (p.Kiscsoportvezeto)
                 message = "Nem lehet egy csoportban két kiscsoportvezető!";
-            else if (kcs.Count() >= k)
+            else if (kcs.Count() + p.kivelIgen.Count + 1 > k)
                 message = "Nem lehet a kiscsoportban több ember";
             else if (kcs.Count(q => q.Type == PersonType.Ujonc) >= upk && p.Type == PersonType.Ujonc)
                 message = "Nem lehet a kiscsoportban több újonc";
@@ -123,7 +131,12 @@ namespace AntiBonto
                 Person r = kcs.FirstOrDefault(q => q.kivelNem.Contains(p));
                 if (r != null)
                 {
-                    Edge edge = d.Edges.FirstOrDefault(e => e.Dislike && e.Persons.Contains(p) && e.Persons.Contains(r)) ?? new Edge { Persons = new Person[] { p, r }, Dislike = true, Reason = "az újonca" };
+                    Edge edge = d.Edges.FirstOrDefault(e => e.Dislike && e.Persons.Contains(p) && e.Persons.Contains(r)) ?? new Edge
+                    {
+                        Persons = new Person[] { p, r },
+                        Dislike = true,
+                        Reason = p.KinekAzUjonca == r || r.KinekAzUjonca == p ? "az újonca" : "ezt kérted"
+                    };
                     message = edge.ToString();
                 }
                 else
@@ -176,7 +189,7 @@ namespace AntiBonto
             foreach (Person p in Beosztando)
                 p.Kiscsoport = -1;
             foreach (Person p in Kiscsoportvezetok)
-                RecursiveSet(p, m++);
+                AssignToKiscsoport(p, m++);
             Beosztando.RemoveAll((Person p) => p.Kiscsoport != -1);
 
             bool kesz = false;
@@ -193,9 +206,9 @@ namespace AntiBonto
                         if (options.Any())
                         {   
                             if (p.Type == PersonType.Ujonc) // ha újonc, akkor próbáljuk olyan helyre tenni, ahol még kevés újonc van
-                                RecursiveSet(p, options.MinBy(i => d.Kiscsoport(i).Count(q => q.Type == PersonType.Ujonc)));                            
+                                AssignToKiscsoport(p, options.MinBy(i => d.Kiscsoport(i).Count(q => q.Type == PersonType.Ujonc)));                            
                             else // különben ahol kevés ember van
-                                RecursiveSet(p, options.MinBy(i => d.Kiscsoport(i).Count()));
+                                AssignToKiscsoport(p, options.MinBy(i => d.Kiscsoport(i).Count()));
                         }
                         else // Nincs olyan kiscsoport, ahova be lehetne tenni => elölről kezdjük
                         {
@@ -203,7 +216,7 @@ namespace AntiBonto
                                 if (!q.Kiscsoportvezeto)
                                     q.Kiscsoport = -1;
                             foreach (Person q in Kiscsoportvezetok)
-                                RecursiveSet(q, q.Kiscsoport);
+                                AssignToKiscsoport(q, q.Kiscsoport);
                             kesz = false;
                             break;
                         }
@@ -257,17 +270,22 @@ namespace AntiBonto
         private List<Person> szentendreiUjoncok, szentendreiRegencek;
         private void ExtraInitialization()
         {
+            if (ViewModel.MainWindow.WeekendNumber != 20)
+                return;
             szentendreiUjoncok = d.Szentendre.Intersect(Ujoncok).ToList();
             szentendreiRegencek = d.Szentendre.Except(Ujoncok).ToList();
         }
         private void ExtraEdges()
         {
+            if (szentendreiRegencek?.Any() != true && szentendreiUjoncok?.Any() != true)
+                return;
             Shuffle(szentendreiRegencek);
             Shuffle(szentendreiUjoncok);
             for (int i = 0; i < szentendreiUjoncok.Count; i++)
             {
                 var p = szentendreiUjoncok[i];
-                var q = szentendreiRegencek[i % szentendreiRegencek.Count];
+                var regencek = szentendreiRegencek.Except(new Person[] { p.KinekAzUjonca }).ToList();
+                var q = regencek[i % regencek.Count];
                 p.kivelIgen.Add(q);
                 q.kivelIgen.Add(p);
             }

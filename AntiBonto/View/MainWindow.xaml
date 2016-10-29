@@ -26,8 +26,8 @@
                              To="0" Duration="0:0:.2"/>
         </Storyboard>
     </Window.Resources>
-    <TabControl SelectionChanged="TabControl_SelectionChanged">
-        <TabItem Header="1. Résztvevők" Name="Resztvevok">
+    <TabControl SelectionChanged="TabControl_SelectionChanged" Name="TabControl">
+        <TabItem Header="Résztvevők" Name="Resztvevok">
             <DockPanel>
                 <DockPanel DockPanel.Dock="Top" LastChildFill="False">
                     <Label DockPanel.Dock="Left" Content="Vedd fel a résztvevőket!"/>
@@ -56,7 +56,7 @@
                 </Grid>
             </DockPanel>
         </TabItem>
-        <TabItem Header="2. Szerepek" IsEnabled="{Binding PeopleNotEmpty}" Name="Szerepek">
+        <TabItem Header="Szerepek" IsEnabled="{Binding PeopleNotEmpty}" Name="Szerepek">
             <DockPanel>
                 <Label DockPanel.Dock="Top" Content="Csoportosítsd a résztvevőket!"/>
                 <Grid>
@@ -87,17 +87,17 @@
                     <view:DnDItemsControl Grid.Row="5" Grid.Column="1" ItemsSource="{Binding Team}"              dd:DragDrop.DropHandler="{Binding}" x:Name="Team"/>
                     <view:DnDItemsControl Grid.Row="5" Grid.Column="3" ItemsSource="{Binding Zeneteam}"          dd:DragDrop.DropHandler="{Binding}" x:Name="Zeneteam"/>
                     <view:DnDItemsControl Grid.Row="5" Grid.Column="2" ItemsSource="{Binding Egyeb}"             dd:DragDrop.DropHandler="{Binding}" x:Name="Egyeb"/>
-                    <Label Grid.Row="1" Content="{Binding Lanyvezeto}" x:Name="Lanyvezeto" Padding="3" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+                    <Label Grid.Row="1" Content="{Binding Lanyvezeto}" x:Name="Lanyvezeto" Margin="5" Padding="3" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
                            dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding}" dd:DragDrop.DragAdornerTemplate="{StaticResource adorner}"/>
-                    <Label Grid.Row="1" Grid.Column="1" Content="{Binding Fiuvezeto}" x:Name="Fiuvezeto" Padding="3" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+                    <Label Grid.Row="1" Grid.Column="1" Content="{Binding Fiuvezeto}" x:Name="Fiuvezeto" Margin="5" Padding="3" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
                            dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding}" dd:DragDrop.DragAdornerTemplate="{StaticResource adorner}"/>
-                    <Label Grid.Row="3" Grid.Column="3" Content="{Binding Zeneteamvezeto}" x:Name="Zeneteamvezeto" Padding="3" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+                    <Label Grid.Row="3" Grid.Column="3" Content="{Binding Zeneteamvezeto}" x:Name="Zeneteamvezeto" Margin="5" Padding="3" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
                            dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding}" dd:DragDrop.DragAdornerTemplate="{StaticResource adorner}"/>
 
                 </Grid>
             </DockPanel>
         </TabItem>
-        <TabItem Header="3. Életkor" IsEnabled="{Binding PeopleNotEmpty}" Name="Eletkorok">
+        <TabItem Header="Életkor" IsEnabled="{Binding PeopleNotEmpty}" Name="Eletkorok">
             <DockPanel>
                 <Label DockPanel.Dock="Top" Content="Add meg az életkorokat! (nem kötelező)"/>
                 <DataGrid ItemsSource="{Binding KiscsoportbaOsztando}" CanUserAddRows="False" CanUserDeleteRows="False" AutoGenerateColumns="False">
@@ -109,7 +109,7 @@
                 </DataGrid>
             </DockPanel>
         </TabItem>
-        <TabItem Visibility="Collapsed" Header="4. Lányok-fiúk" IsEnabled="{Binding PeopleNotEmpty}" Name="LanyokFiuk">
+        <TabItem Header="Lányok-fiúk" IsEnabled="{Binding PeopleNotEmpty}" Name="LanyokFiuk" Visibility="Collapsed">
             <DockPanel>
                 <Label DockPanel.Dock="Top" Content="Válogasd szét a lányokat és a fiúkat!"/>
                 <Grid>
@@ -133,9 +133,9 @@
                 </Grid>
             </DockPanel>
         </TabItem>
-        <TabItem Header="4. Újoncok"  IsEnabled="{Binding PeopleNotEmpty}" Name="UjoncokTab">
+        <TabItem Header="Újoncok"  IsEnabled="{Binding PeopleNotEmpty}" Name="UjoncokTab">
             <DockPanel>
-                <Label DockPanel.Dock="Top" Content="Kinek az újonca?"/>
+                <Label DockPanel.Dock="Top" Content="Kinek az újonca? (nem kötelező)"/>
                 <ContentControl Visibility="Collapsed" Content="{StaticResource DataContextProxy}"/>
                 <!-- hack part 2 -->
                 <DataGrid ItemsSource="{Binding Ujoncok}" CanUserAddRows="False" CanUserDeleteRows="False" AutoGenerateColumns="False">
@@ -148,7 +148,7 @@
                 </DataGrid>
             </DockPanel>
         </TabItem>
-        <TabItem Header="5. Megszorítások" IsEnabled="{Binding PeopleNotEmpty}" Name="Megszoritasok">
+        <TabItem Header="Megszorítások" IsEnabled="{Binding PeopleNotEmpty}" Name="Megszoritasok">
             <DockPanel>
                 <DockPanel DockPanel.Dock="Top" LastChildFill="False">
                     <Label DockPanel.Dock="Left" Content="Megkötések a kiscsoportbeosztáshoz"/>
@@ -212,7 +212,7 @@
                 </ItemsControl>
             </DockPanel>
         </TabItem>
-        <TabItem Header="6. 20HV extrák" IsEnabled="{Binding PeopleNotEmpty}" Name="HV20Tab">
+        <TabItem Tag="20" IsEnabled="{Binding PeopleNotEmpty}">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -233,7 +233,7 @@
                                       dd:DragDrop.DropHandler="{Binding}" ColorByType="True"/>
             </Grid>
         </TabItem>
-        <TabItem Header="7. Kiscsoportbeosztás" Name="Kiscsoportbeoszto">
+        <TabItem Header="Kiscsoportbeosztás" Name="Kiscsoportbeoszto">
             <DockPanel>
                 <DockPanel DockPanel.Dock="Top" LastChildFill="False" Width="Auto">
                     <Button Content="Magic" Padding="5" Click="Magic" DockPanel.Dock="Left"/>
@@ -282,7 +282,7 @@
                     <view:DnDItemsControl Grid.Row="1" Grid.Column="3" ItemsSource="{Binding Kiscsoportok[9]}" x:Name="kcs10"/>
                     <view:DnDItemsControl Grid.Row="1" Grid.Column="4" ItemsSource="{Binding Kiscsoportok[10]}" x:Name="kcs11"/>
                     <view:DnDItemsControl Grid.Row="1" Grid.Column="5" ItemsSource="{Binding Kiscsoportok[11]}" x:Name="kcs12"/>
-                    <Label Grid.Row="2" Content="Nincsenek beosztva"/>
+                    <Label Grid.Row="2" Content="Nincsenek beosztva:"/>
                     <view:DnDItemsControl Grid.Row="3" Grid.ColumnSpan="6" ItemsSource="{Binding NoKiscsoport}" x:Name="nokcs"/>
                 </Grid>
             </DockPanel>

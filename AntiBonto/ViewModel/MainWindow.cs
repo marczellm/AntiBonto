@@ -14,7 +14,7 @@ namespace AntiBonto.ViewModel
     /// <summary>
     /// ObservableCollection with added AddRange support
     /// </summary>
-    class ObservableCollection2<T> : ObservableCollection<T>
+    public class ObservableCollection2<T> : ObservableCollection<T>
     {
         public ObservableCollection2() : base() { }
         public ObservableCollection2(T[] t) : base(t) { }
@@ -31,10 +31,24 @@ namespace AntiBonto.ViewModel
         }
     }
     /// <summary>
+    /// All the data that's saved to XML so that it's there for the next app launch
+    /// </summary>
+    [Serializable]
+    public class AppData
+    {
+        public Person[] Persons;
+        public Edge[] Edges;
+        public Person[][] MutuallyExclusiveGroups;
+
+        #region Extras
+        public Person[] Szentendre;
+        #endregion
+    }
+    /// <summary>
     /// Because this is not an enterprise app, I didn't create the plumbing necessary to have separate ViewModels for each tab.
     /// Instead I dumped all of the application state in the below class.
     /// </summary>
-    class MainWindow: ViewModelBase, IDropTarget
+    public class MainWindow: ViewModelBase, IDropTarget
     {
         /// <summary>
         /// Some UI elements disable based on these
@@ -46,6 +60,10 @@ namespace AntiBonto.ViewModel
         public bool BeosztasKesz
         {
             get { return !Kiscsoport(-1).Any(); }
+        }
+        public static int WeekendNumber
+        {
+            get { return 2 * DateTime.Now.Year - 4013 + DateTime.Now.Month / 7; }
         }
         /// <summary>
         /// So we need to keep them up to date
@@ -406,23 +424,59 @@ namespace AntiBonto.ViewModel
         /// </summary>
         public ObservableCollection2<ObservableCollection2<Person>> MutuallyExclusiveGroups { get; } = new ObservableCollection2<ObservableCollection2<Person>> { new ObservableCollection2<Person>() };
 
+        internal AppData AppData
+        {
+            get
+            {
+                return new AppData
+                {
+                    Persons = People.ToArray(),
+                    Edges = Edges.ToArray(),
+                    MutuallyExclusiveGroups = MutuallyExclusiveGroups.Select(g => g.ToArray()).ToArray(),
+                    Szentendre = Szentendre.ToArray()
+                };
+            }
+            set
+            {
+                People.AddRange(value.Persons);
+                Edges.AddRange(value.Edges);
+                // The XML serializer doesn't handle object references, so we replace Person copies with references
+                foreach (Edge edge in Edges)
+                    for (int i = 0; i < edge.Persons.Count(); i++)
+                        edge.Persons[i] = People.Single(p => p.Name == edge.Persons[i].Name);
+                foreach (Person person in People)
+                    if (person.KinekAzUjonca != null)
+                        person.KinekAzUjonca = People.Single(p => p.Name == person.KinekAzUjonca.Name);
+                foreach (var group in value.MutuallyExclusiveGroups)
+                {
+                    var og = new ViewModel.ObservableCollection2<Person>();
+                    og.AddRange(group.Select(p => People.Single(q => q.Name == p.Name)));
+                    MutuallyExclusiveGroups.Add(og);
+                }
+                MutuallyExclusiveGroups.RemoveAll(g => !g.Any());
+                if (!MutuallyExclusiveGroups.Any())
+                    MutuallyExclusiveGroups.Add(new ObservableCollection2<Person>());
+                RaisePropertyChanged("MutuallyExclusiveGroups");
+
+                if (WeekendNumber == 20)
+                    Szentendre.AddRange(value.Szentendre.Select(p => People.Single(q => q.Name == p.Name)));
+            }
+        }
+
         #region Extras
         // 20HV: Minden szentendrei újonc mellett legyen szentendrei régenc
         public ObservableCollection2<Person> Szentendre { get; } = new ObservableCollection2<Person>();
         private void ExtraDropCases(FrameworkElement source, FrameworkElement target, Person p)
         {
+            if (WeekendNumber != 20)
+                return;
             if (target.Name == "Zugliget" || target.Name == "Szentendre")
             {
                 Szentendre.Remove(p);
                 MutuallyExclusiveGroups[0].Remove(p);
                 var list = (ObservableCollection<Person>)((ItemsControl)target).ItemsSource;
                 if (!list.Contains(p))
-                {
-                    if (list.Count < Kiscsoportvezetok.Cast<Person>().Count())
-                        list.Add(p);
-                    else
-                        MessageBox.Show("Nincs ennyi kiscsoport!");
-                }
+                    list.Add(p);
             }
             if ((source.Name == "Zugliget" || source.Name == "Szentendre") && source != target)
                 ((ObservableCollection<Person>)((ItemsControl)source).ItemsSource).Remove(p);

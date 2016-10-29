@@ -9,7 +9,7 @@ namespace AntiBonto
     public class ExcelHelper
     {
         /// <summary>
-        /// Opens Excel in the background and reads available data about attendants.
+        /// Opens Excel in the background and reads available data about participants.
         /// 
         /// Does not use OpenXML SDK because this way we can support the old binary formats too.
         /// </summary>
@@ -59,7 +59,7 @@ namespace AntiBonto
                             ppl[i++].Type = (PersonType)x;
                         else
                             i++;
-                    }
+                    }                    
                 }
                 if (ppl[0].Name.Contains("név"))
                     ppl.RemoveAt(0);
@@ -72,7 +72,7 @@ namespace AntiBonto
             }
         }
 
-        public static void SaveXLS(string filename, IEnumerable<Person> people)
+        public static void SaveXLS(string filename, ViewModel.MainWindow data)
         {
             Uri uri = new Uri("/Resources/hetvegekezelo.xlsm", UriKind.Relative);
 
@@ -90,7 +90,7 @@ namespace AntiBonto
                 sheet.Unprotect();
                 Range c = sheet.Cells;
                 int i = 2;
-                foreach (Person p in people)
+                foreach (Person p in data.People)
                 {
                     c[i, 1].Activate();
                     string[] nev = p.Name.Split(new Char[] { ' ' }, 2);
@@ -102,6 +102,14 @@ namespace AntiBonto
                         c[i, 5] = p.Kiscsoport + 1;
                     if (p.Kiscsoportvezeto)
                         c[i, 6] = p.Kiscsoport + 1;
+
+                    if (ViewModel.MainWindow.WeekendNumber == 20)
+                    {
+                        if (data.Szentendre.Contains(p))
+                            c[i, 9] = "Szentendre";
+                        if (data.MutuallyExclusiveGroups[0].Contains(p))
+                            c[i, 9] = "Zugliget";
+                    }
                     i++;
                 }
             }

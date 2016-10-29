@@ -1,4 +1,5 @@
 ﻿using AntiBonto.View;
+using AntiBonto.ViewModel;
 using GongSolutions.Wpf.DragDrop;
 using Microsoft.Win32;
 using System;
@@ -16,12 +17,6 @@ using System.Xml.Serialization;
 
 namespace AntiBonto
 {
-    [Serializable]
-    public class AppData
-    {
-        public Person[] Persons;
-        public Edge[] Edges;
-    }
     public partial class MainWindow : System.Windows.Window
     {
         public MainWindow()
@@ -38,11 +33,6 @@ namespace AntiBonto
         private DnDItemsControl[] kcs;
         private string filepath;
         private CancellationTokenSource cts;
-        private AppData AppData
-        {
-            get { return new AppData { Persons = viewModel.People.ToArray(), Edges = viewModel.Edges.ToArray() }; }
-            set { viewModel.People.AddRange(value.Persons); viewModel.Edges.AddRange(value.Edges); }
-        }
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
@@ -51,23 +41,23 @@ namespace AntiBonto
             {
                 using (var file = new StreamReader(filepath))
                 {
-                    try
-                    {
-                        AppData = (AppData)xs.Deserialize(file);
-                        // The XML serializer doesn't handle object references, so we replace Person references by name with copies
-                        foreach (Edge edge in viewModel.Edges)
-                            for (int i = 0; i < edge.Persons.Count(); i++)
-                                edge.Persons[i] = viewModel.People.Single(p => p.Name == edge.Persons[i].Name);
-                        foreach (Person person in viewModel.People)
-                            if (person.KinekAzUjonca != null)
-                                person.KinekAzUjonca = viewModel.People.Single(p => p.Name == person.KinekAzUjonca.Name);
-                    }
+                    try { viewModel.AppData = (AppData)xs.Deserialize(file); }
                     catch { } // If for example the XML is written by a previous version of this app, we shouldn't attempt to load it
                 }
-            }
-            Console.WriteLine("MainWindow loaded");
-            
+            }            
             GongSolutions.Wpf.DragDrop.DragDrop.SetDragHandler(PeopleView, new DragHandler { Animation = (Storyboard)Resources["ButtonRotateBackAnimation"] });
+
+            int i = 1, tag;
+            foreach (TabItem tab in TabControl.Items)
+            {
+                if (tab.Tag != null && Int32.TryParse(tab.Tag as string, out tag))
+                {
+                    tab.Header = tab.Tag as string + "HV";
+                    tab.Visibility = ViewModel.MainWindow.WeekendNumber == tag ? Visibility.Visible : Visibility.Collapsed;
+                }
+                if (tab.Visibility == Visibility.Visible)
+                    tab.Header = String.Format("{0}. {1}", i++, tab.Header);
+            }
         }
 
         private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -75,7 +65,7 @@ namespace AntiBonto
             var xs = new XmlSerializer(typeof(AppData));
             using (var file = new StreamWriter(filepath))
             {
-                xs.Serialize(file, AppData);
+                xs.Serialize(file, viewModel.AppData);
             }
         }
 
@@ -108,8 +98,8 @@ namespace AntiBonto
                 viewModel.People.Clear();
                 viewModel.People.AddRange(await Task.Run<List<Person>>(() => {
                     try { return ExcelHelper.LoadXLS(dialog.FileName); }
-                    catch {
-                        MessageBox.Show("Hiba az Excel fájl olvasásakor");
+                    catch (Exception ex) {
+                        MessageBox.Show("Hiba az Excel fájl olvasásakor" + Environment.NewLine + ex.Message ?? "" + Environment.NewLine + ex.InnerException?.Message ?? "");
                         return new List<Person>();
                     }
                 }));
@@ -295,9 +285,8 @@ namespace AntiBonto
                 CheckPathExists = true
             };
             if (dialog.ShowDialog(this) == true)
-            {
-                ExcelHelper.SaveXLS(dialog.FileName, viewModel.People);
-            }
+                try { ExcelHelper.SaveXLS(dialog.FileName, viewModel); }
+                catch (Exception ex) { MessageBox.Show("Hiba az Excel fájl írásakor" + Environment.NewLine + ex.Message ?? "" + Environment.NewLine + ex.InnerException?.Message ?? ""); }
             XLSSavingAnimation.Visibility = Visibility.Hidden;
         }
     }
