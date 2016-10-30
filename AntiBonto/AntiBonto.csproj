@@ -107,7 +107,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="View\PersonTypeToColorConverter.cs" />
     <Page Include="Themes\Generic.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -126,7 +125,6 @@
     <Compile Include="ViewModel\Person.cs" />
     <Compile Include="ViewModel\MainWindow.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />
-    <Compile Include="View\BoolToFontWeightConverter.cs" />
     <Compile Include="View\IntValidator.cs" />
     <Compile Include="View\MaterialButton.cs" />
     <Compile Include="View\DnDItemsControl.cs" />

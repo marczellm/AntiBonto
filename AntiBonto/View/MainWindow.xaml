@@ -14,17 +14,26 @@
     </Window.DataContext>
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-        <FrameworkElement x:Key="DataContextProxy" DataContext="{Binding}"/> <!-- hack, see http://stackoverflow.com/questions/7660967-->
+        <FrameworkElement x:Key="DataContextProxy" DataContext="{Binding}"/>
+        <!-- hack, see http://stackoverflow.com/questions/7660967-->
         <Storyboard x:Key="ButtonRotateAnimation">
             <DoubleAnimation Storyboard.TargetName="AddOrRemovePersonButton" 
                              Storyboard.TargetProperty="(Button.RenderTransform).(RotateTransform.Angle)"
                              To="45" Duration="0:0:.2"/>
         </Storyboard>
-        <Storyboard x:Key="ButtonRotateBackAnimation" x:Name="ButtonRotateBackAnimation"> <!-- Called from code because it turned out to be the only reliable option -->
+        <Storyboard x:Key="ButtonRotateBackAnimation" x:Name="ButtonRotateBackAnimation">
+            <!-- Called from code because it turned out to be the only reliable option -->
             <DoubleAnimation Storyboard.TargetName="AddOrRemovePersonButton" 
                              Storyboard.TargetProperty="(Button.RenderTransform).(RotateTransform.Angle)"
                              To="0" Duration="0:0:.2"/>
         </Storyboard>
+        <Style TargetType="Border" x:Key="MaterialShadow">
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect BlurRadius="8" ShadowDepth="2.5" Direction="270" Color="#BBBBBB"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Window.Resources>
     <TabControl SelectionChanged="TabControl_SelectionChanged" Name="TabControl">
         <TabItem Header="Résztvevők" Name="Resztvevok">
@@ -44,15 +53,15 @@
                             </EventTrigger>
                         </ItemsControl.Triggers>
                     </view:DnDItemsControl>
-                    <view:MaterialButton Click="AddPerson" x:Name="AddOrRemovePersonButton"
-                                         DockPanel.Dock="Right" Margin="10"
-                                         HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                    <Border Style="{StaticResource MaterialShadow}" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="20">
+                        <view:MaterialButton Click="AddPerson" x:Name="AddOrRemovePersonButton"
                                          dd:DragDrop.DropHandler="{Binding}" dd:DragDrop.IsDropTarget="True"
                                          RenderTransformOrigin="0.5,0.5">
-                        <Button.RenderTransform>
-                            <RotateTransform/>
-                        </Button.RenderTransform>
-                    </view:MaterialButton>
+                            <Button.RenderTransform>
+                                <RotateTransform/>
+                            </Button.RenderTransform>
+                        </view:MaterialButton>
+                    </Border>
                 </Grid>
             </DockPanel>
         </TabItem>
@@ -177,11 +186,13 @@
                     </ComboBox>
                     <Label Content=", mert "/>
                     <TextBox Text="{Binding Edge.Reason}" MinWidth="100"/>
-                    <view:MaterialButton Click="AddEdge" Height="20" Margin="10,0,0,0">
-                        <Button.Content>
-                            <TextBlock Text="+" Margin="0,-11,0,0"/>
-                        </Button.Content>
-                    </view:MaterialButton>
+                    <Border Style="{StaticResource MaterialShadow}">
+                        <view:MaterialButton Click="AddEdge" Height="20" Margin="10,0,0,0">
+                            <Button.Content>
+                                <TextBlock Text="+" Margin="0,-6.5,0,0" FontSize="20"/>
+                            </Button.Content>
+                        </view:MaterialButton>
+                    </Border>
                 </StackPanel>
                 <ItemsControl ItemsSource="{Binding Edges}" Margin="5">
                     <ItemsControl.ItemTemplate>
@@ -194,11 +205,13 @@
                                            Visibility="{Binding Dislike, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                                 </Grid>
                                 <Label Content="{Binding Persons[1]}" Margin="0,5,5,5" Padding="3" MinWidth="100" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
-                                <view:MaterialButton Click="RemoveEdge" Height="20" Margin="10,0,0,0">
-                                    <Button.Content>
-                                        <TextBlock Text="×" Margin="0,-4,0,0" FontSize="14" FontWeight="Bold"/>
-                                    </Button.Content>
-                                </view:MaterialButton>
+                                <Border Style="{StaticResource MaterialShadow}">
+                                    <view:MaterialButton Click="RemoveEdge" Height="20" Margin="10,0,0,0">
+                                        <Button.Content>
+                                            <TextBlock Text="×" Margin="0,-4,0,0" FontSize="14" FontWeight="Bold"/>
+                                        </Button.Content>
+                                    </view:MaterialButton>
+                                </Border>
                             </StackPanel>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
@@ -240,7 +253,7 @@
                     <hammer:SpinningWheel Radius="9" CircleRadius="2.5" Visibility="Hidden" Name="MagicAnimation" Margin="20,0,0,0" DockPanel.Dock="Left"/>
                     <hammer:SpinningWheel Radius="9" CircleRadius="2.5" Visibility="Hidden" Name="XLSSavingAnimation" Margin="20,0,20,0" DockPanel.Dock="Right"/>
                     <Button Content="Mentés" Padding="5" Margin="5,0,0,0" Click="SaveXLS" DockPanel.Dock="Right" IsEnabled="{Binding BeosztasKesz}"/>
-                    <Button Content="Törlés" Padding="5" Click="ClearGroups" DockPanel.Dock="Right"/>                    
+                    <Button Content="Törlés" Padding="5" Click="ClearGroups" DockPanel.Dock="Right"/>
                 </DockPanel>
                 <StatusBar DockPanel.Dock="Bottom">
                     <StatusBarItem Content="{Binding Status}" MinHeight="22"/>
@@ -262,7 +275,6 @@
                     </Grid.RowDefinitions>
                     <Grid.Resources>
                         <ResourceDictionary>
-                            <view:BoolToFontWeightConverter x:Key="BoolToFontWeightConverter"/>
                             <Style TargetType="view:DnDItemsControl">
                                 <Setter Property="Margin" Value="5"/>
                                 <Setter Property="dd:DragDrop.DropHandler" Value="{Binding}"/>

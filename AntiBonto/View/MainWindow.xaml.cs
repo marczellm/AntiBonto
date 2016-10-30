@@ -148,6 +148,8 @@ namespace AntiBonto
 
         private void AddEdge(object sender, RoutedEventArgs e)
         {
+            if (viewModel.Edge.Persons.Contains(null))
+                return;
             if (viewModel.Edge.Persons[0].Kiscsoportvezeto && viewModel.Edge.Persons[1].Kiscsoportvezeto)
                 MessageBox.Show("Mindketten kiscsoportvezetők!");
             else if (viewModel.Edge.Persons[0] != viewModel.Edge.Persons[1])
