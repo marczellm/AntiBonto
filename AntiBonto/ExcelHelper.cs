@@ -74,7 +74,7 @@ namespace AntiBonto
 
         public static void SaveXLS(string filename, ViewModel.MainWindow data)
         {
-            Uri uri = new Uri("/Resources/hetvegekezelo.xlsm", UriKind.Relative);
+            Uri uri = new Uri(ViewModel.MainWindow.WeekendNumber == 20 ? "/Resources/hetvegekezelo20.xlsm" : "/Resources/hetvegekezelo.xlsm", UriKind.Relative);
 
             using (var stream = System.Windows.Application.GetResourceStream(uri).Stream)
             using (var f = File.Create(filename))

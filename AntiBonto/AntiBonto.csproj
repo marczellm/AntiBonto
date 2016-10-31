@@ -151,6 +151,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <Resource Include="Resources\hetvegekezelo20.xlsm" />
     <Resource Include="Resources\hetvegekezelo.xlsm" />
     <None Include="AntiBonto_TemporaryKey.pfx" />
     <None Include="packages.config">
