@@ -75,14 +75,14 @@
                         <EventTrigger RoutedEvent="Button.MouseEnter">
                             <BeginStoryboard>
                                 <Storyboard>
-                                    <ColorAnimation Storyboard.TargetProperty="(Button.Background).(SolidColorBrush.Color)" To="#EF5350" Duration="0:0:0.1"/>
+                                    <ColorAnimation Storyboard.TargetProperty="Background.Color" To="#EF5350" Duration="0:0:0.1"/>
                                 </Storyboard>
                             </BeginStoryboard>
                         </EventTrigger>
                         <EventTrigger RoutedEvent="Button.MouseLeave">
                             <BeginStoryboard>
                                 <Storyboard>
-                                    <ColorAnimation Storyboard.TargetProperty="(Button.Background).(SolidColorBrush.Color)" To="Red" Duration="0:0:0.1"/>
+                                    <ColorAnimation Storyboard.TargetProperty="Background.Color" Duration="0:0:0.1"/>
                                 </Storyboard>
                             </BeginStoryboard>
                         </EventTrigger>
