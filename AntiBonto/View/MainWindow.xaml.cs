@@ -24,13 +24,14 @@ namespace AntiBonto
             InitializeComponent();
             Closing += MainWindow_Closing;
             Loaded += MainWindow_Loaded;
-            kcs = new DnDItemsControl[] { kcs1, kcs2, kcs3, kcs4, kcs5, kcs6, kcs7, kcs8, kcs9, kcs10, kcs11, kcs12};
+            kcs = new DnDItemsControl[] { kcs1, kcs2, kcs3, kcs4, kcs5, kcs6, kcs7, kcs8, kcs9, kcs10, kcs11, kcs12 };
+            acs = new DnDItemsControl[] { acs1, acs2, acs3, acs4, acs5, acs6, acs7, acs8, acs9, acs10, acs11, acs12 };
             string folder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "AntiBonto");
             if (!Directory.Exists(folder))
                 Directory.CreateDirectory(folder);
             filepath = Path.Combine(folder, "state.xml");
         }
-        private DnDItemsControl[] kcs;
+        private DnDItemsControl[] kcs, acs;
         private string filepath;
         private CancellationTokenSource cts;
 
@@ -44,7 +45,7 @@ namespace AntiBonto
                     try { viewModel.AppData = (AppData)xs.Deserialize(file); }
                     catch { } // If for example the XML is written by a previous version of this app, we shouldn't attempt to load it
                 }
-            }            
+            }
             GongSolutions.Wpf.DragDrop.DragDrop.SetDragHandler(PeopleView, new DragHandler { Animation = (Storyboard)Resources["ButtonRotateBackAnimation"] });
 
             int i = 1, tag;
@@ -70,7 +71,7 @@ namespace AntiBonto
         }
 
         private ViewModel.MainWindow viewModel { get { return (ViewModel.MainWindow)DataContext; } }
-        
+
         /// <summary>
         /// Event handler
         /// </summary>
@@ -120,7 +121,7 @@ namespace AntiBonto
         private void People_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             viewModel.People.CollectionChanged -= People_CollectionChanged;
-            Person p = (Person) e.NewItems[0];
+            Person p = (Person)e.NewItems[0];
             var cp = (FrameworkElement)PeopleView.ItemContainerGenerator.ContainerFromItem(p);
             cp.ApplyTemplate();
             var label = (ContentControl)PeopleView.ItemTemplate.FindName("PersonButton", cp);
@@ -173,17 +174,19 @@ namespace AntiBonto
 
         private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (e.AddedItems.Count > 0 && e.AddedItems[0] == Kiscsoportbeoszto)
+            if (e.AddedItems.Count > 0)
             {
-                string message = null;
                 var newTab = e.AddedItems[0];
+                if (newTab != Kiscsoportbeoszto && newTab != Alvocsoportbeoszto)
+                    return;
+                string message = null;
                 var v = viewModel;
-                var k = viewModel.KiscsoportbaOsztando.Cast<Person>().ToList();
+                var k = viewModel.CsoportokbaOsztando.Cast<Person>().ToList();
                 if (v.People.Count() == 0)
                 {
                     message = "Nincsenek résztvevők!";
                     newTab = Resztvevok;
-                }                
+                }
                 else if (k.Any(p => p.Age < 0 || p.Age > 100))
                 {
                     message = "Állítsd be az életkorokat!";
@@ -192,6 +195,11 @@ namespace AntiBonto
                 else if (v.Kiscsoportvezetok.IsEmpty)
                 {
                     message = "Jelöld ki a kiscsoportvezetőket!";
+                    newTab = Szerepek;
+                }
+                else if (v.Alvocsoportvezetok.IsEmpty)
+                {
+                    message = "Jelöld ki az alvócsoportvezetőket!";
                     newTab = Szerepek;
                 }
                 else if (v.Ujoncok.IsEmpty)
@@ -219,18 +227,30 @@ namespace AntiBonto
                     MessageBox.Show(message);
                     ((TabControl)sender).SelectedItem = newTab;
                 }
-                else
+                else if (newTab == Kiscsoportbeoszto)
                 {
                     viewModel.InitKiscsoport();
                     var kcsn = viewModel.Kiscsoportvezetok.Cast<Person>().Count();
                     for (int i = 0; i < kcs.Count(); i++)
                     {
                         kcs[i].Visibility = i < kcsn ? Visibility.Visible : Visibility.Collapsed;
-                        kcs[i].IsEnabled = i < kcsn;                        
+                        kcs[i].IsEnabled = i < kcsn;
                         if (i < kcsn)
                             BindingOperations.GetBindingExpression(kcs[i], ItemsControl.ItemsSourceProperty).UpdateTarget();
-                    }                    
+                    }
                     viewModel.Algorithm = new Algorithms(viewModel);
+                }
+                else if (newTab == Alvocsoportbeoszto)
+                {
+                    viewModel.InitAlvocsoport();
+                    var acsn = viewModel.Alvocsoportvezetok.Cast<Person>().Count();
+                    for (int i = 0; i < acs.Count(); i++)
+                    {
+                        acs[i].Visibility = i < acsn ? Visibility.Visible : Visibility.Collapsed;
+                        acs[i].IsEnabled = i < acsn;
+                        if (i < acsn)
+                            BindingOperations.GetBindingExpression(acs[i], ItemsControl.ItemsSourceProperty).UpdateTarget();
+                    }
                 }
             }
         }
@@ -263,11 +283,18 @@ namespace AntiBonto
             btn.Content = oldContent;            
         }
 
-        private void ClearGroups(object sender, RoutedEventArgs e)
+        private void ClearKiscsoportok(object sender, RoutedEventArgs e)
         {
-            foreach (Person p in viewModel.KiscsoportbaOsztando)
+            foreach (Person p in viewModel.CsoportokbaOsztando)
                 if (!p.Kiscsoportvezeto)
                     p.Kiscsoport = -1;
+        }
+
+        private void ClearAlvocsoportok(object sender, RoutedEventArgs e)
+        {
+            foreach (Person p in viewModel.CsoportokbaOsztando)
+                if (!p.Alvocsoportvezeto)
+                    p.Alvocsoport = -1;
         }
 
         private void SaveXLS(object sender, RoutedEventArgs e)

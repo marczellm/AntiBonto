@@ -53,7 +53,7 @@ namespace AntiBonto
             get { return type; }
             set { type = value; RaisePropertyChanged(); }
         }
-        private bool kcsvez = false;
+        private bool kcsvez = false, acsvez = false;
         public bool Kiscsoportvezeto
         {
             get { return kcsvez; }
@@ -65,11 +65,28 @@ namespace AntiBonto
                     Type = PersonType.Teamtag;
             }
         }
+        public bool Alvocsoportvezeto
+        {
+            get { return acsvez; }
+            set
+            {
+                acsvez = value;
+                RaisePropertyChanged();
+                if (value && (Type == PersonType.Ujonc || Type == PersonType.Egyeb))
+                    Type = PersonType.Teamtag;
+            }
+        }
         private int kcs = -1;
         public int Kiscsoport
         {
             get { return kcs; }
             set { kcs = value; RaisePropertyChanged(); }
+        }
+        private int acs = -1;
+        public int Alvocsoport
+        {
+            get { return acs; }
+            set { acs = value; RaisePropertyChanged(); }
         }
         public override string ToString()
         {

@@ -97,11 +97,18 @@ namespace AntiBonto
                     c[i, 1] = nev[0];
                     c[i, 2] = nev[1];
                     c[i, 3] = p.Nickname;
-                    c[i, 4] = (int) p.Type;
+                    if (p.Type != PersonType.Teamtag)
+                        c[i, 4] = (int) p.Type;
                     if (p.Type != PersonType.Egyeb)
+                    {
                         c[i, 5] = p.Kiscsoport + 1;
-                    if (p.Kiscsoportvezeto)
-                        c[i, 6] = p.Kiscsoport + 1;
+                        if (p.Kiscsoportvezeto)
+                            c[i, 6] = p.Kiscsoport + 1;
+
+                        c[i, 7] = (char)(p.Alvocsoport + 65);
+                        if (p.Alvocsoportvezeto)
+                            c[i, 8] = (char)(p.Alvocsoport + 65);
+                    }
 
                     if (ViewModel.MainWindow.WeekendNumber == 20)
                     {

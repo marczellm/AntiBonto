@@ -17,10 +17,10 @@ namespace AntiBonto
             d = data;
             Ujoncok = d.Ujoncok.Cast<Person>().ToList();
             Team = d.Team.Cast<Person>().ToList();
-            Beosztando = d.KiscsoportbaOsztando.Cast<Person>().ToList();
+            Beosztando = d.CsoportokbaOsztando.Cast<Person>().ToList();
             Kiscsoportvezetok = d.Kiscsoportvezetok.Cast<Person>().ToList();
 
-            m = Kiscsoportvezetok.Count();
+            m = Kiscsoportvezetok.Count(); // kiscsoportok száma
             n = Beosztando.Count(); // kiscsoportba osztandók száma
             u = Ujoncok.Count(); // újoncok száma
             t = Team.Count(); // team létszáma
@@ -229,40 +229,28 @@ namespace AntiBonto
             return kesz;
         }
 
+        private void SwapKiscsoports(int i, int j)
+        {
+            foreach (Person p in d.Kiscsoport(i).ToList())
+                p.Kiscsoport = -i - 2;
+            foreach (Person p in d.Kiscsoport(j).ToList())
+                p.Kiscsoport = i;
+            foreach (Person p in d.Kiscsoport(-i - 2).ToList())
+                p.Kiscsoport = j;
+        }
+
         /// <summary>
-        /// Renumbers the share groups so that the weekend leaders and the music team leader are in the groups with the lowest number
+        /// Renumbers the share groups so that the weekend leaders and the music team leader are in the groups with the highest number
         /// </summary>
         private void Renumber()
         {
-            int l = d.Lanyvezeto.Kiscsoport;
-            foreach (Person p in d.Kiscsoport(l).ToList())
-                p.Kiscsoport = -l - 2;
-            foreach (Person p in d.Kiscsoport(0).ToList())
-                p.Kiscsoport = l;
-            foreach (Person p in d.Kiscsoport(-l - 2).ToList())
-                p.Kiscsoport = 0;
+            int l = d.Lanyvezeto.Kiscsoport, f = d.Fiuvezeto.Kiscsoport, z = d.Zeneteamvezeto.Kiscsoport;
 
-            int f = d.Fiuvezeto.Kiscsoport;
+            SwapKiscsoports(d.Lanyvezeto.Kiscsoport, m - 1);
             if (f != l)
-            {
-                foreach (Person p in d.Kiscsoport(f).ToList())
-                    p.Kiscsoport = -f - 2;
-                foreach (Person p in d.Kiscsoport(1).ToList())
-                    p.Kiscsoport = f;
-                foreach (Person p in d.Kiscsoport(-f - 2).ToList())
-                    p.Kiscsoport = 1;
-            }
-
-            int z = d.Zeneteamvezeto.Kiscsoport;
-            if (z != l && z != f)
-            {
-                foreach (Person p in d.Kiscsoport(z).ToList())
-                    p.Kiscsoport = -z - 2;
-                foreach (Person p in d.Kiscsoport(2).ToList())
-                    p.Kiscsoport = z;
-                foreach (Person p in d.Kiscsoport(-z - 2).ToList())
-                    p.Kiscsoport = 2;
-            }
+                SwapKiscsoports(d.Fiuvezeto.Kiscsoport, m - 2);
+            if (z !=l && z != f)
+                SwapKiscsoports(d.Zeneteamvezeto.Kiscsoport, m - 3);            
         }
 
         #region Extras

@@ -51,15 +51,18 @@ namespace AntiBonto.ViewModel
     public class MainWindow: ViewModelBase, IDropTarget
     {
         /// <summary>
-        /// Some UI elements disable based on these
+        /// Most tabs disable if this is false
         /// </summary>
         public bool PeopleNotEmpty
         {
             get { return People.Count() != 0; }
         }
+        /// <summary>
+        /// The Save button disables if this is false
+        /// </summary>
         public bool BeosztasKesz
         {
-            get { return !Kiscsoport(-1).Any(); }
+            get { return !Kiscsoport(-1).Any() && !Alvocsoport(-1).Any(); }
         }
         public static int WeekendNumber
         {
@@ -104,6 +107,11 @@ namespace AntiBonto.ViewModel
                 dropInfo.Effects = DragDropEffects.None;
                 Status = "A kiscsoportvezetők nem mozgathatók!";
             }
+            else if (target.Name.Contains("acs") && p.Alvocsoportvezeto)
+            {
+                dropInfo.Effects = DragDropEffects.None;
+                Status = "Az alvócsoportvezetők nem mozgathatók!";
+            }
             else if (source.Name == "PeopleView" && target.Name != "PeopleView" && target.Name != "AddOrRemovePersonButton")
                 dropInfo.Effects = DragDropEffects.None;
             else
@@ -129,7 +137,7 @@ namespace AntiBonto.ViewModel
                 case "Egyeb": p.Type = PersonType.Egyeb; break;
 
                 case "Team":
-                    if (source.Name != "Kiscsoportvezetok")
+                    if (source.Name != "Kiscsoportvezetok" && source.Name != "Alvocsoportvezetok")
                         p.Type = PersonType.Teamtag;
                     break;
                 case "Zeneteam":
@@ -139,6 +147,10 @@ namespace AntiBonto.ViewModel
                 case "Kiscsoportvezetok":
                     p.Kiscsoportvezeto = true;
                     p.Kiscsoport = Kiscsoportvezetok.Cast<Person>().Count();
+                    break;
+                case "Alvocsoportvezetok":
+                    p.Alvocsoportvezeto = true;
+                    p.Alvocsoport = Alvocsoportvezetok.Cast<Person>().Count();
                     break;
                 case "AddOrRemovePersonButton":
                     People.Remove(p);
@@ -152,8 +164,12 @@ namespace AntiBonto.ViewModel
             }
             if (target.Name.StartsWith("kcs"))
                 p.Kiscsoport = Int32.Parse(target.Name.Remove(0, 3)) - 1;
+            if (target.Name.StartsWith("acs"))
+                p.Alvocsoport = Int32.Parse(target.Name.Remove(0, 3)) - 1;
             if (target.Name == "nokcs")
                 p.Kiscsoport = -1;
+            if (target.Name == "noacs")
+                p.Alvocsoport = -1;
             if (target.Name == "Ujoncok" || target.Name == "Egyeb")
             {
                 RaisePropertyChanged("Fiuvezeto");
@@ -184,6 +200,10 @@ namespace AntiBonto.ViewModel
             }
         }
         private volatile bool kiscsoportInited = false;
+
+        /// <summary>
+        /// This method is called when the kiscsoportbeoszto tab is successfully opened because all conditions have been met.
+        /// </summary>
         internal void InitKiscsoport()
         {
             if (kiscsoportInited)
@@ -198,7 +218,28 @@ namespace AntiBonto.ViewModel
             RaisePropertyChanged("Kiscsoportok");
             RaisePropertyChanged("NoKiscsoport");
         }
-        private ICollectionView fiuk, lanyok, nullnemuek, ujoncok, team, zeneteam, kiscsoportvezetok, egyeb, kiscsoportbaosztando, nokiscsoport;
+
+        private volatile bool alvocsoportInited = false;
+
+        /// <summary>
+        /// This method is called when the alvocsoportbeoszto tab is successfully opened because all conditions have been met.
+        /// </summary>
+        internal void InitAlvocsoport()
+        {
+            if (alvocsoportInited)
+                return;
+            alvocsoportok = Enumerable.Range(0, 15).Select(i => AlvocsoportCollectionView(i)).ToList();
+
+            noalvocsoport = AlvocsoportCollectionView(-1);
+            noalvocsoport.CollectionChanged -= EmptyEventHandler;
+            noalvocsoport.CollectionChanged += (s, e) => RaisePropertyChanged("BeosztasKesz");
+
+            alvocsoportInited = true;
+            RaisePropertyChanged("Alvocsoportok");
+            RaisePropertyChanged("NoAlvocsoport");
+        }
+
+        private ICollectionView fiuk, lanyok, nullnemuek, ujoncok, team, zeneteam, kiscsoportvezetok, alvocsoportvezetok, egyeb, csoportokbaosztando, nokiscsoport, noalvocsoport;
         public ICollectionView Fiuk
         {
             get
@@ -297,18 +338,32 @@ namespace AntiBonto.ViewModel
                 return kiscsoportvezetok;
             }
         }
-        public ICollectionView KiscsoportbaOsztando
+        public ICollectionView Alvocsoportvezetok
         {
             get
             {
-                if (kiscsoportbaosztando == null)
+                if (alvocsoportvezetok == null)
+                {
+                    CollectionViewSource cvs = new CollectionViewSource { Source = People, IsLiveFilteringRequested = true, LiveFilteringProperties = { "Alvocsoportvezeto" } };
+                    cvs.View.Filter = p => ((Person)p).Alvocsoportvezeto;
+                    cvs.View.CollectionChanged += EmptyEventHandler;
+                    alvocsoportvezetok = cvs.View;
+                }
+                return alvocsoportvezetok;
+            }
+        }
+        public ICollectionView CsoportokbaOsztando
+        {
+            get
+            {
+                if (csoportokbaosztando == null)
                 {
                     CollectionViewSource cvs = new CollectionViewSource { Source = People, IsLiveFilteringRequested = true, LiveFilteringProperties = { "Type" } };
                     cvs.View.Filter = p => ((Person)p).Type != PersonType.Egyeb;
                     cvs.View.CollectionChanged += EmptyEventHandler;
-                    kiscsoportbaosztando = cvs.View;
+                    csoportokbaosztando = cvs.View;
                 }
-                return kiscsoportbaosztando;
+                return csoportokbaosztando;
             }
         }
         public ICollectionView Zeneteam
@@ -371,7 +426,7 @@ namespace AntiBonto.ViewModel
                 RaisePropertyChanged("Zeneteamvezeto");
             }
         }
-        private List<ICollectionView> kiscsoportok;
+        private List<ICollectionView> kiscsoportok, alvocsoportok;
         private ICollectionView KiscsoportCollectionView(int i)
         {
             CollectionViewSource cvs = new CollectionViewSource { Source = People, IsLiveFilteringRequested = true, LiveFilteringProperties = { "Kiscsoport", "Type" } };
@@ -379,15 +434,31 @@ namespace AntiBonto.ViewModel
             cvs.View.CollectionChanged += EmptyEventHandler;
             return cvs.View;
         }
+        private ICollectionView AlvocsoportCollectionView(int i)
+        {
+            CollectionViewSource cvs = new CollectionViewSource { Source = People, IsLiveFilteringRequested = true, LiveFilteringProperties = { "Alvocsoport", "Type" } };
+            cvs.View.Filter = p => ((Person)p).Alvocsoport == i && ((Person)p).Type != PersonType.Egyeb;
+            cvs.View.CollectionChanged += EmptyEventHandler;
+            return cvs.View;
+        }
         public List<ICollectionView> Kiscsoportok
         {
             get { return kiscsoportok; }
+        }
+        public List<ICollectionView> Alvocsoportok
+        {
+            get { return alvocsoportok; }
         }
         public IEnumerable<Person> Kiscsoport(int i)
         {
             return People.Where(p => p.Type != PersonType.Egyeb && p.Kiscsoport == i);
         }
+        public IEnumerable<Person> Alvocsoport(int i)
+        {
+            return People.Where(p => p.Type != PersonType.Egyeb && p.Alvocsoport == i);
+        }
         public ICollectionView NoKiscsoport { get { return nokiscsoport; } }
+        public ICollectionView NoAlvocsoport { get { return noalvocsoport; } }
         private ObservableCollection2<Edge> edges;
         public ObservableCollection2<Edge> Edges
         {

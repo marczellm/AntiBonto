@@ -83,15 +83,17 @@
                         <ColumnDefinition/>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
-                    <Label Grid.Row="2" Grid.Column="0" Content="Kiscsoportvezetők (max. 12)"/>
-                    <Label                              Content="Lány vezető"/>
-                    <Label Grid.Column="1"              Content="Fiú vezető"/>
-                    <Label Grid.Column="3" Grid.Row="2" Content="Zeneteamvezető"/>
-                    <Label Grid.Row="4" Grid.Column="0" Content="Újoncok"/>
+                    <Label Grid.Row="2"    Content="Kiscsoportvezetők (max. 12)"/>
+                    <Label Grid.Row="2" Grid.Column="2"  Content="Alvócsoportvezetők (max. 12)"/>
+                    <Label                 Content="Lány vezető"/>
+                    <Label Grid.Column="1" Content="Fiú vezető"/>
+                    <Label Grid.Column="3" Content="Zeneteamvezető"/>
+                    <Label Grid.Row="4"    Content="Újoncok"/>
                     <Label Grid.Row="4" Grid.Column="1" Content="Team"/>
                     <Label Grid.Row="4" Grid.Column="2" Content="Egyéb résztvevők"/>
                     <Label Grid.Row="4" Grid.Column="3" Content="Zeneteam"/>
-                    <view:DnDItemsControl Grid.Row="3" Grid.Column="0" ItemsSource="{Binding Kiscsoportvezetok}" dd:DragDrop.DropHandler="{Binding}" x:Name="Kiscsoportvezetok" Grid.ColumnSpan="3"/>
+                    <view:DnDItemsControl Grid.Row="3" Grid.Column="0" ItemsSource="{Binding Kiscsoportvezetok}" dd:DragDrop.DropHandler="{Binding}" x:Name="Kiscsoportvezetok" Grid.ColumnSpan="2"/>
+                    <view:DnDItemsControl Grid.Row="3" Grid.Column="2" ItemsSource="{Binding Alvocsoportvezetok}" dd:DragDrop.DropHandler="{Binding}" x:Name="Alvocsoportvezetok" Grid.ColumnSpan="2"/>
                     <view:DnDItemsControl Grid.Row="5" Grid.Column="0" ItemsSource="{Binding Ujoncok}"           dd:DragDrop.DropHandler="{Binding}" x:Name="Ujoncok"/>
                     <view:DnDItemsControl Grid.Row="5" Grid.Column="1" ItemsSource="{Binding Team}"              dd:DragDrop.DropHandler="{Binding}" x:Name="Team"/>
                     <view:DnDItemsControl Grid.Row="5" Grid.Column="3" ItemsSource="{Binding Zeneteam}"          dd:DragDrop.DropHandler="{Binding}" x:Name="Zeneteam"/>
@@ -100,7 +102,7 @@
                            dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding}" dd:DragDrop.DragAdornerTemplate="{StaticResource adorner}"/>
                     <Label Grid.Row="1" Grid.Column="1" Content="{Binding Fiuvezeto}" x:Name="Fiuvezeto" Margin="5" Padding="3" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
                            dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding}" dd:DragDrop.DragAdornerTemplate="{StaticResource adorner}"/>
-                    <Label Grid.Row="3" Grid.Column="3" Content="{Binding Zeneteamvezeto}" x:Name="Zeneteamvezeto" Margin="5" Padding="3" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+                    <Label Grid.Row="1" Grid.Column="3" Content="{Binding Zeneteamvezeto}" x:Name="Zeneteamvezeto" Margin="5" Padding="3" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
                            dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding}" dd:DragDrop.DragAdornerTemplate="{StaticResource adorner}"/>
 
                 </Grid>
@@ -109,7 +111,7 @@
         <TabItem Header="Életkor" IsEnabled="{Binding PeopleNotEmpty}" Name="Eletkorok">
             <DockPanel>
                 <Label DockPanel.Dock="Top" Content="Add meg az életkorokat! (nem kötelező)"/>
-                <DataGrid ItemsSource="{Binding KiscsoportbaOsztando}" CanUserAddRows="False" CanUserDeleteRows="False" AutoGenerateColumns="False">
+                <DataGrid ItemsSource="{Binding CsoportokbaOsztando}" CanUserAddRows="False" CanUserDeleteRows="False" AutoGenerateColumns="False">
                     <DataGrid.Columns>
                         <DataGridTextColumn Binding="{Binding Name}" Header="Név" IsReadOnly="True"/>
                         <DataGridTextColumn Binding="{Binding BirthYear}" Header="Születési év"/>
@@ -159,9 +161,30 @@
         </TabItem>
         <TabItem Header="Megszorítások" IsEnabled="{Binding PeopleNotEmpty}" Name="Megszoritasok">
             <DockPanel>
+                <Label DockPanel.Dock="Top" Content="Megkötések a kiscsoportbeosztáshoz"/>
                 <DockPanel DockPanel.Dock="Top" LastChildFill="False">
-                    <Label DockPanel.Dock="Left" Content="Megkötések a kiscsoportbeosztáshoz"/>
-                    <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
+                        <ComboBox ItemsSource="{Binding CsoportokbaOsztando}" IsEditable="False" SelectedValue="{Binding Edge.Persons[0]}" MinWidth="100" IsSynchronizedWithCurrentItem="False"/>
+                        <Label Content=" és "/>
+                        <ComboBox ItemsSource="{Binding CsoportokbaOsztando}" IsEditable="False" SelectedValue="{Binding Edge.Persons[1]}" MinWidth="100" IsSynchronizedWithCurrentItem="False"/>
+                        <ComboBox IsEditable="False" SelectedValue="{Binding Edge.Dislike}" SelectedValuePath="Tag" MinWidth="100" Margin="5,0,0,0">
+                            <ComboBox.Items>
+                                <ComboBoxItem Content="együtt kell legyenek" Tag="False"/>
+                                <ComboBoxItem Content="nem lehetnek együtt" Tag="True"/>
+                            </ComboBox.Items>
+                        </ComboBox>
+                        <Label Content=", mert "/>
+                        <TextBox Text="{Binding Edge.Reason}" MinWidth="100"/>
+                        <Border Style="{StaticResource MaterialShadow}">
+                            <view:MaterialButton Click="AddEdge" Height="20" Margin="10,0,0,0">
+                                <Button.Content>
+                                    <TextBlock Text="+" Margin="0,-6.5,0,0" FontSize="20"/>
+                                </Button.Content>
+                            </view:MaterialButton>
+                        </Border>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
                         <Label Content="Legnagyobb megengedett korkülönbség"/>
                         <TextBox MinWidth="20">
                             <TextBox.Text>
@@ -172,28 +195,8 @@
                                 </Binding>
                             </TextBox.Text>
                         </TextBox>
-                    </StackPanel>
-                </DockPanel>
-                <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
-                    <ComboBox ItemsSource="{Binding KiscsoportbaOsztando}" IsEditable="False" SelectedValue="{Binding Edge.Persons[0]}" MinWidth="100" IsSynchronizedWithCurrentItem="False"/>
-                    <Label Content=" és "/>
-                    <ComboBox ItemsSource="{Binding KiscsoportbaOsztando}" IsEditable="False" SelectedValue="{Binding Edge.Persons[1]}" MinWidth="100" IsSynchronizedWithCurrentItem="False"/>
-                    <ComboBox IsEditable="False" SelectedValue="{Binding Edge.Dislike}" SelectedValuePath="Tag" MinWidth="100" Margin="5,0,0,0">
-                        <ComboBox.Items>
-                            <ComboBoxItem Content="együtt kell legyenek" Tag="False"/>
-                            <ComboBoxItem Content="nem lehetnek együtt" Tag="True"/>
-                        </ComboBox.Items>
-                    </ComboBox>
-                    <Label Content=", mert "/>
-                    <TextBox Text="{Binding Edge.Reason}" MinWidth="100"/>
-                    <Border Style="{StaticResource MaterialShadow}">
-                        <view:MaterialButton Click="AddEdge" Height="20" Margin="10,0,0,0">
-                            <Button.Content>
-                                <TextBlock Text="+" Margin="0,-6.5,0,0" FontSize="20"/>
-                            </Button.Content>
-                        </view:MaterialButton>
-                    </Border>
-                </StackPanel>
+                    </StackPanel>                    
+                </DockPanel>                
                 <ItemsControl ItemsSource="{Binding Edges}" Margin="5">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
@@ -239,11 +242,11 @@
                 <Label Content="Zugliget"/>
                 <Label Content="Szentendre" Grid.Column="1"/>
                 <view:DnDItemsControl Grid.Row="1" ItemsSource="{Binding MutuallyExclusiveGroups[0]}" x:Name="Zugliget"
-                                      dd:DragDrop.DropHandler="{Binding}" ColorByType="True"/>
+                                      dd:DragDrop.DropHandler="{Binding}" ColorUjoncs="True"/>
                 <view:DnDItemsControl Grid.Row="1" Grid.Column="1" ItemsSource="{Binding Szentendre}" x:Name="Szentendre"
-                                      dd:DragDrop.DropHandler="{Binding}" ColorByType="True"/>
-                <view:DnDItemsControl Grid.Row="2" Grid.ColumnSpan="2" ItemsSource="{Binding KiscsoportbaOsztando}" x:Name="HV20All"
-                                      dd:DragDrop.DropHandler="{Binding}" ColorByType="True"/>
+                                      dd:DragDrop.DropHandler="{Binding}" ColorUjoncs="True"/>
+                <view:DnDItemsControl Grid.Row="2" Grid.ColumnSpan="2" ItemsSource="{Binding CsoportokbaOsztando}" x:Name="HV20All"
+                                      dd:DragDrop.DropHandler="{Binding}" ColorUjoncs="True"/>
             </Grid>
         </TabItem>
         <TabItem Header="Kiscsoportbeosztás" Name="Kiscsoportbeoszto">
@@ -253,7 +256,7 @@
                     <hammer:SpinningWheel Radius="9" CircleRadius="2.5" Visibility="Hidden" Name="MagicAnimation" Margin="20,0,0,0" DockPanel.Dock="Left"/>
                     <hammer:SpinningWheel Radius="9" CircleRadius="2.5" Visibility="Hidden" Name="XLSSavingAnimation" Margin="20,0,20,0" DockPanel.Dock="Right"/>
                     <Button Content="Mentés" Padding="5" Margin="5,0,0,0" Click="SaveXLS" DockPanel.Dock="Right" IsEnabled="{Binding BeosztasKesz}"/>
-                    <Button Content="Törlés" Padding="5" Click="ClearGroups" DockPanel.Dock="Right"/>
+                    <Button Content="Törlés" Padding="5" Click="ClearKiscsoportok" DockPanel.Dock="Right"/>
                 </DockPanel>
                 <StatusBar DockPanel.Dock="Bottom">
                     <StatusBarItem Content="{Binding Status}" MinHeight="22"/>
@@ -278,7 +281,8 @@
                             <Style TargetType="view:DnDItemsControl">
                                 <Setter Property="Margin" Value="5"/>
                                 <Setter Property="dd:DragDrop.DropHandler" Value="{Binding}"/>
-                                <Setter Property="ColorByType" Value="True"/>
+                                <Setter Property="ColorUjoncs" Value="True"/>
+                                <Setter Property="BoldKiscsoportvezetok" Value="True"/>
                             </Style>
                         </ResourceDictionary>
                     </Grid.Resources>
@@ -296,6 +300,56 @@
                     <view:DnDItemsControl Grid.Row="1" Grid.Column="5" ItemsSource="{Binding Kiscsoportok[11]}" x:Name="kcs12"/>
                     <Label Grid.Row="2" Content="Nincsenek beosztva:"/>
                     <view:DnDItemsControl Grid.Row="3" Grid.ColumnSpan="6" ItemsSource="{Binding NoKiscsoport}" x:Name="nokcs"/>
+                </Grid>
+            </DockPanel>
+        </TabItem>
+        <TabItem Header="Alvócsoport-beosztás" Name="Alvocsoportbeoszto">
+            <DockPanel>
+                <DockPanel DockPanel.Dock="Top" LastChildFill="False" Width="Auto">
+                    <Button Content="Törlés" Padding="5" Click="ClearAlvocsoportok" DockPanel.Dock="Right"/>
+                </DockPanel>
+                <StatusBar DockPanel.Dock="Bottom">
+                    <StatusBarItem Content="{Binding Status}" MinHeight="22"/>
+                </StatusBar>
+                <Grid Name="Alvocsoportok">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.Resources>
+                        <ResourceDictionary>
+                            <Style TargetType="view:DnDItemsControl">
+                                <Setter Property="Margin" Value="5"/>
+                                <Setter Property="dd:DragDrop.DropHandler" Value="{Binding}"/>
+                                <Setter Property="ColorUjoncs" Value="True"/>
+                                <Setter Property="BoldAlvocsoportvezetok" Value="True"/>
+                            </Style>
+                        </ResourceDictionary>
+                    </Grid.Resources>
+                    <view:DnDItemsControl Grid.Row="0" Grid.Column="0" ItemsSource="{Binding Alvocsoportok[0]}" x:Name="acs1"/>
+                    <view:DnDItemsControl Grid.Row="0" Grid.Column="1" ItemsSource="{Binding Alvocsoportok[1]}" x:Name="acs2"/>
+                    <view:DnDItemsControl Grid.Row="0" Grid.Column="2" ItemsSource="{Binding Alvocsoportok[2]}" x:Name="acs3"/>
+                    <view:DnDItemsControl Grid.Row="0" Grid.Column="3" ItemsSource="{Binding Alvocsoportok[3]}" x:Name="acs4"/>
+                    <view:DnDItemsControl Grid.Row="0" Grid.Column="4" ItemsSource="{Binding Alvocsoportok[4]}" x:Name="acs5"/>
+                    <view:DnDItemsControl Grid.Row="0" Grid.Column="5" ItemsSource="{Binding Alvocsoportok[5]}" x:Name="acs6"/>
+                    <view:DnDItemsControl Grid.Row="1" Grid.Column="0" ItemsSource="{Binding Alvocsoportok[6]}" x:Name="acs7"/>
+                    <view:DnDItemsControl Grid.Row="1" Grid.Column="1" ItemsSource="{Binding Alvocsoportok[7]}" x:Name="acs8"/>
+                    <view:DnDItemsControl Grid.Row="1" Grid.Column="2" ItemsSource="{Binding Alvocsoportok[8]}" x:Name="acs9"/>
+                    <view:DnDItemsControl Grid.Row="1" Grid.Column="3" ItemsSource="{Binding Alvocsoportok[9]}" x:Name="acs10"/>
+                    <view:DnDItemsControl Grid.Row="1" Grid.Column="4" ItemsSource="{Binding Alvocsoportok[10]}" x:Name="acs11"/>
+                    <view:DnDItemsControl Grid.Row="1" Grid.Column="5" ItemsSource="{Binding Alvocsoportok[11]}" x:Name="acs12"/>
+                    <Label Grid.Row="2" Content="Nincsenek beosztva:"/>
+                    <view:DnDItemsControl Grid.Row="3" Grid.ColumnSpan="6" ItemsSource="{Binding NoAlvocsoport}" x:Name="noacs"/>
                 </Grid>
             </DockPanel>
         </TabItem>

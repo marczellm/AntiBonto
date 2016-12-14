@@ -28,14 +28,21 @@
                                 <Style.Triggers>
                                     <MultiDataTrigger>
                                         <MultiDataTrigger.Conditions>
-                                            <Condition Binding="{Binding ColorByType, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}" Value="True"/>
+                                            <Condition Binding="{Binding BoldKiscsoportvezetok, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}" Value="True"/>
                                             <Condition Binding="{Binding Kiscsoportvezeto}" Value="True"/>
                                         </MultiDataTrigger.Conditions>
                                         <Setter Property="FontWeight" Value="Bold"/>
                                     </MultiDataTrigger>
                                     <MultiDataTrigger>
                                         <MultiDataTrigger.Conditions>
-                                            <Condition Binding="{Binding ColorByType, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}" Value="True"/>
+                                            <Condition Binding="{Binding BoldAlvocsoportvezetok, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}" Value="True"/>
+                                            <Condition Binding="{Binding Alvocsoportvezeto}" Value="True"/>
+                                        </MultiDataTrigger.Conditions>
+                                        <Setter Property="FontWeight" Value="Bold"/>
+                                    </MultiDataTrigger>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding ColorUjoncs, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}" Value="True"/>
                                             <Condition Binding="{Binding Type}" Value="{x:Static main:PersonType.Ujonc}"/>
                                         </MultiDataTrigger.Conditions>
                                         <Setter Property="Foreground" Value="Green"/>
