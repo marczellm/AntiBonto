@@ -1,6 +1,7 @@
 ﻿using MoreLinq;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 
@@ -229,16 +230,6 @@ namespace AntiBonto
             return kesz;
         }
 
-        private void SwapKiscsoports(int i, int j)
-        {
-            foreach (Person p in d.Kiscsoport(i).ToList())
-                p.Kiscsoport = -i - 2;
-            foreach (Person p in d.Kiscsoport(j).ToList())
-                p.Kiscsoport = i;
-            foreach (Person p in d.Kiscsoport(-i - 2).ToList())
-                p.Kiscsoport = j;
-        }
-
         /// <summary>
         /// Renumbers the share groups so that the weekend leaders and the music team leader are in the groups with the highest number
         /// </summary>
@@ -246,11 +237,11 @@ namespace AntiBonto
         {
             int l = d.Lanyvezeto.Kiscsoport, f = d.Fiuvezeto.Kiscsoport, z = d.Zeneteamvezeto.Kiscsoport;
 
-            SwapKiscsoports(d.Lanyvezeto.Kiscsoport, m - 1);
+            d.SwapKiscsoports(d.Lanyvezeto.Kiscsoport, m - 1);
             if (f != l)
-                SwapKiscsoports(d.Fiuvezeto.Kiscsoport, m - 2);
+                d.SwapKiscsoports(d.Fiuvezeto.Kiscsoport, m - 2);
             if (z !=l && z != f)
-                SwapKiscsoports(d.Zeneteamvezeto.Kiscsoport, m - 3);            
+                d.SwapKiscsoports(d.Zeneteamvezeto.Kiscsoport, m - 3);
         }
 
         #region Extras

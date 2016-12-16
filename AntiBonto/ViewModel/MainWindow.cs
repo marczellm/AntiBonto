@@ -8,6 +8,7 @@ using System.Windows.Data;
 using System.Windows;
 using System;
 using System.Windows.Controls;
+using System.Diagnostics;
 
 namespace AntiBonto.ViewModel
 {
@@ -93,27 +94,31 @@ namespace AntiBonto.ViewModel
                 return;
             }
             var p = (Person)dropInfo.Data;
-            if (p.Nem == Nem.Fiu && target.Name == "Lanyvezeto" || p.Nem == Nem.Lany && target.Name == "Fiuvezeto")
+            if (p.Nem == Nem.Fiu && target.Name == "Lanyvezeto"
+             || p.Nem == Nem.Lany && target.Name == "Fiuvezeto"
+             || source.Name == "PeopleView" && target.Name != "PeopleView" && target.Name != "AddOrRemovePersonButton"
+             || target.Name == "Kiscsoportvezetok" && kiscsoportvezetok.Cast<Person>().Count() >= 14
+             || target.Name == "Alvocsoportvezetok" && alvocsoportvezetok.Cast<Person>().Count() >= 14)
+            {
                 dropInfo.Effects = DragDropEffects.None;
+            }
             else if (target.Name.StartsWith("kcs"))
             {
                 int kcsn = Int32.Parse(target.Name.Remove(0, 3)) - 1;
                 string message = null;
                 dropInfo.Effects = (kcsn != p.Kiscsoport && Algorithm.Conflicts(p, kcsn, out message)) ? DragDropEffects.None : DragDropEffects.Move;
-                Status = message;
+                StatusText = message;
             }
             else if (target.Name.Contains("kcs") && p.Kiscsoportvezeto)
             {
                 dropInfo.Effects = DragDropEffects.None;
-                Status = "A kiscsoportvezetők nem mozgathatók!";
+                StatusText = "A kiscsoportvezetők nem mozgathatók!";
             }
             else if (target.Name.Contains("acs") && p.Alvocsoportvezeto)
             {
                 dropInfo.Effects = DragDropEffects.None;
-                Status = "Az alvócsoportvezetők nem mozgathatók!";
+                StatusText = "Az alvócsoportvezetők nem mozgathatók!";
             }
-            else if (source.Name == "PeopleView" && target.Name != "PeopleView" && target.Name != "AddOrRemovePersonButton")
-                dropInfo.Effects = DragDropEffects.None;
             else
                 dropInfo.Effects = DragDropEffects.Move;            
         }
@@ -125,11 +130,11 @@ namespace AntiBonto.ViewModel
             var target = (FrameworkElement)dropInfo.VisualTarget;
             var source = (FrameworkElement)dropInfo.DragInfo.VisualSource;
             Person p = (Person)dropInfo.Data;
-            switch(target.Name)
+            switch (target.Name)
             {
                 case "Fiuk": p.Nem = Nem.Fiu; break;
                 case "Lanyok": p.Nem = Nem.Lany; break;
-                case "Nullnemuek": p.Nem = Nem.Undefined; break;                
+                case "Nullnemuek": p.Nem = Nem.Undefined; break;
                 case "Ujoncok": p.Type = PersonType.Ujonc; break;
                 case "Zeneteamvezeto": Zeneteamvezeto = p; break;
                 case "Lanyvezeto": Lanyvezeto = p; break;
@@ -145,12 +150,18 @@ namespace AntiBonto.ViewModel
                         p.Type = PersonType.Zeneteamtag;
                     break;
                 case "Kiscsoportvezetok":
-                    p.Kiscsoportvezeto = true;
-                    p.Kiscsoport = Kiscsoportvezetok.Cast<Person>().Count();
+                    if (!p.Kiscsoportvezeto)
+                    {
+                        p.Kiscsoportvezeto = true;
+                        p.Kiscsoport = Kiscsoportvezetok.Cast<Person>().Count();
+                    }
                     break;
                 case "Alvocsoportvezetok":
-                    p.Alvocsoportvezeto = true;
-                    p.Alvocsoport = Alvocsoportvezetok.Cast<Person>().Count();
+                    if (!p.Alvocsoportvezeto)
+                    {
+                        p.Alvocsoportvezeto = true;
+                        p.Alvocsoport = Alvocsoportvezetok.Cast<Person>().Count();
+                    }
                     break;
                 case "AddOrRemovePersonButton":
                     People.Remove(p);
@@ -159,8 +170,18 @@ namespace AntiBonto.ViewModel
             if (source.Name == "Kiscsoportvezetok" && (target.Name == "Team" || target.Name == "Ujoncok" || target.Name == "Egyeb"))
             {
                 p.Kiscsoportvezeto = false;
-                foreach (Person q in Kiscsoport(p.Kiscsoport))
+                int numKiscsoportok = kiscsoportvezetok.Cast<Person>().Count();
+                SwapKiscsoports(p.Kiscsoport, numKiscsoportok - 1);
+                foreach (Person q in Kiscsoport(numKiscsoportok - 1))
                     q.Kiscsoport = -1;
+            }
+            if (source.Name == "Alvocsoportvezetok" && (target.Name == "Team" || target.Name == "Ujoncok" || target.Name == "Egyeb"))
+            {
+                p.Alvocsoportvezeto = false;
+                int numAlvocsoportok = alvocsoportvezetok.Cast<Person>().Count();
+                SwapAlvocsoports(p.Alvocsoport, numAlvocsoportok - 1);
+                foreach (Person q in Alvocsoport(numAlvocsoportok - 1))
+                    q.Alvocsoport = -1;
             }
             if (target.Name.StartsWith("kcs"))
                 p.Kiscsoport = Int32.Parse(target.Name.Remove(0, 3)) - 1;
@@ -202,7 +223,7 @@ namespace AntiBonto.ViewModel
         private volatile bool kiscsoportInited = false;
 
         /// <summary>
-        /// This method is called when the kiscsoportbeoszto tab is successfully opened because all conditions have been met.
+        /// This method is called when the kiscsoportbeoszto tab is opened and all conditions have been met.
         /// </summary>
         internal void InitKiscsoport()
         {
@@ -222,7 +243,7 @@ namespace AntiBonto.ViewModel
         private volatile bool alvocsoportInited = false;
 
         /// <summary>
-        /// This method is called when the alvocsoportbeoszto tab is successfully opened because all conditions have been met.
+        /// This method is called when the alvocsoportbeoszto tab is successfully opened and all conditions have been met.
         /// </summary>
         internal void InitAlvocsoport()
         {
@@ -478,11 +499,11 @@ namespace AntiBonto.ViewModel
             set { maxAgeDifference = value; RaisePropertyChanged(); }
         }
         public Algorithms Algorithm { get; set; }
-        private string status = "";
-        public string Status
+        private string statusText = "";
+        public string StatusText
         {
-            get { return status; }
-            set { status = value; RaisePropertyChanged(); }
+            get { return statusText; }
+            set { statusText = value; RaisePropertyChanged(); }
         }
         /// <summary>
         /// Adding this seems to fix a bug (see http://stackoverflow.com/questions/37394151), although I have no idea why
@@ -532,6 +553,32 @@ namespace AntiBonto.ViewModel
                 if (WeekendNumber == 20)
                     Szentendre.AddRange(value.Szentendre.Select(p => People.Single(q => q.Name == p.Name)));
             }
+        }
+
+        public void SwapKiscsoports(int i, int j)
+        {
+            Debug.Assert(i != -100);
+            Debug.Assert(j != -100);
+            if (i == j) return;
+            foreach (Person p in Kiscsoport(i).ToList())
+                p.Kiscsoport = -100;
+            foreach (Person p in Kiscsoport(j).ToList())
+                p.Kiscsoport = i;
+            foreach (Person p in Kiscsoport(-100).ToList())
+                p.Kiscsoport = j;
+        }
+
+        public void SwapAlvocsoports(int i, int j)
+        {
+            Debug.Assert(i != -100);
+            Debug.Assert(j != -100);
+            if (i == j) return;
+            foreach (Person p in Alvocsoport(i).ToList())
+                p.Alvocsoport = -100;
+            foreach (Person p in Alvocsoport(j).ToList())
+                p.Alvocsoport = i;
+            foreach (Person p in Alvocsoport(-100).ToList())
+                p.Alvocsoport = j;
         }
 
         #region Extras

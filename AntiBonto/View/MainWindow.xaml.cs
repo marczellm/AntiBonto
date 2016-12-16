@@ -24,8 +24,8 @@ namespace AntiBonto
             InitializeComponent();
             Closing += MainWindow_Closing;
             Loaded += MainWindow_Loaded;
-            kcs = new DnDItemsControl[] { kcs1, kcs2, kcs3, kcs4, kcs5, kcs6, kcs7, kcs8, kcs9, kcs10, kcs11, kcs12 };
-            acs = new DnDItemsControl[] { acs1, acs2, acs3, acs4, acs5, acs6, acs7, acs8, acs9, acs10, acs11, acs12 };
+            kcs = new DnDItemsControl[] { kcs1, kcs2, kcs3, kcs4, kcs5, kcs6, kcs7, kcs8, kcs9, kcs10, kcs11, kcs12, kcs13, kcs14 };
+            acs = new DnDItemsControl[] { acs1, acs2, acs3, acs4, acs5, acs6, acs7, acs8, acs9, acs10, acs11, acs12, acs13, acs14 };
             string folder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "AntiBonto");
             if (!Directory.Exists(folder))
                 Directory.CreateDirectory(folder);
@@ -187,17 +187,12 @@ namespace AntiBonto
                     message = "Nincsenek résztvevők!";
                     newTab = Resztvevok;
                 }
-                else if (k.Any(p => p.Age < 0 || p.Age > 100))
-                {
-                    message = "Állítsd be az életkorokat!";
-                    newTab = Eletkorok;
-                }
-                else if (v.Kiscsoportvezetok.IsEmpty)
+                else if (v.Kiscsoportvezetok.IsEmpty && newTab == Kiscsoportbeoszto)
                 {
                     message = "Jelöld ki a kiscsoportvezetőket!";
                     newTab = Szerepek;
                 }
-                else if (v.Alvocsoportvezetok.IsEmpty)
+                else if (v.Alvocsoportvezetok.IsEmpty && newTab == Alvocsoportbeoszto)
                 {
                     message = "Jelöld ki az alvócsoportvezetőket!";
                     newTab = Szerepek;
@@ -219,13 +214,15 @@ namespace AntiBonto
                 }
                 else if (LanyokFiuk.Visibility == Visibility.Visible && k.Any(p => p.Nem == Nem.Undefined))
                 {
-                    message = "Még nem válogattad ki a lányokat és a fiúkat!";
+                    message = "Válogasd szét a lányokat és a fiúkat!";
                     newTab = LanyokFiuk;
                 }
                 if (message != null)
                 {
-                    MessageBox.Show(message);
-                    ((TabControl)sender).SelectedItem = newTab;
+                    viewModel.StatusText = message;
+                    MagicButton.IsEnabled = false;
+                    SaveButton.IsEnabled = false;
+                    // TabControl.SelectedItem = newTab;
                 }
                 else if (newTab == Kiscsoportbeoszto)
                 {
@@ -239,6 +236,8 @@ namespace AntiBonto
                             BindingOperations.GetBindingExpression(kcs[i], ItemsControl.ItemsSourceProperty).UpdateTarget();
                     }
                     viewModel.Algorithm = new Algorithms(viewModel);
+                    MagicButton.IsEnabled = true;
+                    SaveButton.IsEnabled = true;
                 }
                 else if (newTab == Alvocsoportbeoszto)
                 {
@@ -257,7 +256,7 @@ namespace AntiBonto
 
         private async void Magic(object sender, RoutedEventArgs e)
         {
-            viewModel.Status = "";            
+            viewModel.StatusText = "";            
             MagicAnimation.Visibility = Visibility.Visible;
             var alg = viewModel.Algorithm;
             var btn = (Button)sender;
@@ -273,7 +272,7 @@ namespace AntiBonto
                 try
                 {
                     if (!await Task.Run(() => alg.NaiveFirstFit(ct), ct))
-                        viewModel.Status = "Nem sikerült az automatikus beosztás!";
+                        viewModel.StatusText = "Nem sikerült az automatikus beosztás!";
                 }
                 catch (AggregateException) { }
             }

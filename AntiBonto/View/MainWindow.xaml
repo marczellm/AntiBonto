@@ -83,8 +83,8 @@
                         <ColumnDefinition/>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
-                    <Label Grid.Row="2"    Content="Kiscsoportvezetők (max. 12)"/>
-                    <Label Grid.Row="2" Grid.Column="2"  Content="Alvócsoportvezetők (max. 12)"/>
+                    <Label Grid.Row="2"    Content="Kiscsoportvezetők (max. 14)"/>
+                    <Label Grid.Row="2" Grid.Column="2"  Content="Alvócsoportvezetők (max. 14)"/>
                     <Label                 Content="Lány vezető"/>
                     <Label Grid.Column="1" Content="Fiú vezető"/>
                     <Label Grid.Column="3" Content="Zeneteamvezető"/>
@@ -252,17 +252,16 @@
         <TabItem Header="Kiscsoportbeosztás" Name="Kiscsoportbeoszto">
             <DockPanel>
                 <DockPanel DockPanel.Dock="Top" LastChildFill="False" Width="Auto">
-                    <Button Content="Magic" Padding="5" Click="Magic" DockPanel.Dock="Left"/>
-                    <hammer:SpinningWheel Radius="9" CircleRadius="2.5" Visibility="Hidden" Name="MagicAnimation" Margin="20,0,0,0" DockPanel.Dock="Left"/>
-                    <hammer:SpinningWheel Radius="9" CircleRadius="2.5" Visibility="Hidden" Name="XLSSavingAnimation" Margin="20,0,20,0" DockPanel.Dock="Right"/>
-                    <Button Content="Mentés" Padding="5" Margin="5,0,0,0" Click="SaveXLS" DockPanel.Dock="Right" IsEnabled="{Binding BeosztasKesz}"/>
+                    <Button Content="Magic" Padding="5" Click="Magic" DockPanel.Dock="Left" Name="MagicButton"/>
+                    <hammer:SpinningWheel Radius="9" CircleRadius="2.5" Visibility="Hidden" Name="MagicAnimation" Margin="20,0,0,0" DockPanel.Dock="Left"/>                    
                     <Button Content="Törlés" Padding="5" Click="ClearKiscsoportok" DockPanel.Dock="Right"/>
                 </DockPanel>
                 <StatusBar DockPanel.Dock="Bottom">
-                    <StatusBarItem Content="{Binding Status}" MinHeight="22"/>
+                    <StatusBarItem Content="{Binding StatusText}" MinHeight="22"/>
                 </StatusBar>
                 <Grid Name="Kiscsoportok">
                     <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
                         <ColumnDefinition/>
                         <ColumnDefinition/>
                         <ColumnDefinition/>
@@ -292,27 +291,32 @@
                     <view:DnDItemsControl Grid.Row="0" Grid.Column="3" ItemsSource="{Binding Kiscsoportok[3]}" x:Name="kcs4"/>
                     <view:DnDItemsControl Grid.Row="0" Grid.Column="4" ItemsSource="{Binding Kiscsoportok[4]}" x:Name="kcs5"/>
                     <view:DnDItemsControl Grid.Row="0" Grid.Column="5" ItemsSource="{Binding Kiscsoportok[5]}" x:Name="kcs6"/>
-                    <view:DnDItemsControl Grid.Row="1" Grid.Column="0" ItemsSource="{Binding Kiscsoportok[6]}" x:Name="kcs7"/>
-                    <view:DnDItemsControl Grid.Row="1" Grid.Column="1" ItemsSource="{Binding Kiscsoportok[7]}" x:Name="kcs8"/>
-                    <view:DnDItemsControl Grid.Row="1" Grid.Column="2" ItemsSource="{Binding Kiscsoportok[8]}" x:Name="kcs9"/>
-                    <view:DnDItemsControl Grid.Row="1" Grid.Column="3" ItemsSource="{Binding Kiscsoportok[9]}" x:Name="kcs10"/>
-                    <view:DnDItemsControl Grid.Row="1" Grid.Column="4" ItemsSource="{Binding Kiscsoportok[10]}" x:Name="kcs11"/>
-                    <view:DnDItemsControl Grid.Row="1" Grid.Column="5" ItemsSource="{Binding Kiscsoportok[11]}" x:Name="kcs12"/>
+                    <view:DnDItemsControl Grid.Row="0" Grid.Column="6" ItemsSource="{Binding Kiscsoportok[6]}" x:Name="kcs7"/>
+                    <view:DnDItemsControl Grid.Row="1" Grid.Column="0" ItemsSource="{Binding Kiscsoportok[7]}" x:Name="kcs8"/>
+                    <view:DnDItemsControl Grid.Row="1" Grid.Column="1" ItemsSource="{Binding Kiscsoportok[8]}" x:Name="kcs9"/>
+                    <view:DnDItemsControl Grid.Row="1" Grid.Column="2" ItemsSource="{Binding Kiscsoportok[9]}" x:Name="kcs10"/>
+                    <view:DnDItemsControl Grid.Row="1" Grid.Column="3" ItemsSource="{Binding Kiscsoportok[10]}" x:Name="kcs11"/>
+                    <view:DnDItemsControl Grid.Row="1" Grid.Column="4" ItemsSource="{Binding Kiscsoportok[11]}" x:Name="kcs12"/>
+                    <view:DnDItemsControl Grid.Row="1" Grid.Column="5" ItemsSource="{Binding Kiscsoportok[12]}" x:Name="kcs13"/>
+                    <view:DnDItemsControl Grid.Row="1" Grid.Column="6" ItemsSource="{Binding Kiscsoportok[13]}" x:Name="kcs14"/>
                     <Label Grid.Row="2" Content="Nincsenek beosztva:"/>
-                    <view:DnDItemsControl Grid.Row="3" Grid.ColumnSpan="6" ItemsSource="{Binding NoKiscsoport}" x:Name="nokcs"/>
+                    <view:DnDItemsControl Grid.Row="3" Grid.ColumnSpan="7" ItemsSource="{Binding NoKiscsoport}" x:Name="nokcs"/>
                 </Grid>
             </DockPanel>
         </TabItem>
         <TabItem Header="Alvócsoport-beosztás" Name="Alvocsoportbeoszto">
             <DockPanel>
                 <DockPanel DockPanel.Dock="Top" LastChildFill="False" Width="Auto">
+                    <Button Content="Mentés" Padding="5" Click="SaveXLS" DockPanel.Dock="Left" IsEnabled="{Binding BeosztasKesz}" Name="SaveButton"/>
+                    <hammer:SpinningWheel Radius="9" CircleRadius="2.5" Visibility="Hidden" Name="XLSSavingAnimation" Margin="20,0,20,0" DockPanel.Dock="Left"/>                    
                     <Button Content="Törlés" Padding="5" Click="ClearAlvocsoportok" DockPanel.Dock="Right"/>
                 </DockPanel>
                 <StatusBar DockPanel.Dock="Bottom">
-                    <StatusBarItem Content="{Binding Status}" MinHeight="22"/>
+                    <StatusBarItem Content="{Binding StatusText}" MinHeight="22"/>
                 </StatusBar>
                 <Grid Name="Alvocsoportok">
                     <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
                         <ColumnDefinition/>
                         <ColumnDefinition/>
                         <ColumnDefinition/>
@@ -342,14 +346,16 @@
                     <view:DnDItemsControl Grid.Row="0" Grid.Column="3" ItemsSource="{Binding Alvocsoportok[3]}" x:Name="acs4"/>
                     <view:DnDItemsControl Grid.Row="0" Grid.Column="4" ItemsSource="{Binding Alvocsoportok[4]}" x:Name="acs5"/>
                     <view:DnDItemsControl Grid.Row="0" Grid.Column="5" ItemsSource="{Binding Alvocsoportok[5]}" x:Name="acs6"/>
-                    <view:DnDItemsControl Grid.Row="1" Grid.Column="0" ItemsSource="{Binding Alvocsoportok[6]}" x:Name="acs7"/>
-                    <view:DnDItemsControl Grid.Row="1" Grid.Column="1" ItemsSource="{Binding Alvocsoportok[7]}" x:Name="acs8"/>
-                    <view:DnDItemsControl Grid.Row="1" Grid.Column="2" ItemsSource="{Binding Alvocsoportok[8]}" x:Name="acs9"/>
-                    <view:DnDItemsControl Grid.Row="1" Grid.Column="3" ItemsSource="{Binding Alvocsoportok[9]}" x:Name="acs10"/>
-                    <view:DnDItemsControl Grid.Row="1" Grid.Column="4" ItemsSource="{Binding Alvocsoportok[10]}" x:Name="acs11"/>
-                    <view:DnDItemsControl Grid.Row="1" Grid.Column="5" ItemsSource="{Binding Alvocsoportok[11]}" x:Name="acs12"/>
+                    <view:DnDItemsControl Grid.Row="0" Grid.Column="6" ItemsSource="{Binding Alvocsoportok[6]}" x:Name="acs7"/>
+                    <view:DnDItemsControl Grid.Row="1" Grid.Column="0" ItemsSource="{Binding Alvocsoportok[7]}" x:Name="acs8"/>
+                    <view:DnDItemsControl Grid.Row="1" Grid.Column="1" ItemsSource="{Binding Alvocsoportok[8]}" x:Name="acs9"/>
+                    <view:DnDItemsControl Grid.Row="1" Grid.Column="2" ItemsSource="{Binding Alvocsoportok[9]}" x:Name="acs10"/>
+                    <view:DnDItemsControl Grid.Row="1" Grid.Column="3" ItemsSource="{Binding Alvocsoportok[10]}" x:Name="acs11"/>
+                    <view:DnDItemsControl Grid.Row="1" Grid.Column="4" ItemsSource="{Binding Alvocsoportok[11]}" x:Name="acs12"/>
+                    <view:DnDItemsControl Grid.Row="1" Grid.Column="5" ItemsSource="{Binding Alvocsoportok[12]}" x:Name="acs13"/>
+                    <view:DnDItemsControl Grid.Row="1" Grid.Column="6" ItemsSource="{Binding Alvocsoportok[13]}" x:Name="acs14"/>
                     <Label Grid.Row="2" Content="Nincsenek beosztva:"/>
-                    <view:DnDItemsControl Grid.Row="3" Grid.ColumnSpan="6" ItemsSource="{Binding NoAlvocsoport}" x:Name="noacs"/>
+                    <view:DnDItemsControl Grid.Row="3" Grid.ColumnSpan="7" ItemsSource="{Binding NoAlvocsoport}" x:Name="noacs"/>
                 </Grid>
             </DockPanel>
         </TabItem>
