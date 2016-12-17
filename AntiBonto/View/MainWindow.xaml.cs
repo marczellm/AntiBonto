@@ -22,8 +22,6 @@ namespace AntiBonto
         public MainWindow()
         {
             InitializeComponent();
-            Closing += MainWindow_Closing;
-            Loaded += MainWindow_Loaded;
             kcs = new DnDItemsControl[] { kcs1, kcs2, kcs3, kcs4, kcs5, kcs6, kcs7, kcs8, kcs9, kcs10, kcs11, kcs12, kcs13, kcs14 };
             acs = new DnDItemsControl[] { acs1, acs2, acs3, acs4, acs5, acs6, acs7, acs8, acs9, acs10, acs11, acs12, acs13, acs14 };
             string folder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "AntiBonto");
@@ -34,6 +32,10 @@ namespace AntiBonto
         private DnDItemsControl[] kcs, acs;
         private string filepath;
         private CancellationTokenSource cts;
+
+        private ViewModel.MainWindow viewModel { get { return (ViewModel.MainWindow)DataContext; } }
+
+        #region Event handlers
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
@@ -46,7 +48,6 @@ namespace AntiBonto
                     catch { } // If for example the XML is written by a previous version of this app, we shouldn't attempt to load it
                 }
             }
-            GongSolutions.Wpf.DragDrop.DragDrop.SetDragHandler(PeopleView, new DragHandler { Animation = (Storyboard)Resources["ButtonRotateBackAnimation"] });
 
             int i = 1, tag;
             foreach (TabItem tab in TabControl.Items)
@@ -70,11 +71,6 @@ namespace AntiBonto
             }
         }
 
-        private ViewModel.MainWindow viewModel { get { return (ViewModel.MainWindow)DataContext; } }
-
-        /// <summary>
-        /// Event handler
-        /// </summary>
         private async void LoadXLS(object sender, RoutedEventArgs e)
         {
             var btn = (Button)sender;
@@ -97,9 +93,11 @@ namespace AntiBonto
             {
                 viewModel.Edges.Clear();
                 viewModel.People.Clear();
-                viewModel.People.AddRange(await Task.Run<List<Person>>(() => {
+                viewModel.People.AddRange(await Task.Run<List<Person>>(() =>
+                {
                     try { return ExcelHelper.LoadXLS(dialog.FileName); }
-                    catch (Exception ex) {
+                    catch (Exception ex)
+                    {
                         MessageBox.Show("Hiba az Excel fájl olvasásakor" + Environment.NewLine + ex.Message ?? "" + Environment.NewLine + ex.InnerException?.Message ?? "");
                         return new List<Person>();
                     }
@@ -109,9 +107,28 @@ namespace AntiBonto
             btn.Click += LoadXLS;
         }
 
-        /// <summary>
-        /// Event handler
-        /// </summary>
+        private void SaveXLS(object sender, RoutedEventArgs e)
+        {
+            if (Type.GetTypeFromProgID("Excel.Application") == null)
+            {
+                MessageBox.Show("Excel nincs telepítve!");
+                return;
+            }
+            XLSSavingAnimation.Visibility = Visibility.Visible;
+            var dialog = new SaveFileDialog
+            {
+                DefaultExt = ".xlsm",
+                Filter = "Excel|*.xls;*.xlsx;*.xlsm",
+                DereferenceLinks = true,
+                AddExtension = true,
+                CheckPathExists = true
+            };
+            if (dialog.ShowDialog(this) == true)
+                try { ExcelHelper.SaveXLS(dialog.FileName, viewModel); }
+                catch (Exception ex) { MessageBox.Show("Hiba az Excel fájl írásakor" + Environment.NewLine + ex.Message ?? "" + Environment.NewLine + ex.InnerException?.Message ?? ""); }
+            XLSSavingAnimation.Visibility = Visibility.Hidden;
+        }
+
         private void AddPerson(object sender, RoutedEventArgs e)
         {
             viewModel.People.CollectionChanged += People_CollectionChanged;
@@ -207,22 +224,22 @@ namespace AntiBonto
                     message = "Nincs team!";
                     newTab = Szerepek;
                 }
-                else if (v.Fiuvezeto == null || v.Lanyvezeto == null || v.Zeneteamvezeto == null)
+                else if (v.Fiuvezeto == null || v.Lanyvezeto == null)
                 {
                     message = "Jelöld ki a vezetőket!";
                     newTab = Szerepek;
                 }
-                else if (LanyokFiuk.Visibility == Visibility.Visible && k.Any(p => p.Nem == Nem.Undefined))
+                else if  (v.Zeneteamvezeto == null)
                 {
-                    message = "Válogasd szét a lányokat és a fiúkat!";
-                    newTab = LanyokFiuk;
+                    message = "Jelöld ki a zeneteamvezetőt!";
+                    newTab = Szerepek;
                 }
                 if (message != null)
                 {
                     viewModel.StatusText = message;
                     MagicButton.IsEnabled = false;
                     SaveButton.IsEnabled = false;
-                    // TabControl.SelectedItem = newTab;
+                    // newTab is not activated, because it caused weird behaviour
                 }
                 else if (newTab == Kiscsoportbeoszto)
                 {
@@ -256,7 +273,7 @@ namespace AntiBonto
 
         private async void Magic(object sender, RoutedEventArgs e)
         {
-            viewModel.StatusText = "";            
+            viewModel.StatusText = "";
             MagicAnimation.Visibility = Visibility.Visible;
             var alg = viewModel.Algorithm;
             var btn = (Button)sender;
@@ -279,7 +296,7 @@ namespace AntiBonto
             MagicAnimation.Visibility = Visibility.Collapsed;
             btn.Click -= handler;
             btn.Click += Magic;
-            btn.Content = oldContent;            
+            btn.Content = oldContent;
         }
 
         private void ClearKiscsoportok(object sender, RoutedEventArgs e)
@@ -296,41 +313,6 @@ namespace AntiBonto
                     p.Alvocsoport = -1;
         }
 
-        private void SaveXLS(object sender, RoutedEventArgs e)
-        {
-            if (Type.GetTypeFromProgID("Excel.Application") == null)
-            {
-                MessageBox.Show("Excel nincs telepítve!");
-                return;
-            }
-            XLSSavingAnimation.Visibility = Visibility.Visible;
-            var dialog = new SaveFileDialog
-            {
-                DefaultExt = ".xlsm",
-                Filter = "Excel|*.xls;*.xlsx;*.xlsm",
-                DereferenceLinks = true,
-                AddExtension = true,
-                CheckPathExists = true
-            };
-            if (dialog.ShowDialog(this) == true)
-                try { ExcelHelper.SaveXLS(dialog.FileName, viewModel); }
-                catch (Exception ex) { MessageBox.Show("Hiba az Excel fájl írásakor" + Environment.NewLine + ex.Message ?? "" + Environment.NewLine + ex.InnerException?.Message ?? ""); }
-            XLSSavingAnimation.Visibility = Visibility.Hidden;
-        }
-    }
-
-    public class DragHandler : DefaultDragHandler
-    {
-        public Storyboard Animation { get; set; }
-        public override void DragCancelled()
-        {
-            base.DragCancelled();
-            Animation.Begin();
-        }
-        public override void Dropped(IDropInfo dropInfo)
-        {
-            base.Dropped(dropInfo);
-            Animation.Begin();
-        }
+        #endregion
     }
 }

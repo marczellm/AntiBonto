@@ -120,11 +120,16 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ViewModel\AppData.cs" />
     <Compile Include="ViewModel\Edge.cs" />
     <Compile Include="ExcelHelper.cs" />
+    <Compile Include="ViewModel\CollectionViewHelper.cs" />
+    <Compile Include="ViewModel\ObservableCollection2.cs" />
     <Compile Include="ViewModel\Person.cs" />
     <Compile Include="ViewModel\MainWindow.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />
+    <Compile Include="View\AnimatedDragHandler.cs" />
+    <Compile Include="View\DropHandler.cs" />
     <Compile Include="View\IntValidator.cs" />
     <Compile Include="View\MaterialButton.cs" />
     <Compile Include="View\DnDItemsControl.cs" />

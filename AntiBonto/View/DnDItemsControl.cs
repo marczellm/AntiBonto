@@ -7,6 +7,7 @@ namespace AntiBonto.View
     {
         static DnDItemsControl()
         {
+            // Metadata needs to be overriden in static constructor to indicate that the style is declared under Themes/Generic.xaml.
             DefaultStyleKeyProperty.OverrideMetadata(typeof(DnDItemsControl), new FrameworkPropertyMetadata(typeof(DnDItemsControl)));
         }
         public bool ColorUjoncs { get; set; } = false;

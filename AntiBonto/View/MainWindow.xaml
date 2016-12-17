@@ -8,7 +8,9 @@
         xmlns:hammer="clr-namespace:Hammer.SpinningWheel;assembly=Hammer.SpinningWheel"
         xmlns:dd="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
         mc:Ignorable="d"
-        Title="AntiBontó" Width="1024" Height="768">
+        Name="MainWindowName"
+        Title="AntiBontó" Width="1024" Height="768"
+        Closing="MainWindow_Closing" Loaded="MainWindow_Loaded">
     <Window.DataContext>
         <vm:MainWindow/>
     </Window.DataContext>
@@ -34,6 +36,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <view:DropHandler DataContext="{Binding DataContext, Source={x:Reference MainWindowName}}" x:Key="DropHandler"/>
     </Window.Resources>
     <TabControl SelectionChanged="TabControl_SelectionChanged" Name="TabControl">
         <TabItem Header="Résztvevők" Name="Resztvevok">
@@ -46,7 +49,10 @@
                 </DockPanel>
                 <Label Target="{Binding ElementName=PeopleView}" Content="Résztvevők" DockPanel.Dock="Top"/>
                 <Grid Margin="5">
-                    <view:DnDItemsControl x:Name="PeopleView" ItemsSource="{Binding People}" dd:DragDrop.DropHandler="{Binding}">
+                    <view:DnDItemsControl x:Name="PeopleView" ItemsSource="{Binding People}" dd:DragDrop.DropHandler="{StaticResource DropHandler}">
+                        <dd:DragDrop.DragHandler>
+                            <view:AnimatedDragHandler Animation="{StaticResource ButtonRotateBackAnimation}"/>
+                        </dd:DragDrop.DragHandler>
                         <ItemsControl.Triggers>
                             <EventTrigger RoutedEvent="DragDrop.DragEnter">
                                 <BeginStoryboard Storyboard="{StaticResource ButtonRotateAnimation}"/>
@@ -55,7 +61,7 @@
                     </view:DnDItemsControl>
                     <Border Style="{StaticResource MaterialShadow}" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="20">
                         <view:MaterialButton Click="AddPerson" x:Name="AddOrRemovePersonButton"
-                                         dd:DragDrop.DropHandler="{Binding}" dd:DragDrop.IsDropTarget="True"
+                                         dd:DragDrop.DropHandler="{StaticResource DropHandler}" dd:DragDrop.IsDropTarget="True"
                                          RenderTransformOrigin="0.5,0.5">
                             <Button.RenderTransform>
                                 <RotateTransform/>
@@ -92,18 +98,18 @@
                     <Label Grid.Row="4" Grid.Column="1" Content="Team"/>
                     <Label Grid.Row="4" Grid.Column="2" Content="Egyéb résztvevők"/>
                     <Label Grid.Row="4" Grid.Column="3" Content="Zeneteam"/>
-                    <view:DnDItemsControl Grid.Row="3" Grid.Column="0" ItemsSource="{Binding Kiscsoportvezetok}" dd:DragDrop.DropHandler="{Binding}" x:Name="Kiscsoportvezetok" Grid.ColumnSpan="2"/>
-                    <view:DnDItemsControl Grid.Row="3" Grid.Column="2" ItemsSource="{Binding Alvocsoportvezetok}" dd:DragDrop.DropHandler="{Binding}" x:Name="Alvocsoportvezetok" Grid.ColumnSpan="2"/>
-                    <view:DnDItemsControl Grid.Row="5" Grid.Column="0" ItemsSource="{Binding Ujoncok}"           dd:DragDrop.DropHandler="{Binding}" x:Name="Ujoncok"/>
-                    <view:DnDItemsControl Grid.Row="5" Grid.Column="1" ItemsSource="{Binding Team}"              dd:DragDrop.DropHandler="{Binding}" x:Name="Team"/>
-                    <view:DnDItemsControl Grid.Row="5" Grid.Column="3" ItemsSource="{Binding Zeneteam}"          dd:DragDrop.DropHandler="{Binding}" x:Name="Zeneteam"/>
-                    <view:DnDItemsControl Grid.Row="5" Grid.Column="2" ItemsSource="{Binding Egyeb}"             dd:DragDrop.DropHandler="{Binding}" x:Name="Egyeb"/>
+                    <view:DnDItemsControl Grid.Row="3" Grid.Column="0" ItemsSource="{Binding Kiscsoportvezetok}" dd:DragDrop.DropHandler="{StaticResource DropHandler}" x:Name="Kiscsoportvezetok" Grid.ColumnSpan="2"/>
+                    <view:DnDItemsControl Grid.Row="3" Grid.Column="2" ItemsSource="{Binding Alvocsoportvezetok}" dd:DragDrop.DropHandler="{StaticResource DropHandler}" x:Name="Alvocsoportvezetok" Grid.ColumnSpan="2"/>
+                    <view:DnDItemsControl Grid.Row="5" Grid.Column="0" ItemsSource="{Binding Ujoncok}"           dd:DragDrop.DropHandler="{StaticResource DropHandler}" x:Name="Ujoncok"/>
+                    <view:DnDItemsControl Grid.Row="5" Grid.Column="1" ItemsSource="{Binding Team}"              dd:DragDrop.DropHandler="{StaticResource DropHandler}" x:Name="Team"/>
+                    <view:DnDItemsControl Grid.Row="5" Grid.Column="3" ItemsSource="{Binding Zeneteam}"          dd:DragDrop.DropHandler="{StaticResource DropHandler}" x:Name="Zeneteam"/>
+                    <view:DnDItemsControl Grid.Row="5" Grid.Column="2" ItemsSource="{Binding Egyeb}"             dd:DragDrop.DropHandler="{StaticResource DropHandler}" x:Name="Egyeb"/>
                     <Label Grid.Row="1" Content="{Binding Lanyvezeto}" x:Name="Lanyvezeto" Margin="5" Padding="3" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
-                           dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding}" dd:DragDrop.DragAdornerTemplate="{StaticResource adorner}"/>
+                           dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{StaticResource DropHandler}" dd:DragDrop.DragAdornerTemplate="{StaticResource adorner}"/>
                     <Label Grid.Row="1" Grid.Column="1" Content="{Binding Fiuvezeto}" x:Name="Fiuvezeto" Margin="5" Padding="3" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
-                           dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding}" dd:DragDrop.DragAdornerTemplate="{StaticResource adorner}"/>
+                           dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{StaticResource DropHandler}" dd:DragDrop.DragAdornerTemplate="{StaticResource adorner}"/>
                     <Label Grid.Row="1" Grid.Column="3" Content="{Binding Zeneteamvezeto}" x:Name="Zeneteamvezeto" Margin="5" Padding="3" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
-                           dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{Binding}" dd:DragDrop.DragAdornerTemplate="{StaticResource adorner}"/>
+                           dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{StaticResource DropHandler}" dd:DragDrop.DragAdornerTemplate="{StaticResource adorner}"/>
 
                 </Grid>
             </DockPanel>
@@ -120,9 +126,9 @@
                 </DataGrid>
             </DockPanel>
         </TabItem>
-        <TabItem Header="Lányok-fiúk" IsEnabled="{Binding PeopleNotEmpty}" Name="LanyokFiuk" Visibility="Collapsed">
+        <TabItem Header="Lányok-fiúk" IsEnabled="{Binding PeopleNotEmpty}" Name="LanyokFiuk">
             <DockPanel>
-                <Label DockPanel.Dock="Top" Content="Válogasd szét a lányokat és a fiúkat!"/>
+                <Label DockPanel.Dock="Top" Content="Válogasd szét a lányokat és a fiúkat! (nem kötelező)"/>
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
@@ -136,11 +142,11 @@
                     <Label Grid.Column="0" Grid.Row="0" Content="Lányok"/>
                     <Label Grid.Column="2" Grid.Row="0" Content="Fiúk"/>
                     <view:DnDItemsControl Grid.Column="0" Grid.Row="1" ItemsSource="{Binding Lanyok}"
-                                          dd:DragDrop.DropHandler="{Binding}" x:Name="Lanyok"/>
+                                          dd:DragDrop.DropHandler="{StaticResource DropHandler}" x:Name="Lanyok"/>
                     <view:DnDItemsControl Grid.Column="1" Grid.Row="1" ItemsSource="{Binding Nullnemuek}"
-                                          dd:DragDrop.DropHandler="{Binding}" x:Name="Nullnemuek"/>
+                                          dd:DragDrop.DropHandler="{StaticResource DropHandler}" x:Name="Nullnemuek"/>
                     <view:DnDItemsControl Grid.Column="2" Grid.Row="1" ItemsSource="{Binding Fiuk}"
-                                          dd:DragDrop.DropHandler="{Binding}" x:Name="Fiuk"/>
+                                          dd:DragDrop.DropHandler="{StaticResource DropHandler}" x:Name="Fiuk"/>
                 </Grid>
             </DockPanel>
         </TabItem>
@@ -242,11 +248,11 @@
                 <Label Content="Zugliget"/>
                 <Label Content="Szentendre" Grid.Column="1"/>
                 <view:DnDItemsControl Grid.Row="1" ItemsSource="{Binding MutuallyExclusiveGroups[0]}" x:Name="Zugliget"
-                                      dd:DragDrop.DropHandler="{Binding}" ColorUjoncs="True"/>
+                                      dd:DragDrop.DropHandler="{StaticResource DropHandler}" ColorUjoncs="True"/>
                 <view:DnDItemsControl Grid.Row="1" Grid.Column="1" ItemsSource="{Binding Szentendre}" x:Name="Szentendre"
-                                      dd:DragDrop.DropHandler="{Binding}" ColorUjoncs="True"/>
+                                      dd:DragDrop.DropHandler="{StaticResource DropHandler}" ColorUjoncs="True"/>
                 <view:DnDItemsControl Grid.Row="2" Grid.ColumnSpan="2" ItemsSource="{Binding CsoportokbaOsztando}" x:Name="HV20All"
-                                      dd:DragDrop.DropHandler="{Binding}" ColorUjoncs="True"/>
+                                      dd:DragDrop.DropHandler="{StaticResource DropHandler}" ColorUjoncs="True"/>
             </Grid>
         </TabItem>
         <TabItem Header="Kiscsoportbeosztás" Name="Kiscsoportbeoszto">
@@ -279,7 +285,7 @@
                         <ResourceDictionary>
                             <Style TargetType="view:DnDItemsControl">
                                 <Setter Property="Margin" Value="5"/>
-                                <Setter Property="dd:DragDrop.DropHandler" Value="{Binding}"/>
+                                <Setter Property="dd:DragDrop.DropHandler" Value="{StaticResource DropHandler}"/>
                                 <Setter Property="ColorUjoncs" Value="True"/>
                                 <Setter Property="BoldKiscsoportvezetok" Value="True"/>
                             </Style>
@@ -334,7 +340,7 @@
                         <ResourceDictionary>
                             <Style TargetType="view:DnDItemsControl">
                                 <Setter Property="Margin" Value="5"/>
-                                <Setter Property="dd:DragDrop.DropHandler" Value="{Binding}"/>
+                                <Setter Property="dd:DragDrop.DropHandler" Value="{StaticResource DropHandler}"/>
                                 <Setter Property="ColorUjoncs" Value="True"/>
                                 <Setter Property="BoldAlvocsoportvezetok" Value="True"/>
                             </Style>
