@@ -99,7 +99,7 @@ namespace AntiBonto.View
                     if (!p.Alvocsoportvezeto)
                     {
                         p.Alvocsoportvezeto = true;
-                        p.Alvocsoport = d.Alvocsoportvezetok.Cast<Person>().Count();
+                        p.Alvocsoport = d.Alvocsoportvezetok.Cast<Person>().Select(q => q.Alvocsoport).DefaultIfEmpty(0).Max() + 1;
                     }
                     break;
                 case "AddOrRemovePersonButton":
@@ -117,9 +117,8 @@ namespace AntiBonto.View
             if (source.Name == "Alvocsoportvezetok" && (target.Name == "Team" || target.Name == "Ujoncok" || target.Name == "Egyeb"))
             {
                 p.Alvocsoportvezeto = false;
-                int numAlvocsoportok = d.Alvocsoportvezetok.Cast<Person>().Count();
-                d.SwapAlvocsoports(p.Alvocsoport, numAlvocsoportok - 1);
-                foreach (Person q in d.Alvocsoport(numAlvocsoportok - 1))
+                // No swapping here, because we reorder the sleeping groups anyway on opening of their tab
+                foreach (Person q in d.Alvocsoport(p.Alvocsoport))
                     q.Alvocsoport = -1;
             }
             if (target.Name.StartsWith("kcs"))

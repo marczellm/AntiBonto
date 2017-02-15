@@ -33,6 +33,9 @@ namespace AntiBonto.ViewModel
 
         private static Dictionary<string, ICollectionView> collectionViewCache = new Dictionary<string, ICollectionView>();
 
+        /// <summary>
+        /// Returns a newly created CollectionView that live filters the given collection by the given filter expression.
+        /// </summary>
         public static ICollectionView Get(object source, Expression<Func<object, bool>> filter)
         {
             CollectionViewSource cvs = new CollectionViewSource { Source = source, IsLiveFilteringRequested = true };
@@ -43,6 +46,9 @@ namespace AntiBonto.ViewModel
             return cvs.View;
         }
 
+        /// <summary>
+        /// Returns the existing CollectionView for the given property name, or a newly created one if there is none
+        /// </summary>
         public static ICollectionView Lazy(object source, Expression<Func<object, bool>> filter, [CallerMemberName] String name = "")
         {
             if (!collectionViewCache.ContainsKey(name))

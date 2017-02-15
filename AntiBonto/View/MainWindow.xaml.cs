@@ -1,6 +1,5 @@
 ﻿using AntiBonto.View;
 using AntiBonto.ViewModel;
-using GongSolutions.Wpf.DragDrop;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -12,7 +11,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
-using System.Windows.Media.Animation;
 using System.Xml.Serialization;
 
 namespace AntiBonto
@@ -188,11 +186,12 @@ namespace AntiBonto
             viewModel.People.Clear();
             viewModel.Edges.Clear();
         }
-
+        
         private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (e.AddedItems.Count > 0)
             {
+                viewModel.StatusText = "";
                 var newTab = e.AddedItems[0];
                 if (newTab != Kiscsoportbeoszto && newTab != Alvocsoportbeoszto)
                     return;
@@ -239,7 +238,7 @@ namespace AntiBonto
                     viewModel.StatusText = message;
                     MagicButton.IsEnabled = false;
                     SaveButton.IsEnabled = false;
-                    // newTab is not activated, because it caused weird behaviour
+                    // we don't activate newTab here anymore, because it caused weird behaviour
                 }
                 else if (newTab == Kiscsoportbeoszto)
                 {
@@ -254,22 +253,46 @@ namespace AntiBonto
                     }
                     viewModel.Algorithm = new Algorithms(viewModel);
                     MagicButton.IsEnabled = true;
-                    SaveButton.IsEnabled = true;
+                    BindingOperations.SetBinding(SaveButton, IsEnabledProperty, SaveButtonBinding);
                 }
                 else if (newTab == Alvocsoportbeoszto)
                 {
-                    viewModel.InitAlvocsoport();
-                    var acsn = viewModel.Alvocsoportvezetok.Cast<Person>().Count();
-                    for (int i = 0; i < acs.Count(); i++)
-                    {
-                        acs[i].Visibility = i < acsn ? Visibility.Visible : Visibility.Collapsed;
-                        acs[i].IsEnabled = i < acsn;
-                        if (i < acsn)
-                            BindingOperations.GetBindingExpression(acs[i], ItemsControl.ItemsSourceProperty).UpdateTarget();
+                    viewModel.InitAlvocsoport();                    
+                    int acs_nagyobbikfele = acs.Count() - acs.Count() / 2;
+                    int i = 0;
+                    foreach (Person q in viewModel.Alvocsoportvezetok.Cast<Person>().Where(p => p.Nem == Nem.Lany).OrderBy(p => p.Name).ToList())
+                    { // Put the girl sleeping groups first
+                        int j = q.Alvocsoport;
+                        Console.WriteLine(i + " " + j);
+                        if (i != j)
+                            viewModel.SwapAlvocsoports(i, j);
+                        i++;
                     }
+                    if (i <= acs_nagyobbikfele && viewModel.Alvocsoportvezetok.Cast<Person>().Count(p => p.Nem == Nem.Fiu) <= acs_nagyobbikfele)
+                    { // If both girls and boys fit in one row, order the boys so that they start in the second row
+                        i = acs_nagyobbikfele;
+                    }
+                    foreach (Person q in viewModel.Alvocsoportvezetok.Cast<Person>().Where(p => p.Nem == Nem.Fiu).OrderBy(p => p.Name).ToList())
+                    {
+                        int j = q.Alvocsoport;
+                        if (i != j)
+                            viewModel.SwapAlvocsoports(i, j);
+                        i++;
+                    }
+                    for (int j = 0; j < acs.Count(); j++)
+                    {
+                        bool b = viewModel.Alvocsoport(j).Any();
+                        acs[j].Visibility = b ? Visibility.Visible : Visibility.Collapsed;
+                        acs[j].IsEnabled = b;
+                        if (b)
+                            BindingOperations.GetBindingExpression(acs[j], ItemsControl.ItemsSourceProperty).UpdateTarget();
+                    }
+                    BindingOperations.GetBindingExpression(SaveButton, IsEnabledProperty)?.UpdateTarget();                    
                 }
             }
         }
+
+        
 
         private async void Magic(object sender, RoutedEventArgs e)
         {

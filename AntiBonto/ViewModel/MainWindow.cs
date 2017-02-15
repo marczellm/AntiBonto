@@ -64,8 +64,7 @@ namespace AntiBonto.ViewModel
                 return;
             kiscsoportok = Enumerable.Range(0, 15).Select(i => KiscsoportCollectionView(i)).ToList();
             
-            nokiscsoport = KiscsoportCollectionView(-1);
-            nokiscsoport.CollectionChanged += (s, e) => RaisePropertyChanged("BeosztasKesz");
+            NoKiscsoport.CollectionChanged += (s, e) => RaisePropertyChanged("BeosztasKesz");
 
             kiscsoportInited = true;
             RaisePropertyChanged("Kiscsoportok");
@@ -80,9 +79,8 @@ namespace AntiBonto.ViewModel
             if (alvocsoportInited)
                 return;
             alvocsoportok = Enumerable.Range(0, 15).Select(i => AlvocsoportCollectionView(i)).ToList();
-
-            noalvocsoport = AlvocsoportCollectionView(-1);
-            noalvocsoport.CollectionChanged += (s, e) => RaisePropertyChanged("BeosztasKesz");
+            
+            NoAlvocsoport.CollectionChanged += (s, e) => RaisePropertyChanged("BeosztasKesz");
 
             alvocsoportInited = true;
             RaisePropertyChanged("Alvocsoportok");
@@ -115,9 +113,8 @@ namespace AntiBonto.ViewModel
         {
             return People.Where(p => p.Type != PersonType.Egyeb && p.Alvocsoport == i);
         }
-        private ICollectionView nokiscsoport, noalvocsoport;
-        public ICollectionView NoKiscsoport { get { return nokiscsoport; } }
-        public ICollectionView NoAlvocsoport { get { return noalvocsoport; } }
+        public ICollectionView NoKiscsoport { get { return CollectionViewHelper.Lazy(People, p => ((Person)p).Kiscsoport == -1 && ((Person)p).Type != PersonType.Egyeb); } }
+        public ICollectionView NoAlvocsoport { get { return CollectionViewHelper.Get(People, p => ((Person)p).Alvocsoport == -1 && ((Person)p).Type != PersonType.Egyeb); } }
 
         private List<ICollectionView> kiscsoportok, alvocsoportok;
         public List<ICollectionView> Kiscsoportok { get { return kiscsoportok; } }

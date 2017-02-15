@@ -74,7 +74,7 @@ namespace AntiBonto
 
         public static void SaveXLS(string filename, ViewModel.MainWindow data)
         {
-            Uri uri = new Uri(ViewModel.MainWindow.WeekendNumber == 20 ? "/Resources/hetvegekezelo20.xlsm" : "/Resources/hetvegekezelo.xlsm", UriKind.Relative);
+            Uri uri = new Uri("/Resources/hetvegekezelo20.xlsm", UriKind.Relative);
 
             using (var stream = System.Windows.Application.GetResourceStream(uri).Stream)
             using (var f = File.Create(filename))
@@ -85,7 +85,10 @@ namespace AntiBonto
             Workbook file = excel.Workbooks.Open(filename);
             try
             {
-                Worksheet sheet = file.Worksheets["Alapadatok"];
+                Worksheet sheet = file.Worksheets["Vezérlő adatok"];
+                sheet.Cells[3, 2] = ViewModel.MainWindow.WeekendNumber;
+
+                sheet = file.Worksheets["Alapadatok"];
                 sheet.Activate();
                 sheet.Unprotect();
                 Range c = sheet.Cells;
@@ -105,9 +108,9 @@ namespace AntiBonto
                         if (p.Kiscsoportvezeto)
                             c[i, 6] = p.Kiscsoport + 1;
 
-                        c[i, 7] = (char)(p.Alvocsoport + 65);
+                        c[i, 7] = ((char)(p.Alvocsoport + 65)).ToString();
                         if (p.Alvocsoportvezeto)
-                            c[i, 8] = (char)(p.Alvocsoport + 65);
+                            c[i, 8] = ((char)(p.Alvocsoport + 65)).ToString();
                     }
 
                     if (ViewModel.MainWindow.WeekendNumber == 20)

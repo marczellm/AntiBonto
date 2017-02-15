@@ -288,6 +288,7 @@
                                 <Setter Property="dd:DragDrop.DropHandler" Value="{StaticResource DropHandler}"/>
                                 <Setter Property="ColorUjoncs" Value="True"/>
                                 <Setter Property="BoldKiscsoportvezetok" Value="True"/>
+                                <Setter Property="Visibility" Value="Collapsed"/>
                             </Style>
                         </ResourceDictionary>
                     </Grid.Resources>
@@ -306,14 +307,18 @@
                     <view:DnDItemsControl Grid.Row="1" Grid.Column="5" ItemsSource="{Binding Kiscsoportok[12]}" x:Name="kcs13"/>
                     <view:DnDItemsControl Grid.Row="1" Grid.Column="6" ItemsSource="{Binding Kiscsoportok[13]}" x:Name="kcs14"/>
                     <Label Grid.Row="2" Content="Nincsenek beosztva:"/>
-                    <view:DnDItemsControl Grid.Row="3" Grid.ColumnSpan="7" ItemsSource="{Binding NoKiscsoport}" x:Name="nokcs"/>
+                    <view:DnDItemsControl Grid.Row="3" Grid.ColumnSpan="7" ItemsSource="{Binding NoKiscsoport}" x:Name="nokcs" Visibility="Visible"/>
                 </Grid>
             </DockPanel>
         </TabItem>
         <TabItem Header="Alvócsoport-beosztás" Name="Alvocsoportbeoszto">
             <DockPanel>
                 <DockPanel DockPanel.Dock="Top" LastChildFill="False" Width="Auto">
-                    <Button Content="Mentés" Padding="5" Click="SaveXLS" DockPanel.Dock="Left" IsEnabled="{Binding BeosztasKesz}" Name="SaveButton"/>
+                    <Button Content="Mentés" Padding="5" Click="SaveXLS" DockPanel.Dock="Left" Name="SaveButton">
+                        <Button.IsEnabled>
+                            <Binding Path="BeosztasKesz" x:Name="SaveButtonBinding"/>
+                        </Button.IsEnabled>
+                    </Button>
                     <hammer:SpinningWheel Radius="9" CircleRadius="2.5" Visibility="Hidden" Name="XLSSavingAnimation" Margin="20,0,20,0" DockPanel.Dock="Left"/>                    
                     <Button Content="Törlés" Padding="5" Click="ClearAlvocsoportok" DockPanel.Dock="Right"/>
                 </DockPanel>
@@ -343,6 +348,7 @@
                                 <Setter Property="dd:DragDrop.DropHandler" Value="{StaticResource DropHandler}"/>
                                 <Setter Property="ColorUjoncs" Value="True"/>
                                 <Setter Property="BoldAlvocsoportvezetok" Value="True"/>
+                                <Setter Property="Visibility" Value="Collapsed"/>
                             </Style>
                         </ResourceDictionary>
                     </Grid.Resources>
@@ -361,7 +367,7 @@
                     <view:DnDItemsControl Grid.Row="1" Grid.Column="5" ItemsSource="{Binding Alvocsoportok[12]}" x:Name="acs13"/>
                     <view:DnDItemsControl Grid.Row="1" Grid.Column="6" ItemsSource="{Binding Alvocsoportok[13]}" x:Name="acs14"/>
                     <Label Grid.Row="2" Content="Nincsenek beosztva:"/>
-                    <view:DnDItemsControl Grid.Row="3" Grid.ColumnSpan="7" ItemsSource="{Binding NoAlvocsoport}" x:Name="noacs"/>
+                    <view:DnDItemsControl Grid.Row="3" Grid.ColumnSpan="7" ItemsSource="{Binding NoAlvocsoport}" x:Name="noacs" Visibility="Visible"/>
                 </Grid>
             </DockPanel>
         </TabItem>
