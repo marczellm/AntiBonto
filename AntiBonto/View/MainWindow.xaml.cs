@@ -122,7 +122,12 @@ namespace AntiBonto
                 CheckPathExists = true
             };
             if (dialog.ShowDialog(this) == true)
-                try { ExcelHelper.SaveXLS(dialog.FileName, viewModel); }
+                try
+                {
+                    viewModel.AlvocsoportExportOrdering();
+                    ExcelHelper.SaveXLS(dialog.FileName, viewModel);
+                    viewModel.AlvocsoportDisplayOrdering(acs.Count() - acs.Count() / 2);
+                }
                 catch (Exception ex) { MessageBox.Show("Hiba az Excel fájl írásakor" + Environment.NewLine + ex.Message ?? "" + Environment.NewLine + ex.InnerException?.Message ?? ""); }
             XLSSavingAnimation.Visibility = Visibility.Hidden;
         }
@@ -203,12 +208,12 @@ namespace AntiBonto
                     message = "Nincsenek résztvevők!";
                     newTab = Resztvevok;
                 }
-                else if (v.Kiscsoportvezetok.IsEmpty && newTab == Kiscsoportbeoszto)
+                else if (!v.Kiscsoportvezetok.Any() && newTab == Kiscsoportbeoszto)
                 {
                     message = "Jelöld ki a kiscsoportvezetőket!";
                     newTab = Szerepek;
                 }
-                else if (v.Alvocsoportvezetok.IsEmpty && newTab == Alvocsoportbeoszto)
+                else if (!v.Alvocsoportvezetok.Any() && newTab == Alvocsoportbeoszto)
                 {
                     message = "Jelöld ki az alvócsoportvezetőket!";
                     newTab = Szerepek;
@@ -243,7 +248,7 @@ namespace AntiBonto
                 else if (newTab == Kiscsoportbeoszto)
                 {
                     viewModel.InitKiscsoport();
-                    var kcsn = viewModel.Kiscsoportvezetok.Cast<Person>().Count();
+                    var kcsn = viewModel.Kiscsoportvezetok.Count();
                     for (int i = 0; i < kcs.Count(); i++)
                     {
                         kcs[i].Visibility = i < kcsn ? Visibility.Visible : Visibility.Collapsed;
@@ -257,28 +262,8 @@ namespace AntiBonto
                 }
                 else if (newTab == Alvocsoportbeoszto)
                 {
-                    viewModel.InitAlvocsoport();                    
-                    int acs_nagyobbikfele = acs.Count() - acs.Count() / 2;
-                    int i = 0;
-                    foreach (Person q in viewModel.Alvocsoportvezetok.Cast<Person>().Where(p => p.Nem == Nem.Lany).OrderBy(p => p.Name).ToList())
-                    { // Put the girl sleeping groups first
-                        int j = q.Alvocsoport;
-                        Console.WriteLine(i + " " + j);
-                        if (i != j)
-                            viewModel.SwapAlvocsoports(i, j);
-                        i++;
-                    }
-                    if (i <= acs_nagyobbikfele && viewModel.Alvocsoportvezetok.Cast<Person>().Count(p => p.Nem == Nem.Fiu) <= acs_nagyobbikfele)
-                    { // If both girls and boys fit in one row, order the boys so that they start in the second row
-                        i = acs_nagyobbikfele;
-                    }
-                    foreach (Person q in viewModel.Alvocsoportvezetok.Cast<Person>().Where(p => p.Nem == Nem.Fiu).OrderBy(p => p.Name).ToList())
-                    {
-                        int j = q.Alvocsoport;
-                        if (i != j)
-                            viewModel.SwapAlvocsoports(i, j);
-                        i++;
-                    }
+                    viewModel.InitAlvocsoport();
+                    viewModel.AlvocsoportDisplayOrdering(acs.Count() - acs.Count() / 2);
                     for (int j = 0; j < acs.Count(); j++)
                     {
                         bool b = viewModel.Alvocsoport(j).Any();

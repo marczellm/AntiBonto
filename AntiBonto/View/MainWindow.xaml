@@ -98,8 +98,8 @@
                     <Label Grid.Row="4" Grid.Column="1" Content="Team"/>
                     <Label Grid.Row="4" Grid.Column="2" Content="Egyéb résztvevők"/>
                     <Label Grid.Row="4" Grid.Column="3" Content="Zeneteam"/>
-                    <view:DnDItemsControl Grid.Row="3" Grid.Column="0" ItemsSource="{Binding Kiscsoportvezetok}" dd:DragDrop.DropHandler="{StaticResource DropHandler}" x:Name="Kiscsoportvezetok" Grid.ColumnSpan="2"/>
-                    <view:DnDItemsControl Grid.Row="3" Grid.Column="2" ItemsSource="{Binding Alvocsoportvezetok}" dd:DragDrop.DropHandler="{StaticResource DropHandler}" x:Name="Alvocsoportvezetok" Grid.ColumnSpan="2"/>
+                    <view:DnDItemsControl Grid.Row="3" Grid.Column="0" ItemsSource="{Binding KiscsoportvezetokCollectionView}" dd:DragDrop.DropHandler="{StaticResource DropHandler}" x:Name="Kiscsoportvezetok" Grid.ColumnSpan="2"/>
+                    <view:DnDItemsControl Grid.Row="3" Grid.Column="2" ItemsSource="{Binding AlvocsoportvezetokCollectionView}" dd:DragDrop.DropHandler="{StaticResource DropHandler}" x:Name="Alvocsoportvezetok" Grid.ColumnSpan="2"/>
                     <view:DnDItemsControl Grid.Row="5" Grid.Column="0" ItemsSource="{Binding Ujoncok}"           dd:DragDrop.DropHandler="{StaticResource DropHandler}" x:Name="Ujoncok"/>
                     <view:DnDItemsControl Grid.Row="5" Grid.Column="1" ItemsSource="{Binding Team}"              dd:DragDrop.DropHandler="{StaticResource DropHandler}" x:Name="Team"/>
                     <view:DnDItemsControl Grid.Row="5" Grid.Column="3" ItemsSource="{Binding Zeneteam}"          dd:DragDrop.DropHandler="{StaticResource DropHandler}" x:Name="Zeneteam"/>
@@ -255,7 +255,7 @@
                                       dd:DragDrop.DropHandler="{StaticResource DropHandler}" ColorUjoncs="True"/>
             </Grid>
         </TabItem>
-        <TabItem Header="Kiscsoportbeosztás" Name="Kiscsoportbeoszto">
+        <TabItem Header="Kiscsoportbeosztás" Name="Kiscsoportbeoszto" IsEnabled="{Binding PeopleNotEmpty}">
             <DockPanel>
                 <DockPanel DockPanel.Dock="Top" LastChildFill="False" Width="Auto">
                     <Button Content="Magic" Padding="5" Click="Magic" DockPanel.Dock="Left" Name="MagicButton"/>
@@ -311,7 +311,7 @@
                 </Grid>
             </DockPanel>
         </TabItem>
-        <TabItem Header="Alvócsoport-beosztás" Name="Alvocsoportbeoszto">
+        <TabItem Header="Alvócsoport-beosztás" Name="Alvocsoportbeoszto" IsEnabled="{Binding PeopleNotEmpty}">
             <DockPanel>
                 <DockPanel DockPanel.Dock="Top" LastChildFill="False" Width="Auto">
                     <Button Content="Mentés" Padding="5" Click="SaveXLS" DockPanel.Dock="Left" Name="SaveButton">

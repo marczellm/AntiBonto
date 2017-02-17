@@ -87,14 +87,55 @@ namespace AntiBonto.ViewModel
             RaisePropertyChanged("NoAlvocsoport");
         }
 
+        /// <summary>
+        /// Reorder the sleeping groups so that the girl sleeping groups come first, and if possible, the boys begin in the second row
+        /// </summary>
+        /// <param name="displayRowLength">The number of groups that can be displayed in one row</param>
+        public void AlvocsoportDisplayOrdering(int displayRowLength)
+        {
+            if (Alvocsoportvezetok.Any(p => p.Nem == Nem.Undefined))
+                return;
+            int i = 0;
+            foreach (Person q in Alvocsoportvezetok.Where(p => p.Nem == Nem.Lany).OrderBy(p => p.Name).ToList())
+            {
+                int j = q.Alvocsoport;
+                SwapAlvocsoports(i, j);
+                i++;
+            }
+            if (i <= displayRowLength && Alvocsoportvezetok.Count(p => p.Nem == Nem.Fiu) <= displayRowLength)            
+                i = displayRowLength;
+            foreach (Person q in Alvocsoportvezetok.Where(p => p.Nem == Nem.Fiu).OrderBy(p => p.Name).ToList())
+            {
+                int j = q.Alvocsoport;
+                SwapAlvocsoports(i, j);
+                i++;
+            }
+        }
+
+        /// <summary>
+        /// Reorder the sleeping groups so that they are numbered consecutively with no gaps between
+        /// </summary>
+        internal void AlvocsoportExportOrdering()
+        {
+            for (int i = 0; i < Alvocsoportok.Count() - 1; i++)
+            {
+                int j = Enumerable.Range(0, Alvocsoportok.Count()).Last(k => Alvocsoport(k).Any());
+                if (!Alvocsoport(i).Any() && i < j)                    
+                    SwapAlvocsoports(i, j);
+            }
+        }
+
         public ICollectionView Fiuk { get { return CollectionViewHelper.Lazy(People, p => ((Person)p).Nem == Nem.Fiu); } }
         public ICollectionView Lanyok { get { return CollectionViewHelper.Lazy(People, p => ((Person)p).Nem == Nem.Lany); } }
         public ICollectionView Nullnemuek { get { return CollectionViewHelper.Lazy(People, p => ((Person)p).Nem == Nem.Undefined && ((Person)p).Type != PersonType.Egyeb); } }
+
         public ICollectionView Ujoncok { get { return CollectionViewHelper.Lazy(People, p => ((Person)p).Type == PersonType.Ujonc); } }
         public ICollectionView Team { get { return CollectionViewHelper.Lazy(People, p => ((Person)p).Type != PersonType.Egyeb && ((Person)p).Type != PersonType.Ujonc); } }
         public ICollectionView Egyeb { get { return CollectionViewHelper.Lazy(People, p => ((Person)p).Type == PersonType.Egyeb); } }
-        public ICollectionView Kiscsoportvezetok { get { return CollectionViewHelper.Lazy(People, p => ((Person)p).Kiscsoportvezeto); } }       
-        public ICollectionView Alvocsoportvezetok { get { return CollectionViewHelper.Lazy(People, p => ((Person)p).Alvocsoportvezeto); } }
+        public ICollectionView KiscsoportvezetokCollectionView { get { return CollectionViewHelper.Lazy(People, p => ((Person)p).Kiscsoportvezeto); } }
+        public ICollectionView AlvocsoportvezetokCollectionView { get { return CollectionViewHelper.Lazy(People, p => ((Person)p).Alvocsoportvezeto); } }
+        public IEnumerable<Person> Kiscsoportvezetok { get { return KiscsoportvezetokCollectionView.Cast<Person>(); } }       
+        public IEnumerable<Person> Alvocsoportvezetok { get { return AlvocsoportvezetokCollectionView.Cast<Person>(); } }
         public ICollectionView CsoportokbaOsztando { get { return CollectionViewHelper.Lazy(People, p => ((Person)p).Type != PersonType.Egyeb); } }
         public ICollectionView Zeneteam { get { return CollectionViewHelper.Lazy(People, p => ((Person)p).Type == PersonType.Zeneteamtag); } }
         private ICollectionView KiscsoportCollectionView(int i)

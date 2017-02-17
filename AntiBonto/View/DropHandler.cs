@@ -30,8 +30,8 @@ namespace AntiBonto.View
             if (p.Nem == Nem.Fiu && target.Name == "Lanyvezeto"
              || p.Nem == Nem.Lany && target.Name == "Fiuvezeto"
              || source.Name == "PeopleView" && target.Name != "PeopleView" && target.Name != "AddOrRemovePersonButton"
-             || target.Name == "Kiscsoportvezetok" && d.Kiscsoportvezetok.Cast<Person>().Count() >= 14
-             || target.Name == "Alvocsoportvezetok" && d.Alvocsoportvezetok.Cast<Person>().Count() >= 14)
+             || target.Name == "Kiscsoportvezetok" && d.Kiscsoportvezetok.Count() >= 14
+             || target.Name == "Alvocsoportvezetok" && d.Alvocsoportvezetok.Count() >= 14)
             {
                 dropInfo.Effects = DragDropEffects.None;
             }
@@ -55,7 +55,7 @@ namespace AntiBonto.View
             else if (target.Name.StartsWith("acs"))
             {
                 int acsn = Int32.Parse(target.Name.Remove(0, 3)) - 1;
-                var acsvez = d.Alvocsoportvezetok.Cast<Person>().Single(q => q.Alvocsoport == acsn);
+                var acsvez = d.Alvocsoportvezetok.Single(q => q.Alvocsoport == acsn);
                 dropInfo.Effects = (p.Nem != Nem.Undefined && p.Nem != acsvez.Nem) ? DragDropEffects.None : DragDropEffects.Move;
             }
             else
@@ -92,14 +92,14 @@ namespace AntiBonto.View
                     if (!p.Kiscsoportvezeto)
                     {
                         p.Kiscsoportvezeto = true;
-                        p.Kiscsoport = d.Kiscsoportvezetok.Cast<Person>().Count();
+                        p.Kiscsoport = d.Kiscsoportvezetok.Count();
                     }
                     break;
                 case "Alvocsoportvezetok":
                     if (!p.Alvocsoportvezeto)
                     {
                         p.Alvocsoportvezeto = true;
-                        p.Alvocsoport = d.Alvocsoportvezetok.Cast<Person>().Select(q => q.Alvocsoport).DefaultIfEmpty(0).Max() + 1;
+                        p.Alvocsoport = d.Alvocsoportvezetok.Select(q => q.Alvocsoport).DefaultIfEmpty(0).Max() + 1;
                     }
                     break;
                 case "AddOrRemovePersonButton":
@@ -109,7 +109,7 @@ namespace AntiBonto.View
             if (source.Name == "Kiscsoportvezetok" && (target.Name == "Team" || target.Name == "Ujoncok" || target.Name == "Egyeb"))
             {
                 p.Kiscsoportvezeto = false;
-                int numKiscsoportok = d.Kiscsoportvezetok.Cast<Person>().Count();
+                int numKiscsoportok = d.Kiscsoportvezetok.Count();
                 d.SwapKiscsoports(p.Kiscsoport, numKiscsoportok - 1);
                 foreach (Person q in d.Kiscsoport(numKiscsoportok - 1))
                     q.Kiscsoport = -1;

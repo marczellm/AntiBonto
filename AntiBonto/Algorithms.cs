@@ -19,7 +19,7 @@ namespace AntiBonto
             Ujoncok = d.Ujoncok.Cast<Person>().ToList();
             Team = d.Team.Cast<Person>().ToList();
             Beosztando = d.CsoportokbaOsztando.Cast<Person>().ToList();
-            Kiscsoportvezetok = d.Kiscsoportvezetok.Cast<Person>().ToList();
+            Kiscsoportvezetok = d.Kiscsoportvezetok.ToList();
 
             m = Kiscsoportvezetok.Count(); // kiscsoportok száma
             n = Beosztando.Count(); // kiscsoportba osztandók száma
