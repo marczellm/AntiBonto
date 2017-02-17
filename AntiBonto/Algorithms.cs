@@ -11,7 +11,7 @@ namespace AntiBonto
         private ViewModel.MainWindow d;
         private List<Person> Ujoncok, Team, Beosztando, Kiscsoportvezetok;
         private int n, m, k, u, t, tpk, upk, fpk, lpk;
-        private bool consideringSexes = false;
+        private bool consideringSexes;
         private static Random rng = new Random();
         public Algorithms(ViewModel.MainWindow data)
         {
@@ -111,10 +111,10 @@ namespace AntiBonto
         {
             var kcs = d.Kiscsoport(kiscsoport);
             bool ret = p.Kiscsoportvezeto || kcs.Count() + p.kivelIgen.Count + 1 > k
-                || (kcs.Count(q => q.Type == PersonType.Ujonc) >= upk && p.Type == PersonType.Ujonc)
-                || (consideringSexes && kcs.Count(q => q.Nem == Nem.Lany) >= lpk && p.Nem == Nem.Lany)
-                || (consideringSexes && kcs.Count(q => q.Nem == Nem.Fiu) >= fpk && p.Nem == Nem.Fiu)
-                || (kcs.Count(q => q.Type == PersonType.Teamtag) >= tpk && p.Type == PersonType.Teamtag)
+                || (p.Type == PersonType.Ujonc && kcs.Count(q => q.Type == PersonType.Ujonc) >= upk)
+                || (p.Type == PersonType.Teamtag && kcs.Count(q => q.Type == PersonType.Teamtag) >= tpk)
+                || (consideringSexes && p.Nem == Nem.Lany && kcs.Count(q => q.Nem == Nem.Lany) >= lpk)
+                || (consideringSexes && p.Nem == Nem.Fiu  && kcs.Count(q => q.Nem == Nem.Fiu) >= fpk)
                 || kcs.Any(q => q.kivelNem.Contains(p) || Math.Abs(q.Age - p.Age) > d.MaxAgeDifference);
             return ret;
             }
@@ -127,13 +127,13 @@ namespace AntiBonto
                 message = "Nem lehet egy csoportban két kiscsoportvezető!";
             else if (kcs.Count() + p.kivelIgen.Count + 1 > k)
                 message = "Nem lehet a kiscsoportban több ember";
-            else if (kcs.Count(q => q.Type == PersonType.Ujonc) >= upk && p.Type == PersonType.Ujonc)
+            else if (p.Type == PersonType.Ujonc && kcs.Count(q => q.Type == PersonType.Ujonc) >= upk)
                 message = "Nem lehet a kiscsoportban több újonc";
-            else if (kcs.Count(q => q.Type == PersonType.Teamtag) >= tpk && p.Type == PersonType.Teamtag)
+            else if (p.Type == PersonType.Teamtag && kcs.Count(q => q.Type == PersonType.Teamtag) >= tpk)
                 message = "Nem lehet a kiscsoportban több teamtag";
-            else if (consideringSexes && kcs.Count(q => q.Nem == Nem.Lany) >= lpk && p.Nem == Nem.Lany)
+            else if (consideringSexes && p.Nem == Nem.Lany && kcs.Count(q => q.Nem == Nem.Lany) >= lpk)
                 message = "Nem lehet a kiscsoportban több lány";
-            else if (consideringSexes && kcs.Count(q => q.Nem == Nem.Fiu) >= fpk && p.Nem == Nem.Fiu)
+            else if (consideringSexes && p.Nem == Nem.Fiu && kcs.Count(q => q.Nem == Nem.Fiu) >= fpk)
                 message = "Nem lehet a kiscsoportban több fiú";
             else
             {
