@@ -182,7 +182,7 @@
                         <Label Content=", mert "/>
                         <TextBox Text="{Binding Edge.Reason}" MinWidth="100"/>
                         <Border Style="{StaticResource MaterialShadow}">
-                            <view:MaterialButton Click="AddEdge" Height="20" Margin="10,0,0,0">
+                            <view:MaterialButton Click="AddEdge" Height="20" Margin="10,0,0,0" IsDefault="True">
                                 <Button.Content>
                                     <TextBlock Text="+" Margin="0,-6.5,0,0" FontSize="20"/>
                                 </Button.Content>
@@ -206,7 +206,7 @@
                 <ItemsControl ItemsSource="{Binding Edges}" Margin="5">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <StackPanel Orientation="Horizontal" ToolTip="{Binding Reason}">
+                            <StackPanel Orientation="Horizontal" ToolTip="{Binding Reason}" Focusable="True" KeyUp="Edge_KeyUp">
                                 <Label Content="{Binding Persons[0]}" Margin="5,5,0,5" Padding="3" MinWidth="100" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
                                 <Grid>
                                     <Line Stroke="Black" X2="50" HorizontalAlignment="Center" VerticalAlignment="Center"/>

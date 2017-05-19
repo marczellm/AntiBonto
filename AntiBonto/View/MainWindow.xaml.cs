@@ -177,7 +177,7 @@ namespace AntiBonto
             else if (viewModel.Edge.Persons[0] != viewModel.Edge.Persons[1])
             {
                 viewModel.Edges.Add(viewModel.Edge);
-                viewModel.Edge = new Edge();
+                viewModel.Edge = new Edge { Dislike = viewModel.Edge.Dislike };
             }
         }
 
@@ -185,6 +185,12 @@ namespace AntiBonto
         {
             Edge edge = (Edge)((FrameworkElement)sender).DataContext;
             viewModel.Edges.Remove(edge);
+        }
+
+        private void Edge_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Delete)
+                RemoveEdge(sender, null);
         }
 
         private void Reset(object sender, RoutedEventArgs e)
