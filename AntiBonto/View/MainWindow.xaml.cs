@@ -125,6 +125,7 @@ namespace AntiBonto
                 try
                 {
                     viewModel.AlvocsoportExportOrdering();
+                    viewModel.KiscsoportExportOrdering();
                     ExcelHelper.SaveXLS(dialog.FileName, viewModel);
                     viewModel.AlvocsoportDisplayOrdering(acs.Count() - acs.Count() / 2);
                 }

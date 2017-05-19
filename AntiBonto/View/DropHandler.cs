@@ -123,12 +123,13 @@ namespace AntiBonto.View
                     d.SwapAlvocsoports(p.Alvocsoport, numAlvocsoportok - 1);
                     foreach (Person q in d.Alvocsoport(numAlvocsoportok - 1))
                         q.Alvocsoport = -1;
-                } else
+                }
+                else
                 {
                     // No swapping here, because we reorder the sleeping groups anyway on opening of their tab
                     foreach (Person q in d.Alvocsoport(p.Alvocsoport))
                         q.Alvocsoport = -1;
-                }                
+                }
             }
             if (target.Name.StartsWith("kcs"))
                 p.Kiscsoport = Int32.Parse(target.Name.Remove(0, 3)) - 1;

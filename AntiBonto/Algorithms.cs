@@ -231,25 +231,8 @@ namespace AntiBonto
                         }
                     }
                 }
-                if (kesz)
-                    Renumber();      
             }
-
             return kesz;
-        }
-
-        /// <summary>
-        /// Renumbers the share groups so that the weekend leaders and the music team leader are in the groups with the highest number
-        /// </summary>
-        private void Renumber()
-        {
-            int l = d.Lanyvezeto.Kiscsoport, f = d.Fiuvezeto.Kiscsoport, z = d.Zeneteamvezeto.Kiscsoport;
-
-            d.SwapKiscsoports(d.Lanyvezeto.Kiscsoport, m - 1);
-            if (f != l)
-                d.SwapKiscsoports(d.Fiuvezeto.Kiscsoport, m - 2);
-            if (z !=l && z != f)
-                d.SwapKiscsoports(d.Zeneteamvezeto.Kiscsoport, m - 3);
         }
 
         #region Extras

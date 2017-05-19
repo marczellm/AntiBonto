@@ -125,6 +125,19 @@ namespace AntiBonto.ViewModel
             }
         }
 
+        /// <summary>
+        /// Renumbers the share groups so that the weekend leaders and the music team leader are in the groups with the highest number
+        /// </summary>
+        internal void KiscsoportExportOrdering()
+        {
+            int l = Lanyvezeto.Kiscsoport, f = Fiuvezeto.Kiscsoport, z = Zeneteamvezeto.Kiscsoport, m = Kiscsoportvezetok.Count();
+            SwapKiscsoports(Lanyvezeto.Kiscsoport, m - 1);
+            if (f != l)
+                SwapKiscsoports(Fiuvezeto.Kiscsoport, m - 2);
+            if (z != l && z != f)
+                SwapKiscsoports(Zeneteamvezeto.Kiscsoport, m - 3);
+        }
+
         public ICollectionView Fiuk { get { return CollectionViewHelper.Lazy(People, p => ((Person)p).Nem == Nem.Fiu); } }
         public ICollectionView Lanyok { get { return CollectionViewHelper.Lazy(People, p => ((Person)p).Nem == Nem.Lany); } }
         public ICollectionView Nullnemuek { get { return CollectionViewHelper.Lazy(People, p => ((Person)p).Nem == Nem.Undefined && ((Person)p).Type != PersonType.Egyeb); } }
