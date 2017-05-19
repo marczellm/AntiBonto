@@ -138,8 +138,8 @@ namespace AntiBonto.ViewModel
                 SwapKiscsoports(Zeneteamvezeto.Kiscsoport, m - 3);
         }
 
-        public ICollectionView Fiuk { get { return CollectionViewHelper.Lazy(People, p => ((Person)p).Nem == Nem.Fiu); } }
-        public ICollectionView Lanyok { get { return CollectionViewHelper.Lazy(People, p => ((Person)p).Nem == Nem.Lany); } }
+        public ICollectionView Fiuk { get { return CollectionViewHelper.Lazy(People, p => ((Person)p).Nem == Nem.Fiu && ((Person)p).Type != PersonType.Egyeb); } }
+        public ICollectionView Lanyok { get { return CollectionViewHelper.Lazy(People, p => ((Person)p).Nem == Nem.Lany && ((Person)p).Type != PersonType.Egyeb); } }
         public ICollectionView Nullnemuek { get { return CollectionViewHelper.Lazy(People, p => ((Person)p).Nem == Nem.Undefined && ((Person)p).Type != PersonType.Egyeb); } }
 
         public ICollectionView Ujoncok { get { return CollectionViewHelper.Lazy(People, p => ((Person)p).Type == PersonType.Ujonc); } }

@@ -89,10 +89,16 @@ namespace AntiBonto.View
                         p.Type = PersonType.Zeneteamtag;
                     break;
                 case "Kiscsoportvezetok":
-                    if (!p.Kiscsoportvezeto)
+                    Edge edge = d.Edges.FirstOrDefault(e => e.Persons.Contains(p) && e.Persons[1 - Array.IndexOf(e.Persons, p)].Kiscsoportvezeto);
+                    if (edge == null || MessageBox.Show(String.Format("Ez a megszorítás törlődni fog:\n\n{0}\n\nAkarod folytatni?", edge.ToString()), "", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
                     {
-                        p.Kiscsoportvezeto = true;
-                        p.Kiscsoport = d.Kiscsoportvezetok.Count();
+                        if (!p.Kiscsoportvezeto)
+                        {
+                            p.Kiscsoportvezeto = true;
+                            p.Kiscsoport = d.Kiscsoportvezetok.Count();
+                        }
+                        if (edge != null)
+                            d.Edges.Remove(edge);
                     }
                     break;
                 case "Alvocsoportvezetok":

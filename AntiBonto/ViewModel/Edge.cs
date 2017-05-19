@@ -10,7 +10,7 @@ namespace AntiBonto
         public string Reason { get; set; }
         public override string ToString()
         {
-            return Persons[0] + " és " + Persons[1] + (Dislike? " nem lehetnek együtt, mert ": " együtt kell legyenek, mert ") + Reason;
+            return Persons[0] + " és " + Persons[1] + (Dislike? " nem lehetnek együtt": " együtt kell legyenek") + (String.IsNullOrEmpty(Reason)? "" : ", mert " + Reason);
         }
     }
 }
