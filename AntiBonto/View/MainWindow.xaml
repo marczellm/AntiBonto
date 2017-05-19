@@ -155,7 +155,7 @@
                 <Label DockPanel.Dock="Top" Content="Kinek az újonca? (nem kötelező)"/>
                 <ContentControl Visibility="Collapsed" Content="{StaticResource DataContextProxy}"/>
                 <!-- hack part 2 -->
-                <DataGrid ItemsSource="{Binding Ujoncok}" CanUserAddRows="False" CanUserDeleteRows="False" AutoGenerateColumns="False">
+                <DataGrid ItemsSource="{Binding Ujoncok}" CanUserAddRows="False" CanUserDeleteRows="False" AutoGenerateColumns="False" PreviewKeyDown="Recruiter_KeyDown">
                     <DataGrid.Columns>
                         <DataGridTextColumn Binding="{Binding Name}" Header="Név" IsReadOnly="True"/>
                         <DataGridComboBoxColumn Header="Kinek az újonca" 

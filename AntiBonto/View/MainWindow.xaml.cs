@@ -321,6 +321,13 @@ namespace AntiBonto
                     p.Kiscsoport = -1;
         }
 
+        private void Recruiter_KeyDown(object sender, KeyEventArgs e)
+        {
+            var dataGrid = (DataGrid)sender;
+            if (e.Key == Key.Delete && (string)dataGrid.CurrentColumn.Header == "Kinek az újonca")
+                ((Person)dataGrid.CurrentItem).KinekAzUjonca = null;
+        }
+
         private void ClearAlvocsoportok(object sender, RoutedEventArgs e)
         {
             foreach (Person p in viewModel.CsoportokbaOsztando)
