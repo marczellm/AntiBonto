@@ -74,7 +74,7 @@ namespace AntiBonto
 
         public static void SaveXLS(string filename, ViewModel.MainWindow data)
         {
-            Uri uri = new Uri("/Resources/hetvegekezelo20.xlsm", UriKind.Relative);
+            Uri uri = new Uri("/Resources/hetvegekezelo.xlsm", UriKind.Relative);
 
             using (var stream = System.Windows.Application.GetResourceStream(uri).Stream)
             using (var f = File.Create(filename))
@@ -86,7 +86,7 @@ namespace AntiBonto
             try
             {
                 Worksheet sheet = file.Worksheets["Vezérlő adatok"];
-                sheet.Cells[3, 2] = ViewModel.MainWindow.WeekendNumber;
+                sheet.Cells[2, 2] = ViewModel.MainWindow.WeekendNumber;
 
                 sheet = file.Worksheets["Alapadatok"];
                 sheet.Activate();
