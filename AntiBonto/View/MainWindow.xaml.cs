@@ -324,6 +324,18 @@ namespace AntiBonto
                     p.Alvocsoport = -1;
         }
 
+        private void LanyokFiuk_KeyUp(object sender, KeyEventArgs e)
+        {
+            Person p = (Person)viewModel.Nullnemuek.CurrentItem;
+            if (p != null)
+            {
+                if (e.Key == Key.Left)
+                    p.Nem = Nem.Lany;
+                else if (e.Key == Key.Right)
+                    p.Nem = Nem.Fiu;
+            }
+        }
+
         private void Recruiter_KeyDown(object sender, KeyEventArgs e)
         {
             var dataGrid = (DataGrid)sender;

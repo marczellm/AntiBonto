@@ -118,8 +118,8 @@
             </DockPanel>
         </TabItem>
         <TabItem Header="Lányok-fiúk" IsEnabled="{Binding PeopleNotEmpty}" Name="LanyokFiuk">
-            <DockPanel>
-                <Label DockPanel.Dock="Top" Content="Válogasd szét a lányokat és a fiúkat! (nem kötelező)"/>
+            <DockPanel KeyUp="LanyokFiuk_KeyUp">
+                <Label DockPanel.Dock="Top" Content="Válogasd szét a lányokat és a fiúkat! Használd a jobbra és balra gombokat!"/>
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
@@ -128,13 +128,17 @@
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
                     <view:DnDItemsControl Grid.Column="0" ItemsSource="{Binding Lanyok}" Header="{Binding Lanyok.Count}" HeaderStringFormat="Lányok ({0})"
                                           dd:DragDrop.DropHandler="{StaticResource DropHandler}" x:Name="Lanyok"/>
-                    <view:DnDItemsControl Grid.Column="1" ItemsSource="{Binding Nullnemuek}"
-                                          dd:DragDrop.DropHandler="{StaticResource DropHandler}" x:Name="Nullnemuek"/>
+                    <Label Content="{Binding Nullnemuek.CurrentItem.Name}" Grid.Column="1" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+                            VerticalAlignment="Center" HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="20"/>
                     <view:DnDItemsControl Grid.Column="2" ItemsSource="{Binding Fiuk}" Header="{Binding Fiuk.Count}" HeaderStringFormat="Fiúk ({0})"
                                           dd:DragDrop.DropHandler="{StaticResource DropHandler}" x:Name="Fiuk"/>
+                    
+                    <view:DnDItemsControl Grid.ColumnSpan="3" Grid.Row="1" ItemsSource="{Binding Nullnemuek}"
+                                          dd:DragDrop.DropHandler="{StaticResource DropHandler}" x:Name="Nullnemuek"/>
                 </Grid>
             </DockPanel>
         </TabItem>

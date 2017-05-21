@@ -140,7 +140,16 @@ namespace AntiBonto.ViewModel
 
         public ICollectionView Fiuk { get { return CollectionViewHelper.Lazy(People, p => ((Person)p).Nem == Nem.Fiu && ((Person)p).Type != PersonType.Egyeb); } }
         public ICollectionView Lanyok { get { return CollectionViewHelper.Lazy(People, p => ((Person)p).Nem == Nem.Lany && ((Person)p).Type != PersonType.Egyeb); } }
-        public ICollectionView Nullnemuek { get { return CollectionViewHelper.Lazy(People, p => ((Person)p).Nem == Nem.Undefined && ((Person)p).Type != PersonType.Egyeb); } }
+        public ICollectionView Nullnemuek
+        {
+            get
+            {
+                var ret = CollectionViewHelper.Lazy(People, p => ((Person)p).Nem == Nem.Undefined && ((Person)p).Type != PersonType.Egyeb);
+                ret.CollectionChanged += (sender, e) => ret.MoveCurrentToFirst();
+                ret.MoveCurrentToFirst();
+                return ret;
+            }
+        }
 
         public ICollectionView Ujoncok { get { return CollectionViewHelper.Lazy(People, p => ((Person)p).Type == PersonType.Ujonc); } }
         public ICollectionView Team { get { return CollectionViewHelper.Lazy(People, p => ((Person)p).Type != PersonType.Egyeb && ((Person)p).Type != PersonType.Ujonc); } }
