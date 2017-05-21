@@ -46,10 +46,9 @@
                     <Button Content="Excel fájl betöltése" Click="LoadXLS" Padding="5" DockPanel.Dock="Left"/>
                     <hammer:SpinningWheel Radius="9" CircleRadius="2.5" Visibility="Hidden" Name="XLSLoadingAnimation" DockPanel.Dock="Left" Margin="20,0,0,0"/>
                     <Button Content="Törlés" DockPanel.Dock="Right" Click="Reset" Padding="5"/>
-                </DockPanel>
-                <Label Target="{Binding ElementName=PeopleView}" Content="Résztvevők" DockPanel.Dock="Top"/>
+                </DockPanel>                
                 <Grid Margin="5">
-                    <view:DnDItemsControl x:Name="PeopleView" ItemsSource="{Binding People}" dd:DragDrop.DropHandler="{StaticResource DropHandler}">
+                    <view:DnDItemsControl Header="Résztvevők" x:Name="PeopleView" ItemsSource="{Binding People}" dd:DragDrop.DropHandler="{StaticResource DropHandler}">
                         <dd:DragDrop.DragHandler>
                             <view:AnimatedDragHandler Animation="{StaticResource ButtonRotateBackAnimation}"/>
                         </dd:DragDrop.DragHandler>
@@ -80,8 +79,6 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
@@ -89,21 +86,15 @@
                         <ColumnDefinition/>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
-                    <Label Grid.Row="2"    Content="Kiscsoportvezetők (max. 14)"/>
-                    <Label Grid.Row="2" Grid.Column="2"  Content="Alvócsoportvezetők (max. 14)"/>
                     <Label                 Content="Lány vezető"/>
                     <Label Grid.Column="1" Content="Fiú vezető"/>
                     <Label Grid.Column="3" Content="Zeneteamvezető"/>
-                    <Label Grid.Row="4"    Content="Újoncok"/>
-                    <Label Grid.Row="4" Grid.Column="1" Content="Team"/>
-                    <Label Grid.Row="4" Grid.Column="2" Content="Egyéb résztvevők"/>
-                    <Label Grid.Row="4" Grid.Column="3" Content="Zeneteam"/>
-                    <view:DnDItemsControl Grid.Row="3" Grid.Column="0" ItemsSource="{Binding KiscsoportvezetokCollectionView}" dd:DragDrop.DropHandler="{StaticResource DropHandler}" x:Name="Kiscsoportvezetok" Grid.ColumnSpan="2"/>
-                    <view:DnDItemsControl Grid.Row="3" Grid.Column="2" ItemsSource="{Binding AlvocsoportvezetokCollectionView}" dd:DragDrop.DropHandler="{StaticResource DropHandler}" x:Name="Alvocsoportvezetok" Grid.ColumnSpan="2"/>
-                    <view:DnDItemsControl Grid.Row="5" Grid.Column="0" ItemsSource="{Binding Ujoncok}"           dd:DragDrop.DropHandler="{StaticResource DropHandler}" x:Name="Ujoncok"/>
-                    <view:DnDItemsControl Grid.Row="5" Grid.Column="1" ItemsSource="{Binding Team}"              dd:DragDrop.DropHandler="{StaticResource DropHandler}" x:Name="Team"/>
-                    <view:DnDItemsControl Grid.Row="5" Grid.Column="3" ItemsSource="{Binding Zeneteam}"          dd:DragDrop.DropHandler="{StaticResource DropHandler}" x:Name="Zeneteam"/>
-                    <view:DnDItemsControl Grid.Row="5" Grid.Column="2" ItemsSource="{Binding Egyeb}"             dd:DragDrop.DropHandler="{StaticResource DropHandler}" x:Name="Egyeb"/>
+                    <view:DnDItemsControl Header="Kiscsoportvezetők (max. 14)" Grid.Row="2" Grid.Column="0" ItemsSource="{Binding KiscsoportvezetokCollectionView}" dd:DragDrop.DropHandler="{StaticResource DropHandler}" x:Name="Kiscsoportvezetok" Grid.ColumnSpan="2"/>
+                    <view:DnDItemsControl Header="Alvócsoportvezetők" Grid.Row="2" Grid.Column="2" ItemsSource="{Binding AlvocsoportvezetokCollectionView}" dd:DragDrop.DropHandler="{StaticResource DropHandler}" x:Name="Alvocsoportvezetok" Grid.ColumnSpan="2"/>
+                    <view:DnDItemsControl Header="Újoncok" Grid.Row="3" Grid.Column="0" ItemsSource="{Binding Ujoncok}"           dd:DragDrop.DropHandler="{StaticResource DropHandler}" x:Name="Ujoncok"/>
+                    <view:DnDItemsControl Header="Team" Grid.Row="3" Grid.Column="1" ItemsSource="{Binding Team}"              dd:DragDrop.DropHandler="{StaticResource DropHandler}" x:Name="Team"/>
+                    <view:DnDItemsControl Header="Zeneteam" Grid.Row="3" Grid.Column="3" ItemsSource="{Binding Zeneteam}"          dd:DragDrop.DropHandler="{StaticResource DropHandler}" x:Name="Zeneteam"/>
+                    <view:DnDItemsControl Header="Egyéb résztvevők" Grid.Row="3" Grid.Column="2" ItemsSource="{Binding Egyeb}"             dd:DragDrop.DropHandler="{StaticResource DropHandler}" x:Name="Egyeb"/>
                     <Label Grid.Row="1" Content="{Binding Lanyvezeto}" x:Name="Lanyvezeto" Margin="5" Padding="3" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
                            dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{StaticResource DropHandler}" dd:DragDrop.DragAdornerTemplate="{StaticResource adorner}"/>
                     <Label Grid.Row="1" Grid.Column="1" Content="{Binding Fiuvezeto}" x:Name="Fiuvezeto" Margin="5" Padding="3" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
@@ -137,15 +128,12 @@
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    <Label Grid.Column="0" Grid.Row="0" Content="Lányok"/>
-                    <Label Grid.Column="2" Grid.Row="0" Content="Fiúk"/>
-                    <view:DnDItemsControl Grid.Column="0" Grid.Row="1" ItemsSource="{Binding Lanyok}"
+                    <view:DnDItemsControl Grid.Column="0" ItemsSource="{Binding Lanyok}" Header="Lányok"
                                           dd:DragDrop.DropHandler="{StaticResource DropHandler}" x:Name="Lanyok"/>
-                    <view:DnDItemsControl Grid.Column="1" Grid.Row="1" ItemsSource="{Binding Nullnemuek}"
+                    <view:DnDItemsControl Grid.Column="1" ItemsSource="{Binding Nullnemuek}"
                                           dd:DragDrop.DropHandler="{StaticResource DropHandler}" x:Name="Nullnemuek"/>
-                    <view:DnDItemsControl Grid.Column="2" Grid.Row="1" ItemsSource="{Binding Fiuk}"
+                    <view:DnDItemsControl Grid.Column="2" ItemsSource="{Binding Fiuk}" Header="Fiúk"
                                           dd:DragDrop.DropHandler="{StaticResource DropHandler}" x:Name="Fiuk"/>
                 </Grid>
             </DockPanel>
@@ -201,8 +189,8 @@
                                 </Binding>
                             </TextBox.Text>
                         </TextBox>
-                    </StackPanel>                    
-                </DockPanel>                
+                    </StackPanel>
+                </DockPanel>
                 <ItemsControl ItemsSource="{Binding Edges}" Margin="5">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
@@ -259,7 +247,7 @@
             <DockPanel>
                 <DockPanel DockPanel.Dock="Top" LastChildFill="False" Width="Auto">
                     <Button Content="Magic" Padding="5" Click="Magic" DockPanel.Dock="Left" Name="MagicButton"/>
-                    <hammer:SpinningWheel Radius="9" CircleRadius="2.5" Visibility="Hidden" Name="MagicAnimation" Margin="20,0,0,0" DockPanel.Dock="Left"/>                    
+                    <hammer:SpinningWheel Radius="9" CircleRadius="2.5" Visibility="Hidden" Name="MagicAnimation" Margin="20,0,0,0" DockPanel.Dock="Left"/>
                     <Button Content="Törlés" Padding="5" Click="ClearKiscsoportok" DockPanel.Dock="Right"/>
                 </DockPanel>
                 <StatusBar DockPanel.Dock="Bottom">
@@ -319,7 +307,7 @@
                             <Binding Path="BeosztasKesz" x:Name="SaveButtonBinding"/>
                         </Button.IsEnabled>
                     </Button>
-                    <hammer:SpinningWheel Radius="9" CircleRadius="2.5" Visibility="Hidden" Name="XLSSavingAnimation" Margin="20,0,20,0" DockPanel.Dock="Left"/>                    
+                    <hammer:SpinningWheel Radius="9" CircleRadius="2.5" Visibility="Hidden" Name="XLSSavingAnimation" Margin="20,0,20,0" DockPanel.Dock="Left"/>
                     <Button Content="Törlés" Padding="5" Click="ClearAlvocsoportok" DockPanel.Dock="Right"/>
                 </DockPanel>
                 <StatusBar DockPanel.Dock="Bottom">
