@@ -33,8 +33,6 @@ namespace AntiBonto
 
         private ViewModel.MainWindow viewModel { get { return (ViewModel.MainWindow)DataContext; } }
 
-        #region Event handlers
-
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             var xs = new XmlSerializer(typeof(AppData));
@@ -198,7 +196,7 @@ namespace AntiBonto
             viewModel.People.Clear();
             viewModel.Edges.Clear();
         }
-        
+
         private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (e.AddedItems.Count > 0)
@@ -240,7 +238,7 @@ namespace AntiBonto
                     message = "Jelöld ki a vezetőket!";
                     newTab = Szerepek;
                 }
-                else if  (v.Zeneteamvezeto == null)
+                else if (v.Zeneteamvezeto == null)
                 {
                     message = "Jelöld ki a zeneteamvezetőt!";
                     newTab = Szerepek;
@@ -279,12 +277,10 @@ namespace AntiBonto
                         if (b)
                             BindingOperations.GetBindingExpression(acs[j], ItemsControl.ItemsSourceProperty).UpdateTarget();
                     }
-                    BindingOperations.GetBindingExpression(SaveButton, IsEnabledProperty)?.UpdateTarget();                    
+                    BindingOperations.GetBindingExpression(SaveButton, IsEnabledProperty)?.UpdateTarget();
                 }
             }
         }
-
-        
 
         private async void Magic(object sender, RoutedEventArgs e)
         {
@@ -321,13 +317,6 @@ namespace AntiBonto
                     p.Kiscsoport = -1;
         }
 
-        private void Recruiter_KeyDown(object sender, KeyEventArgs e)
-        {
-            var dataGrid = (DataGrid)sender;
-            if (e.Key == Key.Delete && (string)dataGrid.CurrentColumn.Header == "Kinek az újonca")
-                ((Person)dataGrid.CurrentItem).KinekAzUjonca = null;
-        }
-
         private void ClearAlvocsoportok(object sender, RoutedEventArgs e)
         {
             foreach (Person p in viewModel.CsoportokbaOsztando)
@@ -335,6 +324,11 @@ namespace AntiBonto
                     p.Alvocsoport = -1;
         }
 
-        #endregion
+        private void Recruiter_KeyDown(object sender, KeyEventArgs e)
+        {
+            var dataGrid = (DataGrid)sender;
+            if (e.Key == Key.Delete && (string)dataGrid.CurrentColumn.Header == "Kinek az újonca")
+                ((Person)dataGrid.CurrentItem).KinekAzUjonca = null;
+        }
     }
 }

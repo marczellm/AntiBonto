@@ -20,6 +20,6 @@ namespace AntiBonto.View
 
         public bool BoldAlvocsoportvezetok { get; set; } = false;
         public static readonly DependencyProperty BoldAlvocsoportvezetokProperty =
-            DependencyProperty.Register("BoldAlvocsoportvezetok", typeof(bool), typeof(DnDItemsControl));       
+            DependencyProperty.Register("BoldAlvocsoportvezetok", typeof(bool), typeof(DnDItemsControl));
     }
 }

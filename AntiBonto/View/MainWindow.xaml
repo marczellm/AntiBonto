@@ -129,11 +129,11 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    <view:DnDItemsControl Grid.Column="0" ItemsSource="{Binding Lanyok}" Header="Lányok"
+                    <view:DnDItemsControl Grid.Column="0" ItemsSource="{Binding Lanyok}" Header="{Binding Lanyok.Count}" HeaderStringFormat="Lányok ({0})"
                                           dd:DragDrop.DropHandler="{StaticResource DropHandler}" x:Name="Lanyok"/>
                     <view:DnDItemsControl Grid.Column="1" ItemsSource="{Binding Nullnemuek}"
                                           dd:DragDrop.DropHandler="{StaticResource DropHandler}" x:Name="Nullnemuek"/>
-                    <view:DnDItemsControl Grid.Column="2" ItemsSource="{Binding Fiuk}" Header="Fiúk"
+                    <view:DnDItemsControl Grid.Column="2" ItemsSource="{Binding Fiuk}" Header="{Binding Fiuk.Count}" HeaderStringFormat="Fiúk ({0})"
                                           dd:DragDrop.DropHandler="{StaticResource DropHandler}" x:Name="Fiuk"/>
                 </Grid>
             </DockPanel>
