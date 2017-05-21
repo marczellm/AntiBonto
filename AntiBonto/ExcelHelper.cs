@@ -12,6 +12,7 @@ namespace AntiBonto
         /// Opens Excel in the background and reads available data about participants.
         /// 
         /// Does not use OpenXML SDK because this way we can support the old binary formats too.
+        /// Also the amount of code needed is vastly smaller this way.
         /// </summary>
         /// <returns>a list of people</returns>
         public static List<Person> LoadXLS(string filename)
@@ -87,6 +88,11 @@ namespace AntiBonto
             {
                 Worksheet sheet = file.Worksheets["Vezérlő adatok"];
                 sheet.Cells[2, 2] = ViewModel.MainWindow.WeekendNumber;
+
+                sheet = file.Worksheets["Alvócsoport címek"];
+                var m = data.Kiscsoportvezetok.Count();
+                for (int j = 1; j <= m; j++)
+                    sheet.Cells[j + 1, 1] = ((char)(j + 64)).ToString();
 
                 sheet = file.Worksheets["Alapadatok"];
                 sheet.Activate();

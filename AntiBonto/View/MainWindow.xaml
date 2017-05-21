@@ -271,7 +271,6 @@
                         <RowDefinition/>
                         <RowDefinition/>
                         <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
                     <Grid.Resources>
                         <ResourceDictionary>
@@ -298,8 +297,7 @@
                     <view:DnDItemsControl Grid.Row="1" Grid.Column="4" ItemsSource="{Binding Kiscsoportok[11]}" x:Name="kcs12"/>
                     <view:DnDItemsControl Grid.Row="1" Grid.Column="5" ItemsSource="{Binding Kiscsoportok[12]}" x:Name="kcs13"/>
                     <view:DnDItemsControl Grid.Row="1" Grid.Column="6" ItemsSource="{Binding Kiscsoportok[13]}" x:Name="kcs14"/>
-                    <Label Grid.Row="2" Content="Nincsenek beosztva:"/>
-                    <view:DnDItemsControl Grid.Row="3" Grid.ColumnSpan="7" ItemsSource="{Binding NoKiscsoport}" x:Name="nokcs" Visibility="Visible"/>
+                    <view:DnDItemsControl Grid.Row="2" Grid.ColumnSpan="7" ItemsSource="{Binding NoKiscsoport}" x:Name="nokcs" Visibility="Visible" Header="Nincsenek beosztva:"/>
                 </Grid>
             </DockPanel>
         </TabItem>
@@ -331,7 +329,6 @@
                         <RowDefinition/>
                         <RowDefinition/>
                         <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
                     <Grid.Resources>
                         <ResourceDictionary>
@@ -341,6 +338,13 @@
                                 <Setter Property="ColorUjoncs" Value="True"/>
                                 <Setter Property="BoldAlvocsoportvezetok" Value="True"/>
                                 <Setter Property="Visibility" Value="Collapsed"/>
+                                <Setter Property="HeaderTemplate">
+                                    <Setter.Value>
+                                        <DataTemplate>
+                                            <TextBox MinWidth="50" HorizontalAlignment="Left"/>
+                                        </DataTemplate>
+                                    </Setter.Value>
+                                </Setter>
                             </Style>
                         </ResourceDictionary>
                     </Grid.Resources>
@@ -358,8 +362,7 @@
                     <view:DnDItemsControl Grid.Row="1" Grid.Column="4" ItemsSource="{Binding Alvocsoportok[11]}" x:Name="acs12"/>
                     <view:DnDItemsControl Grid.Row="1" Grid.Column="5" ItemsSource="{Binding Alvocsoportok[12]}" x:Name="acs13"/>
                     <view:DnDItemsControl Grid.Row="1" Grid.Column="6" ItemsSource="{Binding Alvocsoportok[13]}" x:Name="acs14"/>
-                    <Label Grid.Row="2" Content="Nincsenek beosztva:"/>
-                    <view:DnDItemsControl Grid.Row="3" Grid.ColumnSpan="7" ItemsSource="{Binding NoAlvocsoport}" x:Name="noacs" Visibility="Visible"/>
+                    <view:DnDItemsControl Grid.Row="2" Grid.ColumnSpan="7" ItemsSource="{Binding NoAlvocsoport}" x:Name="noacs" Visibility="Visible" Header="Nincsenek beosztva:" HeaderTemplate="{x:Null}"/>
                 </Grid>
             </DockPanel>
         </TabItem>
