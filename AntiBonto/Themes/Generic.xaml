@@ -22,7 +22,7 @@
             <Setter.Value>
                 <DataTemplate>
                     <Label Content="{Binding Name}" Margin="0,0,5,5" Padding="3" Name="PersonButton" BorderThickness="2">
-                        <Label.Resources>
+                        <Label.Style>
                             <Style TargetType="Label">
                                 <Style.Triggers>
                                     <MultiDataTrigger>
@@ -77,7 +77,7 @@
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
-                        </Label.Resources>
+                        </Label.Style>
                     </Label>
                 </DataTemplate>
             </Setter.Value>

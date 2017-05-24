@@ -311,6 +311,9 @@
                     </Button>
                     <hammer:SpinningWheel Radius="9" CircleRadius="2.5" Visibility="Hidden" Name="XLSSavingAnimation" Margin="20,0,20,0" DockPanel.Dock="Left"/>
                     <Button Content="Törlés" Padding="5" Click="ClearAlvocsoportok" DockPanel.Dock="Right"/>
+                    <Label Content="?" DockPanel.Dock="Right" Background="Transparent" BorderBrush="Transparent" Margin="0,0,10,0"
+                           ToolTipService.InitialShowDelay="0" ToolTipService.ShowDuration="10000"
+                           ToolTip="Jelmagyarázat &#10;Háttérszín: azonos kiscsoportban vannak &#10;Piros keret: kiscsoportban nem lehetnének együtt&#10;Zöld keret: az újonc és a meghívója"/>
                 </DockPanel>
                 <StatusBar DockPanel.Dock="Bottom">
                     <StatusBarItem Content="{Binding StatusText}" MinHeight="22"/>
