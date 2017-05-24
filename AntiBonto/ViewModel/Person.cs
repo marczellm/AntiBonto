@@ -98,6 +98,10 @@ namespace AntiBonto
             get { return kinekAzUjonca; }
             set { kinekAzUjonca = value;  RaisePropertyChanged(); }
         }
+
+        /// <summary>
+        /// These will be filled out by <see cref="Algorithms.ConvertEdges"/> 
+        /// </summary>
         internal HashSet<Person> kivelIgen = new HashSet<Person>(), kivelNem = new HashSet<Person>();
         
         /// <summary>

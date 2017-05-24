@@ -337,6 +337,8 @@
                                 <Setter Property="dd:DragDrop.DropHandler" Value="{StaticResource DropHandler}"/>
                                 <Setter Property="ColorUjoncs" Value="True"/>
                                 <Setter Property="BoldAlvocsoportvezetok" Value="True"/>
+                                <Setter Property="ColorKiscsoports" Value="True"/>
+                                <Setter Property="VisualizeConflicts" Value="True"/>
                                 <Setter Property="Visibility" Value="Collapsed"/>
                                 <Setter Property="HeaderTemplate">
                                     <Setter.Value>
@@ -362,7 +364,9 @@
                     <view:DnDItemsControl Grid.Row="1" Grid.Column="4" ItemsSource="{Binding Alvocsoportok[11]}" x:Name="acs12"/>
                     <view:DnDItemsControl Grid.Row="1" Grid.Column="5" ItemsSource="{Binding Alvocsoportok[12]}" x:Name="acs13"/>
                     <view:DnDItemsControl Grid.Row="1" Grid.Column="6" ItemsSource="{Binding Alvocsoportok[13]}" x:Name="acs14"/>
-                    <view:DnDItemsControl Grid.Row="2" Grid.ColumnSpan="7" ItemsSource="{Binding NoAlvocsoport}" x:Name="noacs" Visibility="Visible" Header="Nincsenek beosztva:" HeaderTemplate="{x:Null}"/>
+                    <view:DnDItemsControl Grid.Row="2" Grid.ColumnSpan="7" ItemsSource="{Binding NoAlvocsoport}" x:Name="noacs" 
+                                          Visibility="Visible" ColorKiscsoports="False" VisualizeConflicts="False"
+                                          Header="Nincsenek beosztva:" HeaderTemplate="{x:Null}"/>
                 </Grid>
             </DockPanel>
         </TabItem>

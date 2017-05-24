@@ -168,14 +168,23 @@ namespace AntiBonto
 
         private void AddEdge(object sender, RoutedEventArgs e)
         {
-            if (viewModel.Edge.Persons.Contains(null))
+            var edge = viewModel.Edge;            
+            if (edge.Persons.Contains(null))
                 return;
-            if (viewModel.Edge.Persons[0].Kiscsoportvezeto && viewModel.Edge.Persons[1].Kiscsoportvezeto)
+            var p = edge.Persons;
+            if (p[0].Kiscsoportvezeto && p[1].Kiscsoportvezeto)
                 MessageBox.Show("Mindketten kiscsoportvezetők!");
-            else if (viewModel.Edge.Persons[0] != viewModel.Edge.Persons[1])
+            else if (p[0] != p[1])
             {
-                viewModel.Edges.Add(viewModel.Edge);
-                viewModel.Edge = new Edge { Dislike = viewModel.Edge.Dislike };
+                viewModel.Edges.Add(edge);
+                if (edge.Dislike && p[0].Kiscsoport == p[1].Kiscsoport && p[0].Kiscsoport != -1)
+                {
+                    p[0].Kiscsoport = p[1].Kiscsoport = -1;
+                    MessageBox.Show("Egy kiscsoportban voltak! Kivettem őket.");
+                }
+                if (edge.Dislike && p[0].Alvocsoport == p[1].Alvocsoport && p[0].Alvocsoport != -1)
+                    acs[p[0].Alvocsoport].Items.Refresh(); // Display red borders indicating conflict
+                viewModel.Edge = new Edge { Dislike = edge.Dislike };
             }
         }
 
@@ -183,6 +192,9 @@ namespace AntiBonto
         {
             Edge edge = (Edge)((FrameworkElement)sender).DataContext;
             viewModel.Edges.Remove(edge);
+            var p = edge.Persons;
+            if (edge.Dislike && p[0].Alvocsoport == p[1].Alvocsoport && p[0].Alvocsoport != -1)
+                acs[p[0].Alvocsoport].Items.Refresh(); // Remove red borders
         }
 
         private void Edge_KeyUp(object sender, KeyEventArgs e)
@@ -267,6 +279,7 @@ namespace AntiBonto
                 }
                 else if (newTab == Alvocsoportbeoszto)
                 {
+                    viewModel.InitKiscsoport();
                     viewModel.InitAlvocsoport();
                     viewModel.AlvocsoportDisplayOrdering(acs.Count() - acs.Count() / 2);
                     for (int j = 0; j < acs.Count(); j++)

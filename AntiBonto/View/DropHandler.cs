@@ -140,7 +140,11 @@ namespace AntiBonto.View
             if (target.Name.StartsWith("kcs"))
                 p.Kiscsoport = Int32.Parse(target.Name.Remove(0, 3)) - 1;
             if (target.Name.StartsWith("acs"))
+            {
                 p.Alvocsoport = Int32.Parse(target.Name.Remove(0, 3)) - 1;
+                ((ItemsControl)source).Items.Refresh(); // This updates the background color for all others in the source
+                ((ItemsControl)target).Items.Refresh(); // and target sleeping groups
+            }
             if (target.Name == "nokcs")
                 p.Kiscsoport = -1;
             if (target.Name == "noacs")
