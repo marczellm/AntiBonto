@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Windows;
 
 namespace AntiBonto
 {
@@ -37,7 +38,7 @@ namespace AntiBonto
                         ppl[i++].Name += " " + n;
                 }
                 ppl.RemoveAll(s => String.IsNullOrWhiteSpace(s.Name));
-                if (isHVKezelo)
+                if (isHVKezelo || MessageBox.Show("Hétvége kezelő formátum?", "", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
                 {
                     int i = 0;
                     foreach (var s in range.Columns[3].Value)
