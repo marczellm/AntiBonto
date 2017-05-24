@@ -22,9 +22,9 @@ namespace AntiBonto.View
             Person p = (Person)values[0];
             var viewModel = (ViewModel.MainWindow)values[1];
             int i = p.Kiscsoport;
-            if (viewModel.Kiscsoportok[i].Cast<Person>().Any(q => p != q && p.Alvocsoport == q.Alvocsoport))
+            if (i != -1 && viewModel.Kiscsoportok[i].Cast<Person>().Any(q => p != q && p.Alvocsoport == q.Alvocsoport))
                 return new SolidColorBrush(Color.FromArgb(127, colors[i, 0], colors[i, 1], colors[i, 2]));
-            else return SystemColors.ControlBrush;
+            else return SystemColors.ControlBrush;            
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)

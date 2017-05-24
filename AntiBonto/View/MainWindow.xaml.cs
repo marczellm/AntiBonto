@@ -182,8 +182,6 @@ namespace AntiBonto
                     p[0].Kiscsoport = p[1].Kiscsoport = -1;
                     MessageBox.Show("Egy kiscsoportban voltak! Kivettem őket.");
                 }
-                if (edge.Dislike && p[0].Alvocsoport == p[1].Alvocsoport && p[0].Alvocsoport != -1)
-                    acs[p[0].Alvocsoport].Items.Refresh(); // Display red borders indicating conflict
                 viewModel.Edge = new Edge { Dislike = edge.Dislike };
             }
         }
@@ -192,9 +190,6 @@ namespace AntiBonto
         {
             Edge edge = (Edge)((FrameworkElement)sender).DataContext;
             viewModel.Edges.Remove(edge);
-            var p = edge.Persons;
-            if (edge.Dislike && p[0].Alvocsoport == p[1].Alvocsoport && p[0].Alvocsoport != -1)
-                acs[p[0].Alvocsoport].Items.Refresh(); // Remove red borders
         }
 
         private void Edge_KeyUp(object sender, KeyEventArgs e)
@@ -288,7 +283,10 @@ namespace AntiBonto
                         acs[j].Visibility = b ? Visibility.Visible : Visibility.Collapsed;
                         acs[j].IsEnabled = b;
                         if (b)
+                        {
                             BindingOperations.GetBindingExpression(acs[j], ItemsControl.ItemsSourceProperty).UpdateTarget();
+                            acs[j].Items.Refresh();
+                        }
                     }
                     BindingOperations.GetBindingExpression(SaveButton, IsEnabledProperty)?.UpdateTarget();
                 }
