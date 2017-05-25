@@ -61,6 +61,33 @@ namespace AntiBonto.View
             else
                 dropInfo.Effects = DragDropEffects.Move;
         }
+
+        /// <summary>
+        /// Delete the groups of which p was the leader of
+        /// </summary>
+        private void Degroup(Person p)
+        {
+            if (p.Kiscsoportvezeto)
+            {
+                int numKiscsoportok = d.Kiscsoportvezetok.Count();
+                d.SwapKiscsoports(p.Kiscsoport, numKiscsoportok - 1);
+                d.Kiscsoport(numKiscsoportok - 1).ToList().ForEach(q => { q.Kiscsoport = -1; });
+                p.Kiscsoportvezeto = false;
+            }
+            if (p.Alvocsoportvezeto)
+            {
+                if (d.Alvocsoportvezetok.Any(q => q.Nem == Nem.Undefined))
+                {
+                    int numAlvocsoportok = d.Alvocsoportvezetok.Count();
+                    d.SwapAlvocsoports(p.Alvocsoport, numAlvocsoportok - 1);
+                    d.Alvocsoport(numAlvocsoportok - 1).ToList().ForEach(q => { q.Alvocsoport = -1; });
+                }
+                else
+                    d.Alvocsoport(p.Alvocsoport).ToList().ForEach(q => { q.Alvocsoport = -1; });
+                p.Alvocsoportvezeto = false;
+            }
+        }
+
         /// <summary>
         /// Make the necessary data changes upon drop
         /// </summary>
@@ -73,13 +100,23 @@ namespace AntiBonto.View
             {
                 case "Fiuk": p.Nem = Nem.Fiu; break;
                 case "Lanyok": p.Nem = Nem.Lany; break;
-                case "Nullnemuek": p.Nem = Nem.Undefined; break;
-                case "Ujoncok": p.Type = PersonType.Ujonc; break;
+                case "Nullnemuek": p.Nem = Nem.Undefined; break;                
                 case "Zeneteamvezeto": d.Zeneteamvezeto = p; break;
                 case "Lanyvezeto": d.Lanyvezeto = p; break;
                 case "Fiuvezeto": d.Fiuvezeto = p; break;
-                case "Egyeb": p.Type = PersonType.Egyeb; break;
-
+                case "Ujoncok":
+                    p.Type = PersonType.Ujonc;
+                    Degroup(p);
+                    break;
+                case "Egyeb":
+                    p.Type = PersonType.Egyeb;
+                    Degroup(p);
+                    break;
+                case "AddOrRemovePersonButton":
+                    d.People.Remove(p);
+                    d.Edges.RemoveAll(e => e.Persons.Contains(p));
+                    Degroup(p);
+                    break;
                 case "Team":
                     if (source.Name != "Kiscsoportvezetok" && source.Name != "Alvocsoportvezetok")
                         p.Type = PersonType.Teamtag;
@@ -89,7 +126,7 @@ namespace AntiBonto.View
                         p.Type = PersonType.Zeneteamtag;
                     break;
                 case "Kiscsoportvezetok":
-                    Edge edge = d.Edges.FirstOrDefault(e => e.Persons.Contains(p) && e.Persons[1 - Array.IndexOf(e.Persons, p)].Kiscsoportvezeto);
+                    Edge edge = d.Edges.FirstOrDefault(e => e.Persons.Contains(p) && e.Persons.First(q => q != p).Kiscsoportvezeto);
                     if (edge == null || MessageBox.Show(String.Format("Ez a megszorítás törlődni fog:\n\n{0}\n\nAkarod folytatni?", edge.ToString()), "", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
                     {
                         if (!p.Kiscsoportvezeto)
@@ -107,10 +144,7 @@ namespace AntiBonto.View
                         p.Alvocsoportvezeto = true;
                         p.Alvocsoport = d.Alvocsoportvezetok.Select(q => q.Alvocsoport).DefaultIfEmpty(-1).Max() + 1;
                     }
-                    break;
-                case "AddOrRemovePersonButton":
-                    d.People.Remove(p);
-                    break;
+                    break;                
             }
             if (source.Name == "Kiscsoportvezetok" && (target.Name == "Team" || target.Name == "Ujoncok" || target.Name == "Egyeb"))
             {
@@ -142,7 +176,7 @@ namespace AntiBonto.View
             if (target.Name.StartsWith("acs"))
             {
                 p.Alvocsoport = Int32.Parse(target.Name.Remove(0, 3)) - 1;
-                ((ItemsControl)source).Items.Refresh(); // This updates the background color for all others in the source
+                ((ItemsControl)source).Items.Refresh(); // This updates the visualizing decorations for all others in the source
                 ((ItemsControl)target).Items.Refresh(); // and target sleeping groups
             }
             if (target.Name == "nokcs")

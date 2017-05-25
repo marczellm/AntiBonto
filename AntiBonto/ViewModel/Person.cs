@@ -96,7 +96,7 @@ namespace AntiBonto
         public Person KinekAzUjonca
         {
             get { return kinekAzUjonca; }
-            set { kinekAzUjonca = value;  RaisePropertyChanged(); }
+            set { kinekAzUjonca = value; RaisePropertyChanged(); }
         }
 
         /// <summary>

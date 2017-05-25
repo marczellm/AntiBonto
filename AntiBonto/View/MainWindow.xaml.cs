@@ -177,11 +177,8 @@ namespace AntiBonto
             else if (p[0] != p[1])
             {
                 viewModel.Edges.Add(edge);
-                if (edge.Dislike && p[0].Kiscsoport == p[1].Kiscsoport && p[0].Kiscsoport != -1)
-                {
-                    p[0].Kiscsoport = p[1].Kiscsoport = -1;
-                    MessageBox.Show("Egy kiscsoportban voltak! Kivettem őket.");
-                }
+                if (edge.Dislike && p[0].Kiscsoport == p[1].Kiscsoport)
+                    p.First(q => !q.Kiscsoportvezeto).Kiscsoport = -1;
                 viewModel.Edge = new Edge { Dislike = edge.Dislike };
             }
         }
@@ -290,6 +287,8 @@ namespace AntiBonto
                     }
                     BindingOperations.GetBindingExpression(SaveButton, IsEnabledProperty)?.UpdateTarget();
                 }
+                else if (newTab == LanyokFiuk)
+                    viewModel.Nullnemuek.MoveCurrentToFirst();
             }
         }
 
@@ -347,11 +346,21 @@ namespace AntiBonto
             }
         }
 
-        private void Recruiter_KeyDown(object sender, KeyEventArgs e)
+        private void Recruiter_KeyUp(object sender, KeyEventArgs e)
         {
             var dataGrid = (DataGrid)sender;
             if (e.Key == Key.Delete && (string)dataGrid.CurrentColumn.Header == "Kinek az újonca")
                 ((Person)dataGrid.CurrentItem).KinekAzUjonca = null;
+        }
+
+        private void KinekAzUjonca_Updated(object sender, SelectionChangedEventArgs e)
+        {
+            if (e.AddedItems.Cast<object>().Any())
+            {
+                Person p = (Person)DataGrid.CurrentItem, q = (Person)e.AddedItems[0];
+                if (q != null && p.Kiscsoport == q.Kiscsoport)
+                    new Person[] { p, q }.First(r => !r.Kiscsoportvezeto).Kiscsoport = -1;
+            }
         }
     }
 }

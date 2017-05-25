@@ -132,7 +132,7 @@
                     </Grid.RowDefinitions>
                     <view:DnDItemsControl Grid.Column="0" ItemsSource="{Binding Lanyok}" Header="{Binding Lanyok.Count}" HeaderStringFormat="Lányok ({0})"
                                           dd:DragDrop.DropHandler="{StaticResource DropHandler}" x:Name="Lanyok"/>
-                    <Label Content="{Binding Nullnemuek.CurrentItem.Name}" Grid.Column="1" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+                    <Label Content="{Binding Nullnemuek.CurrentItem}" Grid.Column="1" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
                             VerticalAlignment="Center" HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="20"/>
                     <view:DnDItemsControl Grid.Column="2" ItemsSource="{Binding Fiuk}" Header="{Binding Fiuk.Count}" HeaderStringFormat="Fiúk ({0})"
                                           dd:DragDrop.DropHandler="{StaticResource DropHandler}" x:Name="Fiuk"/>
@@ -147,12 +147,18 @@
                 <Label DockPanel.Dock="Top" Content="Kinek az újonca? (nem kötelező)"/>
                 <ContentControl Visibility="Collapsed" Content="{StaticResource DataContextProxy}"/>
                 <!-- hack part 2 -->
-                <DataGrid ItemsSource="{Binding Ujoncok}" CanUserAddRows="False" CanUserDeleteRows="False" AutoGenerateColumns="False" PreviewKeyDown="Recruiter_KeyDown">
+                <DataGrid ItemsSource="{Binding Ujoncok}" CanUserAddRows="False" CanUserDeleteRows="False" AutoGenerateColumns="False" KeyUp="Recruiter_KeyUp" Name="DataGrid">
                     <DataGrid.Columns>
                         <DataGridTextColumn Binding="{Binding Name}" Header="Név" IsReadOnly="True"/>
-                        <DataGridComboBoxColumn Header="Kinek az újonca" 
+                        <DataGridComboBoxColumn Header="Kinek az újonca" x:Name="ComboBoxColumn" CanUserReorder="False"
                                                 ItemsSource="{Binding DataContext.Team, Source={StaticResource DataContextProxy}}" 
-                                                SelectedItemBinding="{Binding KinekAzUjonca}"/>
+                                                SelectedItemBinding="{Binding KinekAzUjonca, NotifyOnSourceUpdated=True, NotifyOnTargetUpdated=True}">
+                            <DataGridComboBoxColumn.EditingElementStyle>
+                                <Style TargetType="{x:Type ComboBox}">
+                                    <EventSetter Event="SelectionChanged" Handler="KinekAzUjonca_Updated" />
+                                </Style>
+                            </DataGridComboBoxColumn.EditingElementStyle>
+                        </DataGridComboBoxColumn>
                     </DataGrid.Columns>
                 </DataGrid>
             </DockPanel>
