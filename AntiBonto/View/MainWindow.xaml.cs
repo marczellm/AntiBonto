@@ -31,7 +31,7 @@ namespace AntiBonto
         private string filepath;
         private CancellationTokenSource cts;
 
-        private ViewModel.MainWindow viewModel { get { return (ViewModel.MainWindow)DataContext; } }
+        private ViewModel.MainWindow viewModel => (ViewModel.MainWindow)DataContext;
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {

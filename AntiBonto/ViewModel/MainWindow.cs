@@ -16,14 +16,14 @@ namespace AntiBonto.ViewModel
         /// <summary>
         /// Most tabs disable if this is false
         /// </summary>
-        public bool PeopleNotEmpty { get { return People.Count() != 0; } }
-        
+        public bool PeopleNotEmpty => People.Count() != 0;
+
         /// <summary>
         /// The Save button disables if this is false
         /// </summary>
-        public bool BeosztasKesz { get { return !Kiscsoport(-1).Any() && !Alvocsoport(-1).Any(); } }
+        public bool BeosztasKesz => !Kiscsoport(-1).Any() && !Alvocsoport(-1).Any();
 
-        public static int WeekendNumber { get { return 2 * DateTime.Now.Year - 4013 + DateTime.Now.Month / 7; } }
+        public static int WeekendNumber => 2 * DateTime.Now.Year - 4013 + DateTime.Now.Month / 7;
 
         private void People_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
@@ -138,8 +138,8 @@ namespace AntiBonto.ViewModel
                 SwapKiscsoports(Zeneteamvezeto.Kiscsoport, m - 3);
         }
 
-        public ICollectionView Fiuk { get { return CollectionViewHelper.Lazy(People, p => ((Person)p).Nem == Nem.Fiu && ((Person)p).Type != PersonType.Egyeb); } }
-        public ICollectionView Lanyok { get { return CollectionViewHelper.Lazy(People, p => ((Person)p).Nem == Nem.Lany && ((Person)p).Type != PersonType.Egyeb); } }
+        public ICollectionView Fiuk => CollectionViewHelper.Lazy(People, p => ((Person)p).Nem == Nem.Fiu && ((Person)p).Type != PersonType.Egyeb);
+        public ICollectionView Lanyok => CollectionViewHelper.Lazy(People, p => ((Person)p).Nem == Nem.Lany && ((Person)p).Type != PersonType.Egyeb);
         public ICollectionView Nullnemuek
         {
             get
@@ -151,15 +151,15 @@ namespace AntiBonto.ViewModel
             }
         }
 
-        public ICollectionView Ujoncok { get { return CollectionViewHelper.Lazy(People, p => ((Person)p).Type == PersonType.Ujonc); } }
-        public ICollectionView Team { get { return CollectionViewHelper.Lazy(People, p => ((Person)p).Type != PersonType.Egyeb && ((Person)p).Type != PersonType.Ujonc); } }
-        public ICollectionView Egyeb { get { return CollectionViewHelper.Lazy(People, p => ((Person)p).Type == PersonType.Egyeb); } }
-        public ICollectionView KiscsoportvezetokCollectionView { get { return CollectionViewHelper.Lazy(People, p => ((Person)p).Kiscsoportvezeto); } }
-        public ICollectionView AlvocsoportvezetokCollectionView { get { return CollectionViewHelper.Lazy(People, p => ((Person)p).Alvocsoportvezeto); } }
-        public IEnumerable<Person> Kiscsoportvezetok { get { return KiscsoportvezetokCollectionView.Cast<Person>(); } }       
-        public IEnumerable<Person> Alvocsoportvezetok { get { return AlvocsoportvezetokCollectionView.Cast<Person>(); } }
-        public ICollectionView CsoportokbaOsztando { get { return CollectionViewHelper.Lazy(People, p => ((Person)p).Type != PersonType.Egyeb); } }
-        public ICollectionView Zeneteam { get { return CollectionViewHelper.Lazy(People, p => ((Person)p).Type == PersonType.Zeneteamtag); } }
+        public ICollectionView Ujoncok => CollectionViewHelper.Lazy(People, p => ((Person)p).Type == PersonType.Ujonc);
+        public ICollectionView Team => CollectionViewHelper.Lazy(People, p => ((Person)p).Type != PersonType.Egyeb && ((Person)p).Type != PersonType.Ujonc);
+        public ICollectionView Egyeb => CollectionViewHelper.Lazy(People, p => ((Person)p).Type == PersonType.Egyeb);
+        public ICollectionView KiscsoportvezetokCollectionView => CollectionViewHelper.Lazy(People, p => ((Person)p).Kiscsoportvezeto);
+        public ICollectionView AlvocsoportvezetokCollectionView => CollectionViewHelper.Lazy(People, p => ((Person)p).Alvocsoportvezeto);
+        public IEnumerable<Person> Kiscsoportvezetok => KiscsoportvezetokCollectionView.Cast<Person>();
+        public IEnumerable<Person> Alvocsoportvezetok => AlvocsoportvezetokCollectionView.Cast<Person>();
+        public ICollectionView CsoportokbaOsztando => CollectionViewHelper.Lazy(People, p => ((Person)p).Type != PersonType.Egyeb);
+        public ICollectionView Zeneteam => CollectionViewHelper.Lazy(People, p => ((Person)p).Type == PersonType.Zeneteamtag);
         private ICollectionView KiscsoportCollectionView(int i)
         {
             return CollectionViewHelper.Get(People, p => ((Person)p).Kiscsoport == i && ((Person)p).Type != PersonType.Egyeb);
@@ -176,12 +176,13 @@ namespace AntiBonto.ViewModel
         {
             return People.Where(p => p.Type != PersonType.Egyeb && p.Alvocsoport == i);
         }
-        public ICollectionView NoKiscsoport { get { return CollectionViewHelper.Lazy(People, p => ((Person)p).Kiscsoport == -1 && ((Person)p).Type != PersonType.Egyeb); } }
-        public ICollectionView NoAlvocsoport { get { return CollectionViewHelper.Get(People, p => ((Person)p).Alvocsoport == -1 && ((Person)p).Type != PersonType.Egyeb); } }
+        public ICollectionView NoKiscsoport => CollectionViewHelper.Lazy(People, p => ((Person)p).Kiscsoport == -1 && ((Person)p).Type != PersonType.Egyeb);
+        public ICollectionView NoAlvocsoport => CollectionViewHelper.Get(People, p => ((Person)p).Alvocsoport == -1 && ((Person)p).Type != PersonType.Egyeb);
 
         private List<ICollectionView> kiscsoportok, alvocsoportok;
-        public List<ICollectionView> Kiscsoportok { get { return kiscsoportok; } }
-        public List<ICollectionView> Alvocsoportok { get { return alvocsoportok; } }
+        public List<ICollectionView> Kiscsoportok => kiscsoportok;
+        public List<ICollectionView> Alvocsoportok => alvocsoportok;
+
         public Person Zeneteamvezeto
         {
             get
