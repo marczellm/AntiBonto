@@ -19,12 +19,12 @@
         <FrameworkElement x:Key="DataContextProxy" DataContext="{Binding}"/>
         <!-- hack, see http://stackoverflow.com/questions/7660967-->
         <Storyboard x:Key="ButtonRotateAnimation">
-            <DoubleAnimation Storyboard.TargetName="AddOrRemovePersonButton" 
+            <DoubleAnimation Storyboard.TargetName="AddOrRemovePersonButton"
                              Storyboard.TargetProperty="(Button.RenderTransform).(RotateTransform.Angle)"
                              To="45" Duration="0:0:.2"/>
+            
         </Storyboard>
         <Storyboard x:Key="ButtonRotateBackAnimation" x:Name="ButtonRotateBackAnimation">
-            <!-- Called from code because it turned out to be the only reliable option -->
             <DoubleAnimation Storyboard.TargetName="AddOrRemovePersonButton" 
                              Storyboard.TargetProperty="(Button.RenderTransform).(RotateTransform.Angle)"
                              To="0" Duration="0:0:.2"/>
@@ -46,27 +46,21 @@
                     <Button Content="Excel fájl betöltése" Click="LoadXLS" Padding="5" DockPanel.Dock="Left"/>
                     <hammer:SpinningWheel Radius="9" CircleRadius="2.5" Visibility="Hidden" Name="XLSLoadingAnimation" DockPanel.Dock="Left" Margin="20,0,0,0"/>
                     <Button Content="Törlés" DockPanel.Dock="Right" Click="Reset" Padding="5"/>
-                </DockPanel>                
+                </DockPanel>
                 <Grid Margin="5">
-                    <view:DnDItemsControl Header="Résztvevők" x:Name="PeopleView" ItemsSource="{Binding People}" dd:DragDrop.DropHandler="{StaticResource DropHandler}">
-                        <dd:DragDrop.DragHandler>
-                            <view:AnimatedDragHandler Animation="{StaticResource ButtonRotateBackAnimation}"/>
-                        </dd:DragDrop.DragHandler>
+                    <Grid.Resources>
+                        <view:AnimatedDragHandler Storyboard="{Binding ButtonRotateBackAnimation, Source={x:Reference Name=AddOrRemovePersonButton}}" x:Key="AnimatedDragHandler"/>
+                    </Grid.Resources>
+                    <view:DnDItemsControl Header="Résztvevők" x:Name="PeopleView" ItemsSource="{Binding People}" 
+                                          dd:DragDrop.DropHandler="{StaticResource DropHandler}" dd:DragDrop.DragHandler="{StaticResource AnimatedDragHandler}">
                         <ItemsControl.Triggers>
                             <EventTrigger RoutedEvent="DragDrop.DragEnter">
-                                <BeginStoryboard Storyboard="{StaticResource ButtonRotateAnimation}"/>
+                                <BeginStoryboard Storyboard="{Binding ButtonRotateAnimation, ElementName=AddOrRemovePersonButton}"/>
                             </EventTrigger>
                         </ItemsControl.Triggers>
                     </view:DnDItemsControl>
-                    <Border Style="{StaticResource MaterialShadow}" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="20">
-                        <view:MaterialButton Click="AddPerson" x:Name="AddOrRemovePersonButton"
-                                         dd:DragDrop.DropHandler="{StaticResource DropHandler}" dd:DragDrop.IsDropTarget="True"
-                                         RenderTransformOrigin="0.5,0.5">
-                            <Button.RenderTransform>
-                                <RotateTransform/>
-                            </Button.RenderTransform>
-                        </view:MaterialButton>
-                    </Border>
+                    <view:MaterialButton Click="AddPerson" x:Name="AddOrRemovePersonButton" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="20"
+                                         dd:DragDrop.DropHandler="{StaticResource DropHandler}" dd:DragDrop.IsDropTarget="True"/>
                 </Grid>
             </DockPanel>
         </TabItem>
@@ -179,13 +173,11 @@
                         </ComboBox>
                         <Label Content=", mert "/>
                         <TextBox Text="{Binding Edge.Reason}" MinWidth="100"/>
-                        <Border Style="{StaticResource MaterialShadow}">
-                            <view:MaterialButton Click="AddEdge" Height="20" Margin="10,0,0,0" IsDefault="True">
-                                <Button.Content>
-                                    <TextBlock Text="+" Margin="0,-6.5,0,0" FontSize="20"/>
-                                </Button.Content>
-                            </view:MaterialButton>
-                        </Border>
+                        <view:MaterialButton Click="AddEdge" Height="20" Margin="10,0,0,0" IsDefault="True">
+                            <Button.Content>
+                                <TextBlock Text="+" Margin="0,-6.5,0,0" FontSize="20"/>
+                            </Button.Content>
+                        </view:MaterialButton>
                     </StackPanel>
 
                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
@@ -212,13 +204,11 @@
                                            Visibility="{Binding Dislike, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                                 </Grid>
                                 <Label Content="{Binding Persons[1]}" Margin="0,5,5,5" Padding="3" MinWidth="150" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
-                                <Border Style="{StaticResource MaterialShadow}">
-                                    <view:MaterialButton Click="RemoveEdge" Height="20" Margin="10,0,0,0">
-                                        <Button.Content>
-                                            <TextBlock Text="×" Margin="0,-4,0,0" FontSize="14" FontWeight="Bold"/>
-                                        </Button.Content>
-                                    </view:MaterialButton>
-                                </Border>
+                                <view:MaterialButton Click="RemoveEdge" Height="20" Margin="10,0,0,0">
+                                    <Button.Content>
+                                        <TextBlock Text="×" Margin="0,-4,0,0" FontSize="14" FontWeight="Bold"/>
+                                    </Button.Content>
+                                </view:MaterialButton>
                             </StackPanel>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>

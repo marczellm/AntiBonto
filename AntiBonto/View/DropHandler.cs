@@ -9,10 +9,8 @@ namespace AntiBonto.View
 {
     class DropHandler : FrameworkElement, IDropTarget
     {
-        private ViewModel.MainWindow d
-        {
-            get { return (ViewModel.MainWindow)DataContext; }
-        }
+        private ViewModel.MainWindow d => (ViewModel.MainWindow)DataContext;
+
         /// <summary>
         /// Set where drops are allowed
         /// </summary>

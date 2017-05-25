@@ -1,25 +1,46 @@
 ﻿using GongSolutions.Wpf.DragDrop;
 using System.Windows;
 using System.Windows.Media.Animation;
+using System;
 
 namespace AntiBonto.View
 {
-    public class AnimatedDragHandler : DefaultDragHandler
+    /// <summary>
+    /// In order to be a DependencyObject, this uses composition instead of inheritance to delegate to DefaultDragHandler
+    /// </summary>
+    public class AnimatedDragHandler : FrameworkElement, IDragSource
     {
-        public Storyboard Animation { get; set; }
+        public Storyboard Storyboard { get; set; }
 
-        public static readonly DependencyProperty AnimationProperty =
-            DependencyProperty.Register("Animation", typeof(Storyboard), typeof(AnimatedDragHandler));
+        private DefaultDragHandler _base = new DefaultDragHandler();
 
-        public override void DragCancelled()
+        public static readonly DependencyProperty StoryboardProperty =
+            DependencyProperty.Register("Storyboard", typeof(Storyboard), typeof(AnimatedDragHandler));
+
+        public void DragCancelled()
         {
-            base.DragCancelled();
-            Animation.Begin();
+            _base.DragCancelled();
+            Storyboard?.Begin();
         }
-        public override void Dropped(IDropInfo dropInfo)
+        public void Dropped(IDropInfo dropInfo)
         {
-            base.Dropped(dropInfo);
-            Animation.Begin();
+            _base.Dropped(dropInfo);
+            Storyboard?.Begin();
+        }
+
+        public void StartDrag(IDragInfo dragInfo)
+        {
+            _base.StartDrag(dragInfo);
+        }
+
+        public bool CanStartDrag(IDragInfo dragInfo)
+        {
+            return _base.CanStartDrag(dragInfo);
+        }
+
+        public bool TryCatchOccurredException(Exception exception)
+        {
+            return _base.TryCatchOccurredException(exception);
         }
     }
 }

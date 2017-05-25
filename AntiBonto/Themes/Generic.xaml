@@ -105,10 +105,30 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
-                    <Grid>
-                        <Ellipse Fill="{Binding Background, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}"/>
-                        <ContentPresenter Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    </Grid>
+                    <Border>
+                        <Border.Effect>
+                            <DropShadowEffect BlurRadius="8" ShadowDepth="2.5" Direction="270" Color="#BBBBBB"/>
+                        </Border.Effect>
+                        <Grid Name="BorderContent" RenderTransformOrigin="0.5,0.5">
+                            <Ellipse Fill="{Binding Background, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}"/>
+                            <ContentPresenter Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <Grid.RenderTransform>
+                                <RotateTransform/>
+                            </Grid.RenderTransform>
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Resources>
+                        <Storyboard x:Key="ButtonRotateAnimation">
+                            <DoubleAnimation Storyboard.TargetName="BorderContent"
+                             Storyboard.TargetProperty="(Grid.RenderTransform).(RotateTransform.Angle)"
+                             To="45" Duration="0:0:.2"/>
+                        </Storyboard>
+                        <Storyboard x:Key="ButtonRotateBackAnimation">
+                            <DoubleAnimation Storyboard.TargetName="BorderContent" 
+                             Storyboard.TargetProperty="(Grid.RenderTransform).(RotateTransform.Angle)"
+                             To="0" Duration="0:0:.2"/>
+                        </Storyboard>
+                    </ControlTemplate.Resources>
                     <ControlTemplate.Triggers>
                         <EventTrigger RoutedEvent="Button.MouseEnter">
                             <BeginStoryboard>
