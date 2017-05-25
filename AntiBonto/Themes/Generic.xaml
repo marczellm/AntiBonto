@@ -46,6 +46,20 @@
                                         </MultiDataTrigger.Conditions>
                                         <Setter Property="Foreground" Value="Green"/>
                                     </MultiDataTrigger>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding ColorLeaders, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}" Value="True"/>
+                                            <Condition Binding="{Binding Type}" Value="{x:Static main:PersonType.Fiuvezeto}"/>
+                                        </MultiDataTrigger.Conditions>
+                                        <Setter Property="Foreground" Value="Blue"/>
+                                    </MultiDataTrigger>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding ColorLeaders, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}" Value="True"/>
+                                            <Condition Binding="{Binding Type}" Value="{x:Static main:PersonType.Lanyvezeto}"/>
+                                        </MultiDataTrigger.Conditions>
+                                        <Setter Property="Foreground" Value="Blue"/>
+                                    </MultiDataTrigger>
                                     <DataTrigger Binding="{Binding ColorKiscsoports, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}" Value="True">
                                         <Setter Property="Background">
                                             <Setter.Value>

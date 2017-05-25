@@ -178,7 +178,7 @@
                             </ComboBox.Items>
                         </ComboBox>
                         <Label Content=", mert "/>
-                        <TextBox Text="{Binding Edge.Reason}" MinWidth="100"/>
+                        <TextBox Text="{Binding Edge.Reason, UpdateSourceTrigger=PropertyChanged}" MinWidth="100"/>
                         <Border Style="{StaticResource MaterialShadow}">
                             <view:MaterialButton Click="AddEdge" Height="20" Margin="10,0,0,0" IsDefault="True">
                                 <Button.Content>
@@ -284,6 +284,7 @@
                                 <Setter Property="Margin" Value="5"/>
                                 <Setter Property="dd:DragDrop.DropHandler" Value="{StaticResource DropHandler}"/>
                                 <Setter Property="ColorUjoncs" Value="True"/>
+                                <Setter Property="ColorLeaders" Value="True"/>
                                 <Setter Property="BoldKiscsoportvezetok" Value="True"/>
                                 <Setter Property="Visibility" Value="Collapsed"/>
                             </Style>

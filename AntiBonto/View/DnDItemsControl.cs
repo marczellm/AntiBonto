@@ -14,6 +14,10 @@ namespace AntiBonto.View
         public static readonly DependencyProperty ColorUjoncsProperty =
             DependencyProperty.Register("ColorUjoncs", typeof(bool), typeof(DnDItemsControl));
 
+        public bool ColorLeaders { get; set; } = false;
+        public static readonly DependencyProperty ColorLeadersProperty =
+            DependencyProperty.Register("ColorLeaders", typeof(bool), typeof(DnDItemsControl));
+
         public bool ColorKiscsoports { get; set; } = false;
         public static readonly DependencyProperty ColorKiscsoportsProperty =
             DependencyProperty.Register("ColorKiscsoports", typeof(bool), typeof(DnDItemsControl));

@@ -57,6 +57,8 @@ namespace AntiBonto
                     p.kivelNem.Add(p.KinekAzUjonca);
                     p.KinekAzUjonca.kivelNem.Add(p);
                 }
+            d.Fiuvezeto.kivelNem.Add(d.Lanyvezeto);
+            d.Lanyvezeto.kivelNem.Add(d.Fiuvezeto);
             // Split up the MutuallyExclusiveGroups to groups no bigger than m
             List<List<Person>> mutuallyExclusiveGroups = new List<List<Person>>();
             foreach (IList<Person> group in d.MutuallyExclusiveGroups)
