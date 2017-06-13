@@ -8,9 +8,11 @@
         xmlns:hammer="clr-namespace:Hammer.SpinningWheel;assembly=Hammer.SpinningWheel"
         xmlns:dd="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
         mc:Ignorable="d"
-        Name="MainWindowName"
-        Title="AntiBontó" Width="1024" Height="768"
-        Closing="MainWindow_Closing" Loaded="MainWindow_Loaded">
+        Name="MainWindowName" Title="AntiBontó" 
+        Width="1024" Height="768"         
+        Background="Transparent"
+        Closing="MainWindow_Closing"
+        Loaded="MainWindow_Loaded">
     <Window.DataContext>
         <vm:MainWindow/>
     </Window.DataContext>

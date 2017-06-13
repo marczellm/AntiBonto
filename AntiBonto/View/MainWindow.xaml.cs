@@ -11,6 +11,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Interop;
+using System.Windows.Media;
 using System.Xml.Serialization;
 
 namespace AntiBonto
@@ -34,6 +36,32 @@ namespace AntiBonto
         private ViewModel.MainWindow viewModel => (ViewModel.MainWindow)DataContext;
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            ExtendWindowFrame();
+            LoadXML();
+        }
+
+        private void ExtendWindowFrame()
+        {
+            try
+            {
+                IntPtr windowPtr = new WindowInteropHelper(this).Handle;
+                HwndSource.FromHwnd(windowPtr).CompositionTarget.BackgroundColor = Color.FromArgb(0, 0, 0, 0);
+                float rdpiy = System.Drawing.Graphics.FromHwnd(windowPtr).DpiY / 96;
+                DwmAPI.Margins margins = new DwmAPI.Margins { top = Convert.ToInt32(150 * rdpiy) };
+                if (DwmAPI.DwmExtendFrameIntoClientArea(windowPtr, ref margins) < 0)
+                    Background = SystemColors.WindowBrush;
+            }
+            catch (DllNotFoundException)
+            {
+                Background = SystemColors.WindowBrush;
+            }
+        }
+
+        /// <summary>
+        /// Load the app state from AppData\...\AntiBonto\state.xml
+        /// </summary>
+        private void LoadXML()
         {
             var xs = new XmlSerializer(typeof(AppData));
             if (File.Exists(filepath))
