@@ -48,7 +48,7 @@ namespace AntiBonto
                 IntPtr windowPtr = new WindowInteropHelper(this).Handle;
                 HwndSource.FromHwnd(windowPtr).CompositionTarget.BackgroundColor = Color.FromArgb(0, 0, 0, 0);
                 float rdpiy = System.Drawing.Graphics.FromHwnd(windowPtr).DpiY / 96;
-                DwmAPI.Margins margins = new DwmAPI.Margins { top = Convert.ToInt32(150 * rdpiy) };
+                DwmAPI.Margins margins = new DwmAPI.Margins { top = Convert.ToInt32(150 * rdpiy), left = 1, right = 1, bottom = 1 };
                 if (DwmAPI.DwmExtendFrameIntoClientArea(windowPtr, ref margins) < 0)
                     Background = SystemColors.WindowBrush;
             }
