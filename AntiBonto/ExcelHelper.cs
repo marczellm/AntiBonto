@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Windows;
 
 namespace AntiBonto
@@ -38,18 +39,19 @@ namespace AntiBonto
                         ppl[i++].Name += " " + n;
                 }
                 ppl.RemoveAll(s => String.IsNullOrWhiteSpace(s.Name));
+                Person fiuvezeto = null, lanyvezeto = null;
                 if (isHVKezelo || MessageBox.Show("Hétvége kezelő formátum?", "", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
                 {
                     int i = 0;
                     foreach (var s in range.Columns[3].Value)
-                    {
+                    {// Nicknames
                         if (i >= ppl.Count)
                             break;
                         ppl[i++].Nickname = s;
                     }
                     i = 0;
                     foreach (var s in range.Columns[4].Value)
-                    {
+                    {// Type of participant
                         if (i >= ppl.Count)
                             break;
                         int x = 0;
@@ -58,13 +60,75 @@ namespace AntiBonto
                         else if (s is double || s is int)
                             x = (int)s;
                         if (Enum.IsDefined(typeof(PersonType), x))
-                            ppl[i++].Type = (PersonType)x;
-                        else
-                            i++;
-                    }                    
+                        {
+                            var type = (PersonType)x;
+                            ppl[i].Type = type;
+                            if (type == PersonType.Lanyvezeto)
+                            {
+                                ppl[i].Nem = Nem.Lany;
+                                lanyvezeto = ppl[i];
+                            }
+                            else if (type == PersonType.Fiuvezeto)
+                            {
+                                ppl[i].Nem = Nem.Fiu;
+                                fiuvezeto = ppl[i];
+                            }
+                        }
+                        i++;
+                    }
+                    i = 0;
+                    foreach (var s in range.Columns[5].Value)
+                    {// Sharing group
+                        if (i >= ppl.Count)
+                            break;
+                        int x = 0;
+                        if (s is string)
+                            Int32.TryParse(s, out x);
+                        else if (s is double || s is int)
+                            x = (int)s;
+                        if (x != 0)
+                            ppl[i].Kiscsoport = x - 1;
+                        i++;
+                    }
+                    i = 0;
+                    foreach (var s in range.Columns[6].Value)
+                    {// Sharing group leader?
+                        if (i >= ppl.Count)
+                            break;
+                        if (s != null && s.ToString() != "")
+                            ppl[i].Kiscsoportvezeto = true;
+                        i++;
+                    }
+                    i = 0;
+                    foreach (var s in range.Columns[7].Value)
+                    {// Sleeping group
+                        if (i >= ppl.Count)
+                            break;
+                        int x = -1;
+                        if (s != null && s is string)
+                            x = Encoding.ASCII.GetBytes(s)[0] - 65;
+                        if (x != -1)
+                            ppl[i].Alvocsoport = x;
+                        i++;
+                    }
+                    i = 0;
+                    foreach (var s in range.Columns[8].Value)
+                    {// Sleeping group leader?
+                        if (i >= ppl.Count)
+                            break;
+                        if (s != null && s.ToString() != "")
+                            ppl[i].Alvocsoportvezeto = true;
+                        i++;
+                    }
                 }
                 if (ppl[0].Name.Contains("név"))
                     ppl.RemoveAt(0);
+                if (fiuvezeto != null && fiuvezeto.Alvocsoport != -1)
+                    foreach (var p in ppl.Where(q => q.Alvocsoport == fiuvezeto.Alvocsoport))
+                        p.Nem = Nem.Fiu;
+                if (lanyvezeto != null && lanyvezeto.Alvocsoport != -1)
+                    foreach (var p in ppl.Where(q => q.Alvocsoport == lanyvezeto.Alvocsoport))
+                        p.Nem = Nem.Lany;
                 return ppl;
             }
             finally

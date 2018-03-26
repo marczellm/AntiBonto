@@ -77,12 +77,16 @@ namespace AntiBonto
             }
         }
         private int kcs = -1;
+        
+        /// <summary>Zero-based</summary>
         public int Kiscsoport
         {
             get { return kcs; }
             set { kcs = value; RaisePropertyChanged(); }
         }
         private int acs = -1;
+
+        /// <summary>Zero-based</summary>
         public int Alvocsoport
         {
             get { return acs; }
