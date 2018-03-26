@@ -80,7 +80,8 @@ namespace AntiBonto.ViewModel
                 return;
             alvocsoportok = Enumerable.Range(0, 15).Select(i => AlvocsoportCollectionView(i)).ToList();
             
-            NoAlvocsoport.CollectionChanged += (s, e) => RaisePropertyChanged("BeosztasKesz");
+            NoAlvocsoportFiu.CollectionChanged += (s, e) => RaisePropertyChanged("BeosztasKesz");
+            NoAlvocsoportLany.CollectionChanged += (s, e) => RaisePropertyChanged("BeosztasKesz");
 
             alvocsoportInited = true;
             RaisePropertyChanged("Alvocsoportok");
@@ -177,7 +178,8 @@ namespace AntiBonto.ViewModel
             return People.Where(p => p.Type != PersonType.Egyeb && p.Alvocsoport == i);
         }
         public ICollectionView NoKiscsoport => CollectionViewHelper.Lazy(People, p => ((Person)p).Kiscsoport == -1 && ((Person)p).Type != PersonType.Egyeb);
-        public ICollectionView NoAlvocsoport => CollectionViewHelper.Get(People, p => ((Person)p).Alvocsoport == -1 && ((Person)p).Type != PersonType.Egyeb);
+        public ICollectionView NoAlvocsoportFiu => CollectionViewHelper.Get(People, p => ((Person)p).Alvocsoport == -1 && ((Person)p).Type != PersonType.Egyeb && ((Person)p).Nem == Nem.Fiu);
+        public ICollectionView NoAlvocsoportLany => CollectionViewHelper.Get(People, p => ((Person)p).Alvocsoport == -1 && ((Person)p).Type != PersonType.Egyeb && ((Person)p).Nem == Nem.Lany);
 
         private List<ICollectionView> kiscsoportok, alvocsoportok;
         public List<ICollectionView> Kiscsoportok => kiscsoportok;

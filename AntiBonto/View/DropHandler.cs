@@ -178,7 +178,7 @@ namespace AntiBonto.View
             }
             if (target.Name == "nokcs")
                 p.Kiscsoport = -1;
-            if (target.Name == "noacs")
+            if (target.Name.StartsWith("noacs"))
                 p.Alvocsoport = -1;            
 
             ExtraDropCases(source, target, p);

@@ -387,9 +387,11 @@
                     <TextBox MinWidth="80" HorizontalAlignment="Left" Grid.Row="2" Grid.Column="5" Margin="7,0,0,0" x:Name="acsn13" Text="{Binding AlvocsoportNevek[12]}"/>
                     <TextBox MinWidth="80" HorizontalAlignment="Left" Grid.Row="2" Grid.Column="6" Margin="7,0,0,0" x:Name="acsn14" Text="{Binding AlvocsoportNevek[13]}"/>
                     
-                    <view:DnDItemsControl Grid.Row="4" Grid.ColumnSpan="7" ItemsSource="{Binding NoAlvocsoport}" x:Name="noacs" 
-                                          Visibility="Visible" ColorKiscsoports="False" VisualizeConflicts="False"
-                                          Header="Nincsenek beosztva:" HeaderTemplate="{x:Null}"/>
+                    <view:DnDItemsControl Grid.Row="4" Grid.ColumnSpan="3" ItemsSource="{Binding NoAlvocsoportLany}" x:Name="noacsl" 
+                                          Visibility="Visible" ColorKiscsoports="False" VisualizeConflicts="False"/>
+                    <Label Grid.Row="4" Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center">Nincsenek beosztva</Label>
+                    <view:DnDItemsControl Grid.Row="4" Grid.Column="4" Grid.ColumnSpan="3" ItemsSource="{Binding NoAlvocsoportFiu}" x:Name="noacsf" 
+                                          Visibility="Visible" ColorKiscsoports="False" VisualizeConflicts="False"/>
                 </Grid>
             </DockPanel>
         </TabItem>
