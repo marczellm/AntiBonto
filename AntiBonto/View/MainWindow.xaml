@@ -327,7 +327,7 @@
                 <StatusBar DockPanel.Dock="Bottom">
                     <StatusBarItem Content="{Binding StatusText}" MinHeight="22"/>
                 </StatusBar>
-                <Grid Name="Alvocsoportok">
+                <Grid Name="Alvocsoportok" Margin="0,10,0,0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
                         <ColumnDefinition/>
@@ -338,7 +338,9 @@
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
                         <RowDefinition/>
+                        <RowDefinition Height="Auto"/>
                         <RowDefinition/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
@@ -352,31 +354,40 @@
                                 <Setter Property="ColorKiscsoports" Value="True"/>
                                 <Setter Property="VisualizeConflicts" Value="True"/>
                                 <Setter Property="Visibility" Value="Collapsed"/>
-                                <Setter Property="HeaderTemplate">
-                                    <Setter.Value>
-                                        <DataTemplate>
-                                            <TextBox MinWidth="50" HorizontalAlignment="Left"/>
-                                        </DataTemplate>
-                                    </Setter.Value>
-                                </Setter>
                             </Style>
                         </ResourceDictionary>
                     </Grid.Resources>
-                    <view:DnDItemsControl Grid.Row="0" Grid.Column="0" ItemsSource="{Binding Alvocsoportok[0]}" x:Name="acs1"/>
-                    <view:DnDItemsControl Grid.Row="0" Grid.Column="1" ItemsSource="{Binding Alvocsoportok[1]}" x:Name="acs2"/>
-                    <view:DnDItemsControl Grid.Row="0" Grid.Column="2" ItemsSource="{Binding Alvocsoportok[2]}" x:Name="acs3"/>
-                    <view:DnDItemsControl Grid.Row="0" Grid.Column="3" ItemsSource="{Binding Alvocsoportok[3]}" x:Name="acs4"/>
-                    <view:DnDItemsControl Grid.Row="0" Grid.Column="4" ItemsSource="{Binding Alvocsoportok[4]}" x:Name="acs5"/>
-                    <view:DnDItemsControl Grid.Row="0" Grid.Column="5" ItemsSource="{Binding Alvocsoportok[5]}" x:Name="acs6"/>
-                    <view:DnDItemsControl Grid.Row="0" Grid.Column="6" ItemsSource="{Binding Alvocsoportok[6]}" x:Name="acs7"/>
-                    <view:DnDItemsControl Grid.Row="1" Grid.Column="0" ItemsSource="{Binding Alvocsoportok[7]}" x:Name="acs8"/>
-                    <view:DnDItemsControl Grid.Row="1" Grid.Column="1" ItemsSource="{Binding Alvocsoportok[8]}" x:Name="acs9"/>
-                    <view:DnDItemsControl Grid.Row="1" Grid.Column="2" ItemsSource="{Binding Alvocsoportok[9]}" x:Name="acs10"/>
-                    <view:DnDItemsControl Grid.Row="1" Grid.Column="3" ItemsSource="{Binding Alvocsoportok[10]}" x:Name="acs11"/>
-                    <view:DnDItemsControl Grid.Row="1" Grid.Column="4" ItemsSource="{Binding Alvocsoportok[11]}" x:Name="acs12"/>
-                    <view:DnDItemsControl Grid.Row="1" Grid.Column="5" ItemsSource="{Binding Alvocsoportok[12]}" x:Name="acs13"/>
-                    <view:DnDItemsControl Grid.Row="1" Grid.Column="6" ItemsSource="{Binding Alvocsoportok[13]}" x:Name="acs14"/>
-                    <view:DnDItemsControl Grid.Row="2" Grid.ColumnSpan="7" ItemsSource="{Binding NoAlvocsoport}" x:Name="noacs" 
+                    <view:DnDItemsControl Grid.Row="1" Grid.Column="0" ItemsSource="{Binding Alvocsoportok[0]}" x:Name="acs1"/>
+                    <view:DnDItemsControl Grid.Row="1" Grid.Column="1" ItemsSource="{Binding Alvocsoportok[1]}" x:Name="acs2"/>
+                    <view:DnDItemsControl Grid.Row="1" Grid.Column="2" ItemsSource="{Binding Alvocsoportok[2]}" x:Name="acs3"/>
+                    <view:DnDItemsControl Grid.Row="1" Grid.Column="3" ItemsSource="{Binding Alvocsoportok[3]}" x:Name="acs4"/>
+                    <view:DnDItemsControl Grid.Row="1" Grid.Column="4" ItemsSource="{Binding Alvocsoportok[4]}" x:Name="acs5"/>
+                    <view:DnDItemsControl Grid.Row="1" Grid.Column="5" ItemsSource="{Binding Alvocsoportok[5]}" x:Name="acs6"/>
+                    <view:DnDItemsControl Grid.Row="1" Grid.Column="6" ItemsSource="{Binding Alvocsoportok[6]}" x:Name="acs7"/>
+                    <view:DnDItemsControl Grid.Row="3" Grid.Column="0" ItemsSource="{Binding Alvocsoportok[7]}" x:Name="acs8"/>
+                    <view:DnDItemsControl Grid.Row="3" Grid.Column="1" ItemsSource="{Binding Alvocsoportok[8]}" x:Name="acs9"/>
+                    <view:DnDItemsControl Grid.Row="3" Grid.Column="2" ItemsSource="{Binding Alvocsoportok[9]}" x:Name="acs10"/>
+                    <view:DnDItemsControl Grid.Row="3" Grid.Column="3" ItemsSource="{Binding Alvocsoportok[10]}" x:Name="acs11"/>
+                    <view:DnDItemsControl Grid.Row="3" Grid.Column="4" ItemsSource="{Binding Alvocsoportok[11]}" x:Name="acs12"/>
+                    <view:DnDItemsControl Grid.Row="3" Grid.Column="5" ItemsSource="{Binding Alvocsoportok[12]}" x:Name="acs13"/>
+                    <view:DnDItemsControl Grid.Row="3" Grid.Column="6" ItemsSource="{Binding Alvocsoportok[13]}" x:Name="acs14"/>
+                    
+                    <TextBox MinWidth="80" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="0" Margin="7,0,0,0" x:Name="acsn1" Text="{Binding AlvocsoportNevek[0]}"/>
+                    <TextBox MinWidth="80" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="1" Margin="7,0,0,0" x:Name="acsn2" Text="{Binding AlvocsoportNevek[1]}"/>
+                    <TextBox MinWidth="80" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="2" Margin="7,0,0,0" x:Name="acsn3" Text="{Binding AlvocsoportNevek[2]}"/>
+                    <TextBox MinWidth="80" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="3" Margin="7,0,0,0" x:Name="acsn4" Text="{Binding AlvocsoportNevek[3]}"/>
+                    <TextBox MinWidth="80" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="4" Margin="7,0,0,0" x:Name="acsn5" Text="{Binding AlvocsoportNevek[4]}"/>
+                    <TextBox MinWidth="80" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="5" Margin="7,0,0,0" x:Name="acsn6" Text="{Binding AlvocsoportNevek[5]}"/>
+                    <TextBox MinWidth="80" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="6" Margin="7,0,0,0" x:Name="acsn7" Text="{Binding AlvocsoportNevek[6]}"/>
+                    <TextBox MinWidth="80" HorizontalAlignment="Left" Grid.Row="2" Grid.Column="0" Margin="7,0,0,0" x:Name="acsn8" Text="{Binding AlvocsoportNevek[7]}"/>
+                    <TextBox MinWidth="80" HorizontalAlignment="Left" Grid.Row="2" Grid.Column="1" Margin="7,0,0,0" x:Name="acsn9" Text="{Binding AlvocsoportNevek[8]}"/>
+                    <TextBox MinWidth="80" HorizontalAlignment="Left" Grid.Row="2" Grid.Column="2" Margin="7,0,0,0" x:Name="acsn10" Text="{Binding AlvocsoportNevek[9]}"/>
+                    <TextBox MinWidth="80" HorizontalAlignment="Left" Grid.Row="2" Grid.Column="3" Margin="7,0,0,0" x:Name="acsn11" Text="{Binding AlvocsoportNevek[10]}"/>
+                    <TextBox MinWidth="80" HorizontalAlignment="Left" Grid.Row="2" Grid.Column="4" Margin="7,0,0,0" x:Name="acsn12" Text="{Binding AlvocsoportNevek[11]}"/>
+                    <TextBox MinWidth="80" HorizontalAlignment="Left" Grid.Row="2" Grid.Column="5" Margin="7,0,0,0" x:Name="acsn13" Text="{Binding AlvocsoportNevek[12]}"/>
+                    <TextBox MinWidth="80" HorizontalAlignment="Left" Grid.Row="2" Grid.Column="6" Margin="7,0,0,0" x:Name="acsn14" Text="{Binding AlvocsoportNevek[13]}"/>
+                    
+                    <view:DnDItemsControl Grid.Row="4" Grid.ColumnSpan="7" ItemsSource="{Binding NoAlvocsoport}" x:Name="noacs" 
                                           Visibility="Visible" ColorKiscsoports="False" VisualizeConflicts="False"
                                           Header="Nincsenek beosztva:" HeaderTemplate="{x:Null}"/>
                 </Grid>

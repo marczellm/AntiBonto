@@ -255,6 +255,8 @@ namespace AntiBonto.ViewModel
             get { return statusText; }
             set { statusText = value; RaisePropertyChanged(); }
         }
+        private string[] alvocsoportNevek = new string[15];
+        public string[] AlvocsoportNevek => alvocsoportNevek;
 
         /// <summary>
         /// Represents groups in which no two persons should get assigned to the same sharing group.
@@ -324,6 +326,10 @@ namespace AntiBonto.ViewModel
                 p.Alvocsoport = i;
             foreach (Person p in Alvocsoport(-100).ToList())
                 p.Alvocsoport = j;
+
+            string temp = alvocsoportNevek[i];
+            alvocsoportNevek[i] = alvocsoportNevek[j];
+            alvocsoportNevek[j] = temp;
         }
 
         #region Extras

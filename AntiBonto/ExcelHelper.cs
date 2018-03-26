@@ -155,9 +155,12 @@ namespace AntiBonto
                 sheet.Cells[2, 2] = ViewModel.MainWindow.WeekendNumber;
 
                 sheet = file.Worksheets["Alvócsoport címek"];
-                var m = data.Kiscsoportvezetok.Count();
+                var m = data.Alvocsoportvezetok.Count();
                 for (int j = 1; j <= m; j++)
+                {
                     sheet.Cells[j + 1, 1] = ((char)(j + 64)).ToString();
+                    sheet.Cells[j + 1, 2] = data.AlvocsoportNevek[j - 1];
+                }
 
                 sheet = file.Worksheets["Alapadatok"];
                 sheet.Activate();

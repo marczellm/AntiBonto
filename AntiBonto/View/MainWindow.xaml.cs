@@ -24,12 +24,14 @@ namespace AntiBonto
             InitializeComponent();
             kcs = new DnDItemsControl[] { kcs1, kcs2, kcs3, kcs4, kcs5, kcs6, kcs7, kcs8, kcs9, kcs10, kcs11, kcs12, kcs13, kcs14 };
             acs = new DnDItemsControl[] { acs1, acs2, acs3, acs4, acs5, acs6, acs7, acs8, acs9, acs10, acs11, acs12, acs13, acs14 };
+            acsn = new TextBox[] { acsn1, acsn2, acsn3, acsn4, acsn5, acsn6, acsn7, acsn8, acsn9, acsn10, acsn11, acsn12, acsn13, acsn14 };
             string folder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "AntiBonto");
             if (!Directory.Exists(folder))
                 Directory.CreateDirectory(folder);
             filepath = Path.Combine(folder, "state.xml");
         }
         private DnDItemsControl[] kcs, acs;
+        private TextBox[] acsn;
         private string filepath;
         private CancellationTokenSource cts;
 
@@ -305,8 +307,8 @@ namespace AntiBonto
                     for (int j = 0; j < acs.Count(); j++)
                     {
                         bool b = viewModel.Alvocsoport(j).Any();
-                        acs[j].Visibility = b ? Visibility.Visible : Visibility.Collapsed;
-                        acs[j].IsEnabled = b;
+                        acs[j].Visibility = acsn[j].Visibility = b ? Visibility.Visible : Visibility.Collapsed;
+                        acs[j].IsEnabled = acsn[j].IsEnabled = b;
                         if (b)
                         {
                             BindingOperations.GetBindingExpression(acs[j], ItemsControl.ItemsSourceProperty).UpdateTarget();
