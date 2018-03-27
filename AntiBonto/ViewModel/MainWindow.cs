@@ -23,6 +23,12 @@ namespace AntiBonto.ViewModel
         /// </summary>
         public bool BeosztasKesz => !Kiscsoport(-1).Any() && !Alvocsoport(-1).Any();
 
+        private bool magicAllowed = false;
+        private bool magicPossible = false;
+        public bool MagicAllowed  { get { return magicAllowed; }  set { magicAllowed = value;  RaisePropertyChanged("MagicEnabled"); } }
+        public bool MagicPossible { get { return magicPossible; } set { magicPossible = value; RaisePropertyChanged(); RaisePropertyChanged("MagicEnabled"); } }
+        public bool MagicEnabled => MagicAllowed && MagicPossible;
+
         public static int WeekendNumber => 2 * DateTime.Now.Year - 4013 + DateTime.Now.Month / 7;
 
         private void People_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)

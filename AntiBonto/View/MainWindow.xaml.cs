@@ -284,7 +284,7 @@ namespace AntiBonto
                 if (message != null)
                 {
                     viewModel.StatusText = message;
-                    MagicButton.IsEnabled = false;
+                    viewModel.MagicPossible = false;
                     SaveButton.IsEnabled = false;
                     // we don't activate newTab here anymore, because it caused weird behaviour
                 }
@@ -300,7 +300,7 @@ namespace AntiBonto
                             BindingOperations.GetBindingExpression(kcs[i], ItemsControl.ItemsSourceProperty).UpdateTarget();
                     }
                     viewModel.Algorithm = new Algorithms(viewModel);
-                    MagicButton.IsEnabled = true;
+                    viewModel.MagicPossible = true;
                     BindingOperations.SetBinding(SaveButton, IsEnabledProperty, SaveButtonBinding);
                 }
                 else if (newTab == Alvocsoportbeoszto)
