@@ -153,4 +153,48 @@
         <Setter Property="Width" Value="{Binding RelativeSource={RelativeSource Self}, Path=ActualHeight}"/>
         <Setter Property="Height" Value="40"/>       
     </Style>
+
+    <Style TargetType="CheckBox">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="CheckBox">
+                    <Path x:Name="Image" Fill="Black" RenderTransformOrigin="0.5, 0.5">
+                        <Path.LayoutTransform>
+                            <ScaleTransform ScaleX="0.4" ScaleY="0.4"/>
+                        </Path.LayoutTransform>
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CheckStates">
+                                <VisualState x:Name="Unchecked">
+                                    <Storyboard>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Image" Storyboard.TargetProperty="Data" Duration="0">
+                                            <DiscreteObjectKeyFrame>
+                                                <DiscreteObjectKeyFrame.Value>
+                                                    <Geometry>
+                                                        F1 M 22.17,36.4216L 25.3369,36.4216L 25.3369,31.6711C 25.3369,24.6745 31.0087,19.0027 38.0053,19.0027C 45.0019,19.0027 50.6737,24.6745 50.6737,31.6711L 50.6737,36.4216L 53.841,36.4216L 53.8411,57.008L 22.17,57.008L 22.17,36.4216 Z M 45.9231,31.6711C 45.9231,27.2982 42.3782,23.7533 38.0053,23.7533C 33.6324,23.7533 30.0875,27.2982 30.0875,31.6711L 30.0875,36.4216L 45.923,36.4216L 45.9231,31.6711 Z
+                                                    </Geometry>
+                                                </DiscreteObjectKeyFrame.Value>
+                                            </DiscreteObjectKeyFrame>
+                                        </ObjectAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="Checked">
+                                    <Storyboard>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Image" Storyboard.TargetProperty="Data" Duration="0">
+                                            <DiscreteObjectKeyFrame>
+                                                <DiscreteObjectKeyFrame.Value>
+                                                    <Geometry>
+                                                        F1 M 22.1698,36.4215L 25.3366,36.4215L 25.3367,31.6711C 25.3367,24.6745 31.0085,19.0027 38.0051,19.0027C 45.0017,19.0027 50.6735,24.6745 50.6735,31.6711L 45.9228,31.6711C 45.9228,27.2982 42.3779,23.7533 38.0051,23.7533C 33.6322,23.7533 30.0873,27.2982 30.0873,31.6711L 30.0873,36.4216L 53.8408,36.4215L 53.8409,57.008L 22.1698,57.008L 22.1698,36.4215 Z
+                                                    </Geometry>
+                                                </DiscreteObjectKeyFrame.Value>
+                                            </DiscreteObjectKeyFrame>
+                                        </ObjectAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                    </Path>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 </ResourceDictionary>
