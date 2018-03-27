@@ -28,6 +28,7 @@ namespace AntiBonto
     {
         public string Name { get; set; }
         public string Nickname { get; set; }
+        public bool Pinned { get; set; }
 
         private int _birthYear = DateTime.Now.Year;
         public int BirthYear

@@ -290,6 +290,7 @@
                                 <Setter Property="ColorLeaders" Value="True"/>
                                 <Setter Property="BoldKiscsoportvezetok" Value="True"/>
                                 <Setter Property="Visibility" Value="Collapsed"/>
+                                <Setter Property="Pinnable" Value="True"/>
                             </Style>
                         </ResourceDictionary>
                     </Grid.Resources>
@@ -307,7 +308,10 @@
                     <view:DnDItemsControl Grid.Row="1" Grid.Column="4" ItemsSource="{Binding Kiscsoportok[11]}" x:Name="kcs12"/>
                     <view:DnDItemsControl Grid.Row="1" Grid.Column="5" ItemsSource="{Binding Kiscsoportok[12]}" x:Name="kcs13"/>
                     <view:DnDItemsControl Grid.Row="1" Grid.Column="6" ItemsSource="{Binding Kiscsoportok[13]}" x:Name="kcs14"/>
-                    <view:DnDItemsControl Grid.Row="2" Grid.ColumnSpan="7" ItemsSource="{Binding NoKiscsoport}" x:Name="nokcs" Visibility="Visible" Header="Nincsenek beosztva:"/>
+                    <view:DnDItemsControl Grid.Row="2" Grid.ColumnSpan="7" ItemsSource="{Binding NoKiscsoport}" x:Name="nokcs"
+                                          Visibility="Visible" 
+                                          Header="Nincsenek beosztva:"
+                                          Pinnable="False"/>
                 </Grid>
             </DockPanel>
         </TabItem>

@@ -33,5 +33,9 @@ namespace AntiBonto.View
         public bool BoldAlvocsoportvezetok { get; set; } = false;
         public static readonly DependencyProperty BoldAlvocsoportvezetokProperty =
             DependencyProperty.Register("BoldAlvocsoportvezetok", typeof(bool), typeof(DnDItemsControl));
+
+        public bool Pinnable { get; set; } = false;
+        public static readonly DependencyProperty PinnableProperty =
+            DependencyProperty.Register("Pinnable", typeof(bool), typeof(DnDItemsControl));
     }
 }
