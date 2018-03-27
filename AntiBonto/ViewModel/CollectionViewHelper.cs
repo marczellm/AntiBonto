@@ -38,11 +38,13 @@ namespace AntiBonto.ViewModel
         /// </summary>
         public static ICollectionView Get(object source, Expression<Func<object, bool>> filter)
         {
-            CollectionViewSource cvs = new CollectionViewSource { Source = source, IsLiveFilteringRequested = true };
+            CollectionViewSource cvs = new CollectionViewSource { Source = source, IsLiveFilteringRequested = true, IsLiveSortingRequested = true };
             foreach (string prop in AccessedProperties(filter.Body))
                 cvs.LiveFilteringProperties.Add(prop);
+            cvs.LiveSortingProperties.Add("Name");
             cvs.View.Filter = filter.Compile().Invoke;
             cvs.View.CollectionChanged += EmptyEventHandler;
+            cvs.View.SortDescriptions.Add(new SortDescription("Name", ListSortDirection.Ascending));
             return cvs.View;
         }
 

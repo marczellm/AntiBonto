@@ -163,11 +163,15 @@ namespace AntiBonto.ViewModel
         public ICollectionView Zeneteam => CollectionViewHelper.Lazy(People, p => ((Person)p).Type == PersonType.Zeneteamtag);
         private ICollectionView KiscsoportCollectionView(int i)
         {
-            return CollectionViewHelper.Get(People, p => ((Person)p).Kiscsoport == i && ((Person)p).Type != PersonType.Egyeb);
+            var ret = CollectionViewHelper.Get(People, p => ((Person)p).Kiscsoport == i && ((Person)p).Type != PersonType.Egyeb);
+            ret.SortDescriptions.Insert(0, new SortDescription("Kiscsoportvezeto", ListSortDirection.Descending));
+            return ret;
         }
         private ICollectionView AlvocsoportCollectionView(int i)
         {
-            return CollectionViewHelper.Get(People, p => ((Person)p).Alvocsoport == i && ((Person)p).Type != PersonType.Egyeb);
+            var ret = CollectionViewHelper.Get(People, p => ((Person)p).Alvocsoport == i && ((Person)p).Type != PersonType.Egyeb);
+            ret.SortDescriptions.Insert(0, new SortDescription("Alvocsoportvezeto", ListSortDirection.Descending));
+            return ret;
         }
         public IEnumerable<Person> Kiscsoport(int i)
         {
@@ -178,8 +182,8 @@ namespace AntiBonto.ViewModel
             return People.Where(p => p.Type != PersonType.Egyeb && p.Alvocsoport == i);
         }
         public ICollectionView NoKiscsoport => CollectionViewHelper.Lazy(People, p => ((Person)p).Kiscsoport == -1 && ((Person)p).Type != PersonType.Egyeb);
-        public ICollectionView NoAlvocsoportFiu => CollectionViewHelper.Get(People, p => ((Person)p).Alvocsoport == -1 && ((Person)p).Type != PersonType.Egyeb && ((Person)p).Nem == Nem.Fiu);
-        public ICollectionView NoAlvocsoportLany => CollectionViewHelper.Get(People, p => ((Person)p).Alvocsoport == -1 && ((Person)p).Type != PersonType.Egyeb && ((Person)p).Nem == Nem.Lany);
+        public ICollectionView NoAlvocsoportFiu => CollectionViewHelper.Lazy(People, p => ((Person)p).Alvocsoport == -1 && ((Person)p).Type != PersonType.Egyeb && ((Person)p).Nem == Nem.Fiu);
+        public ICollectionView NoAlvocsoportLany => CollectionViewHelper.Lazy(People, p => ((Person)p).Alvocsoport == -1 && ((Person)p).Type != PersonType.Egyeb && ((Person)p).Nem == Nem.Lany);
 
         private List<ICollectionView> kiscsoportok, alvocsoportok;
         public List<ICollectionView> Kiscsoportok => kiscsoportok;

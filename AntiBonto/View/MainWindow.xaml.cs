@@ -241,7 +241,6 @@ namespace AntiBonto
                     return;
                 string message = null;
                 var v = viewModel;
-                var k = viewModel.CsoportokbaOsztando.Cast<Person>().ToList();
                 if (v.People.Count() == 0)
                 {
                     message = "Nincsenek résztvevők!";
@@ -249,12 +248,12 @@ namespace AntiBonto
                 }
                 else if (!v.Kiscsoportvezetok.Any() && newTab == Kiscsoportbeoszto)
                 {
-                    message = "Jelöld ki a kiscsoportvezetőket!";
+                    message = "Még nem jelölted ki a kiscsoportvezetőket!";
                     newTab = Szerepek;
                 }
                 else if (!v.Alvocsoportvezetok.Any() && newTab == Alvocsoportbeoszto)
                 {
-                    message = "Jelöld ki az alvócsoportvezetőket!";
+                    message = "Még nem jelölted ki az alvócsoportvezetőket!";
                     newTab = Szerepek;
                 }
                 else if (v.Ujoncok.IsEmpty)
@@ -269,13 +268,18 @@ namespace AntiBonto
                 }
                 else if (v.Fiuvezeto == null || v.Lanyvezeto == null)
                 {
-                    message = "Jelöld ki a vezetőket!";
+                    message = "Még nem jelölted ki a vezetőket!";
                     newTab = Szerepek;
                 }
                 else if (v.Zeneteamvezeto == null)
                 {
-                    message = "Jelöld ki a zeneteamvezetőt!";
+                    message = "Még nem jelölted ki a zeneteamvezetőt!";
                     newTab = Szerepek;
+                }
+                else if (!viewModel.Nullnemuek.IsEmpty)
+                {
+                    message = "Még nem osztottad be a lányokat és a fiúkat!";
+                    newTab = LanyokFiuk;
                 }
                 if (message != null)
                 {
@@ -315,7 +319,7 @@ namespace AntiBonto
                             acs[j].Items.Refresh();
                         }
                     }
-                    BindingOperations.GetBindingExpression(SaveButton, IsEnabledProperty)?.UpdateTarget();
+                    BindingOperations.GetBindingExpression(SaveButton, IsEnabledProperty)?.UpdateTarget();                    
                 }
                 else if (newTab == LanyokFiuk)
                     viewModel.Nullnemuek.MoveCurrentToFirst();
@@ -385,7 +389,7 @@ namespace AntiBonto
 
         private void KinekAzUjonca_Updated(object sender, SelectionChangedEventArgs e)
         {
-            if (e.AddedItems.Cast<object>().Any())
+            if (e.AddedItems.Count > 0)
             {
                 Person p = (Person)DataGrid.CurrentItem, q = (Person)e.AddedItems[0];
                 if (q != null && p.Kiscsoport == q.Kiscsoport)
