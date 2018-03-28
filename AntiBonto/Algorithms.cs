@@ -204,7 +204,8 @@ namespace AntiBonto
         {
             m = 0; // kiscsoportok száma
             foreach (Person p in Beosztando)
-                p.Kiscsoport = -1;
+                if (!p.Pinned)
+                    p.Kiscsoport = -1;
             foreach (Person p in Kiscsoportvezetok)
                 AssignToKiscsoport(p, m++);
             Beosztando.RemoveAll((Person p) => p.Kiscsoport != -1);

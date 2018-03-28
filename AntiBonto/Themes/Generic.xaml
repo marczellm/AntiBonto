@@ -101,6 +101,7 @@
                                     <Style.Triggers>
                                         <MultiDataTrigger>
                                             <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding Kiscsoportvezeto}" Value="False"/>
                                                 <Condition Binding="{Binding Pinnable, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}" Value="True"/>
                                                 <Condition Binding="{Binding DataContext.MagicEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}" Value="True"/>
                                             </MultiDataTrigger.Conditions>
@@ -193,6 +194,7 @@
         <Setter Property="Height" Value="40"/>       
     </Style>
 
+    <!-- Definition of the lock-unlock checkbox -->
     <Style TargetType="CheckBox">
         <Setter Property="Template">
             <Setter.Value>

@@ -140,6 +140,13 @@ namespace AntiBonto
                 MessageBox.Show("Excel nincs telepítve!");
                 return;
             }
+            foreach (Person p in viewModel.CsoportokbaOsztando)
+                foreach (Person q in p.kivelIgen)
+                    if (p.Kiscsoport != q.Kiscsoport)
+                    {
+                        MessageBox.Show(String.Format("{0} és {1} együtt kéne legyenek kiscsoportban, de elmozgattad őket!", p, q));
+                        return;
+                    }
             XLSSavingAnimation.Visibility = Visibility.Visible;
             var dialog = new SaveFileDialog
             {

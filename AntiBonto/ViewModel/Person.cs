@@ -28,13 +28,27 @@ namespace AntiBonto
     {
         public string Name { get; set; }
         public string Nickname { get; set; }
-        public bool Pinned { get; set; }
 
-        private int _birthYear = DateTime.Now.Year;
+        private bool pinned = false;
+        public bool Pinned
+        {
+            get { return pinned; }
+            set
+            {
+                pinned = value;
+                RaisePropertyChanged();
+                foreach (Person p in kivelIgen)
+                    if (p.Pinned != value)
+                        p.Pinned = value;
+            }
+        }
+
+
+        private int birthYear = DateTime.Now.Year;
         public int BirthYear
         {
-            get { return _birthYear; }
-            set { _birthYear = value; RaisePropertyChanged(); RaisePropertyChanged("Age"); }
+            get { return birthYear; }
+            set { birthYear = value; RaisePropertyChanged(); RaisePropertyChanged("Age"); }
         }
         [XmlIgnore]
         public int Age

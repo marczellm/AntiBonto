@@ -32,6 +32,11 @@ namespace AntiBonto.View
             {
                 dropInfo.Effects = DragDropEffects.None;
             }
+            else if (p.Pinned)
+            {
+                dropInfo.Effects = DragDropEffects.None;
+                d.StatusText = p + " le van rögzítve!";
+            }
             else if (target.Name.Contains("kcs") && p.Kiscsoportvezeto)
             {
                 dropInfo.Effects = DragDropEffects.None;
