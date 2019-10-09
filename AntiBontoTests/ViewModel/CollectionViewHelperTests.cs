@@ -34,7 +34,7 @@ namespace AntiBonto.ViewModel.Tests
             };
             var actual = new List<string>();
             foreach (var exp in exps)
-                actual.AddRange(CollectionViewHelper.AccessedProperties(exp));
+                actual.AddRange(CollectionViewHelper.AccessedProperties<Person>(exp));
             foreach (Tuple<string, string> tup in Enumerable.Zip(expected, actual, (x, y) => Tuple.Create(x,y)))
                 Assert.AreEqual(tup.Item1, tup.Item2);
         }
