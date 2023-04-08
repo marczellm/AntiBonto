@@ -158,26 +158,24 @@ namespace AntiBonto.ViewModel
             }
         }
 
-        public ICollectionView Ujoncok => CollectionViewHelper.Lazy<Person>(People, p => p.Type == PersonType.Ujonc);
-        public ICollectionView Team => CollectionViewHelper.Lazy<Person>(People, p => p.Type != PersonType.Egyeb && p.Type != PersonType.Ujonc);
-        public ICollectionView Egyeb => CollectionViewHelper.Lazy<Person>(People, p => p.Type == PersonType.Egyeb);
+        private readonly SortDescription orderByName = new SortDescription("Name", ListSortDirection.Ascending);
+
+        public ICollectionView Ujoncok => CollectionViewHelper.Lazy<Person>(People, p => p.Type == PersonType.Ujonc, orderByName);
+        public ICollectionView Team => CollectionViewHelper.Lazy<Person>(People, p => p.Type != PersonType.Egyeb && p.Type != PersonType.Ujonc, orderByName);
+        public ICollectionView Egyeb => CollectionViewHelper.Lazy<Person>(People, p => p.Type == PersonType.Egyeb, orderByName);
         public ICollectionView KiscsoportvezetokCollectionView => CollectionViewHelper.Lazy<Person>(People, p => p.Kiscsoportvezeto);
-        public ICollectionView AlvocsoportvezetokCollectionView => CollectionViewHelper.Lazy<Person>(People, p => p.Alvocsoportvezeto);
+        public ICollectionView AlvocsoportvezetokCollectionView => CollectionViewHelper.Lazy<Person>(People, p => p.Alvocsoportvezeto, orderByName);
         public IEnumerable<Person> Kiscsoportvezetok => KiscsoportvezetokCollectionView.Cast<Person>();
         public IEnumerable<Person> Alvocsoportvezetok => AlvocsoportvezetokCollectionView.Cast<Person>();
-        public ICollectionView CsoportokbaOsztando => CollectionViewHelper.Lazy<Person>(People, p => p.Type != PersonType.Egyeb);
+        public ICollectionView CsoportokbaOsztando => CollectionViewHelper.Lazy<Person>(People, p => p.Type != PersonType.Egyeb, orderByName);
         public ICollectionView Zeneteam => CollectionViewHelper.Lazy<Person>(People, p => p.Type == PersonType.Zeneteamtag);
         private ICollectionView KiscsoportCollectionView(int i)
         {
-            var ret = CollectionViewHelper.Get<Person>(People, p => p.Kiscsoport == i && p.Type != PersonType.Egyeb);
-            ret.SortDescriptions.Insert(0, new SortDescription("Kiscsoportvezeto", ListSortDirection.Descending));
-            return ret;
+            return CollectionViewHelper.Get<Person>(People, p => p.Kiscsoport == i && p.Type != PersonType.Egyeb, new SortDescription("Kiscsoportvezeto", ListSortDirection.Descending));
         }
         private ICollectionView AlvocsoportCollectionView(int i)
         {
-            var ret = CollectionViewHelper.Get<Person>(People, p => p.Alvocsoport == i && p.Type != PersonType.Egyeb);
-            ret.SortDescriptions.Insert(0, new SortDescription("Alvocsoportvezeto", ListSortDirection.Descending));
-            return ret;
+            return CollectionViewHelper.Get<Person>(People, p => p.Alvocsoport == i && p.Type != PersonType.Egyeb, new SortDescription("Alvocsoportvezeto", ListSortDirection.Descending));
         }
         public IEnumerable<Person> Kiscsoport(int i)
         {

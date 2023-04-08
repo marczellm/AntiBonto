@@ -9,7 +9,7 @@
         xmlns:dd="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
         mc:Ignorable="d"
         Name="MainWindowName" Title="AntiBontó" 
-        Width="1024" Height="768"         
+        Width="1024" Height="768"
         Background="Transparent"
         Closing="MainWindow_Closing"
         Loaded="MainWindow_Loaded">
@@ -93,10 +93,10 @@
                     <Label Grid.Column="3" Content="Zeneteamvezető"/>
                     <view:DnDItemsControl Header="Kiscsoportvezetők (max. 14)" Grid.Row="2" Grid.Column="0" ItemsSource="{Binding KiscsoportvezetokCollectionView}" dd:DragDrop.DropHandler="{StaticResource DropHandler}" x:Name="Kiscsoportvezetok" Grid.ColumnSpan="2"/>
                     <view:DnDItemsControl Header="Alvócsoportvezetők" Grid.Row="2" Grid.Column="2" ItemsSource="{Binding AlvocsoportvezetokCollectionView}" dd:DragDrop.DropHandler="{StaticResource DropHandler}" x:Name="Alvocsoportvezetok" Grid.ColumnSpan="2"/>
-                    <view:DnDItemsControl Header="Újoncok" Grid.Row="3" Grid.Column="0" ItemsSource="{Binding Ujoncok}"           dd:DragDrop.DropHandler="{StaticResource DropHandler}" x:Name="Ujoncok"/>
+                    <view:DnDItemsControl Header="Újoncok" Grid.Row="3" Grid.Column="0" ItemsSource="{Binding Ujoncok}"        dd:DragDrop.DropHandler="{StaticResource DropHandler}" x:Name="Ujoncok"/>
                     <view:DnDItemsControl Header="Team" Grid.Row="3" Grid.Column="1" ItemsSource="{Binding Team}"              dd:DragDrop.DropHandler="{StaticResource DropHandler}" x:Name="Team"/>
-                    <view:DnDItemsControl Header="Zeneteam" Grid.Row="3" Grid.Column="3" ItemsSource="{Binding Zeneteam}"          dd:DragDrop.DropHandler="{StaticResource DropHandler}" x:Name="Zeneteam"/>
-                    <view:DnDItemsControl Header="Egyéb résztvevők" Grid.Row="3" Grid.Column="2" ItemsSource="{Binding Egyeb}"             dd:DragDrop.DropHandler="{StaticResource DropHandler}" x:Name="Egyeb"/>
+                    <view:DnDItemsControl Header="Zeneteam" Grid.Row="3" Grid.Column="3" ItemsSource="{Binding Zeneteam}"      dd:DragDrop.DropHandler="{StaticResource DropHandler}" x:Name="Zeneteam"/>
+                    <view:DnDItemsControl Header="Egyéb résztvevők" Grid.Row="3" Grid.Column="2" ItemsSource="{Binding Egyeb}" dd:DragDrop.DropHandler="{StaticResource DropHandler}" x:Name="Egyeb"/>
                     <Label Grid.Row="1" Content="{Binding Lanyvezeto}" x:Name="Lanyvezeto" Margin="5" Padding="3" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
                            dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{StaticResource DropHandler}" dd:DragDrop.DragAdornerTemplate="{StaticResource adorner}"/>
                     <Label Grid.Row="1" Grid.Column="1" Content="{Binding Fiuvezeto}" x:Name="Fiuvezeto" Margin="5" Padding="3" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
@@ -144,7 +144,7 @@
                 </Grid>
             </DockPanel>
         </TabItem>
-        <TabItem Header="Újoncok"  IsEnabled="{Binding PeopleNotEmpty}" Name="UjoncokTab">
+        <TabItem Header="Újoncok" IsEnabled="{Binding PeopleNotEmpty}" Name="UjoncokTab">
             <DockPanel>
                 <Label DockPanel.Dock="Top" Content="Kinek az újonca? (nem kötelező)"/>
                 <ContentControl Visibility="Collapsed" Content="{StaticResource DataContextProxy}"/>
