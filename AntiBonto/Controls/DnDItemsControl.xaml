@@ -149,5 +149,23 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=(view:DnDItemsControl.Scrollable)}" Value="True">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type view:DnDItemsControl}">
+                            <DockPanel LastChildFill="True">
+                                <ContentPresenter ContentSource="Header" Margin="2,0,2,5" DockPanel.Dock="Top"/>
+                                <Border BorderThickness="1" CornerRadius="3" BorderBrush="Gray" Padding="5" Background="White">
+                                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                        <ItemsPresenter/>
+                                    </ScrollViewer>
+                                </Border>
+                            </DockPanel>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </DataTrigger>
+        </Style.Triggers>
     </Style>
 </ResourceDictionary>

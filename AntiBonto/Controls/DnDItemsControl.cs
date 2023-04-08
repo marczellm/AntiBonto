@@ -37,5 +37,9 @@ namespace AntiBonto.View
         public bool Pinnable { get; set; } = false;
         public static readonly DependencyProperty PinnableProperty =
             DependencyProperty.Register("Pinnable", typeof(bool), typeof(DnDItemsControl));
+
+        public bool Scrollable { get; set; } = false;
+        public static readonly DependencyProperty ScrollableProperty =
+            DependencyProperty.Register("Scrollable", typeof(bool), typeof(DnDItemsControl));
     }
 }

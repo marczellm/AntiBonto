@@ -50,7 +50,7 @@
                     <Button Content="Törlés" DockPanel.Dock="Right" Click="Reset" Padding="5"/>
                 </DockPanel>                
                 <Grid Margin="5">
-                    <view:DnDItemsControl Header="Résztvevők" x:Name="PeopleView" ItemsSource="{Binding People}" dd:DragDrop.DropHandler="{StaticResource DropHandler}">
+                    <view:DnDItemsControl Header="Résztvevők" x:Name="PeopleView" Scrollable="True" ItemsSource="{Binding People}" dd:DragDrop.DropHandler="{StaticResource DropHandler}">
                         <dd:DragDrop.DragHandler>
                             <view:AnimatedDragHandler Animation="{StaticResource ButtonRotateBackAnimation}"/>
                         </dd:DragDrop.DragHandler>
@@ -73,39 +73,40 @@
             </DockPanel>
         </TabItem>
         <TabItem Header="Szerepek" IsEnabled="{Binding PeopleNotEmpty}" Name="Szerepek">
-            <StackPanel>
+            <DockPanel>
                 <Label DockPanel.Dock="Top" Content="Csoportosítsd a résztvevőket!"/>
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                    </Grid.ColumnDefinitions>
-                    <Label                 Content="Lány vezető"/>
-                    <Label Grid.Column="1" Content="Fiú vezető"/>
-                    <Label Grid.Column="3" Content="Zeneteamvezető"/>
-                    <view:DnDItemsControl Header="Kiscsoportvezetők (max. 14)" Grid.Row="2" Grid.Column="0" ItemsSource="{Binding KiscsoportvezetokCollectionView}" dd:DragDrop.DropHandler="{StaticResource DropHandler}" x:Name="Kiscsoportvezetok" Grid.ColumnSpan="2"/>
-                    <view:DnDItemsControl Header="Alvócsoportvezetők" Grid.Row="2" Grid.Column="2" ItemsSource="{Binding AlvocsoportvezetokCollectionView}" dd:DragDrop.DropHandler="{StaticResource DropHandler}" x:Name="Alvocsoportvezetok" Grid.ColumnSpan="2"/>
-                    <view:DnDItemsControl Header="Újoncok" Grid.Row="3" Grid.Column="0" ItemsSource="{Binding Ujoncok}"        dd:DragDrop.DropHandler="{StaticResource DropHandler}" x:Name="Ujoncok"/>
-                    <view:DnDItemsControl Header="Team" Grid.Row="3" Grid.Column="1" ItemsSource="{Binding Team}"              dd:DragDrop.DropHandler="{StaticResource DropHandler}" x:Name="Team"/>
-                    <view:DnDItemsControl Header="Zeneteam" Grid.Row="3" Grid.Column="3" ItemsSource="{Binding Zeneteam}"      dd:DragDrop.DropHandler="{StaticResource DropHandler}" x:Name="Zeneteam"/>
-                    <view:DnDItemsControl Header="Egyéb résztvevők" Grid.Row="3" Grid.Column="2" ItemsSource="{Binding Egyeb}" dd:DragDrop.DropHandler="{StaticResource DropHandler}" x:Name="Egyeb"/>
-                    <Label Grid.Row="1" Content="{Binding Lanyvezeto}" x:Name="Lanyvezeto" Margin="5" Padding="3" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Label                 Content="Lány vezető"/>
+                        <Label Grid.Column="1" Content="Fiú vezető"/>
+                        <Label Grid.Column="3" Content="Zeneteamvezető"/>
+                        <view:DnDItemsControl Header="Kiscsoportvezetők (max. 14)" Grid.Row="2" Grid.Column="0" ItemsSource="{Binding KiscsoportvezetokCollectionView}" dd:DragDrop.DropHandler="{StaticResource DropHandler}" x:Name="Kiscsoportvezetok" Grid.ColumnSpan="2"/>
+                        <view:DnDItemsControl Header="Alvócsoportvezetők" Grid.Row="2" Grid.Column="2" ItemsSource="{Binding AlvocsoportvezetokCollectionView}" dd:DragDrop.DropHandler="{StaticResource DropHandler}" x:Name="Alvocsoportvezetok" Grid.ColumnSpan="2"/>
+                        <view:DnDItemsControl Header="Újoncok" Grid.Row="3" Grid.Column="0" ItemsSource="{Binding Ujoncok}"        dd:DragDrop.DropHandler="{StaticResource DropHandler}" x:Name="Ujoncok"/>
+                        <view:DnDItemsControl Header="Team" Grid.Row="3" Grid.Column="1" ItemsSource="{Binding Team}"              dd:DragDrop.DropHandler="{StaticResource DropHandler}" x:Name="Team"/>
+                        <view:DnDItemsControl Header="Zeneteam" Grid.Row="3" Grid.Column="3" ItemsSource="{Binding Zeneteam}"      dd:DragDrop.DropHandler="{StaticResource DropHandler}" x:Name="Zeneteam"/>
+                        <view:DnDItemsControl Header="Egyéb résztvevők" Grid.Row="3" Grid.Column="2" ItemsSource="{Binding Egyeb}" dd:DragDrop.DropHandler="{StaticResource DropHandler}" x:Name="Egyeb"/>
+                        <Label Grid.Row="1" Content="{Binding Lanyvezeto}" x:Name="Lanyvezeto" Margin="5" Padding="3" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
                            dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{StaticResource DropHandler}" dd:DragDrop.DragAdornerTemplate="{StaticResource adorner}"/>
-                    <Label Grid.Row="1" Grid.Column="1" Content="{Binding Fiuvezeto}" x:Name="Fiuvezeto" Margin="5" Padding="3" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+                        <Label Grid.Row="1" Grid.Column="1" Content="{Binding Fiuvezeto}" x:Name="Fiuvezeto" Margin="5" Padding="3" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
                            dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{StaticResource DropHandler}" dd:DragDrop.DragAdornerTemplate="{StaticResource adorner}"/>
-                    <Label Grid.Row="1" Grid.Column="3" Content="{Binding Zeneteamvezeto}" x:Name="Zeneteamvezeto" Margin="5" Padding="3" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+                        <Label Grid.Row="1" Grid.Column="3" Content="{Binding Zeneteamvezeto}" x:Name="Zeneteamvezeto" Margin="5" Padding="3" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
                            dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{StaticResource DropHandler}" dd:DragDrop.DragAdornerTemplate="{StaticResource adorner}"/>
-
-                </Grid>
-            </StackPanel>
+                    </Grid>
+                </ScrollViewer>
+            </DockPanel>
         </TabItem>
         <TabItem Header="Életkor" IsEnabled="{Binding PeopleNotEmpty}" Name="Eletkorok">
             <DockPanel>
@@ -227,7 +228,9 @@
                     <ItemsControl.Template>
                         <ControlTemplate>
                             <Border BorderThickness="1" CornerRadius="3" BorderBrush="Gray" Padding="5">
-                                <ItemsPresenter/>
+                                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                    <ItemsPresenter/>
+                                </ScrollViewer>
                             </Border>
                         </ControlTemplate>
                     </ItemsControl.Template>
