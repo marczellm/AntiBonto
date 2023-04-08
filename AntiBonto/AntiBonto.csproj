@@ -108,6 +108,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="Controls\DnDItemsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\MaterialButton.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Themes\Generic.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -135,8 +143,8 @@
     <Compile Include="View\DropHandler.cs" />
     <Compile Include="View\IntValidator.cs" />
     <Compile Include="View\KiscsoportColorConverter.cs" />
-    <Compile Include="View\MaterialButton.cs" />
-    <Compile Include="View\DnDItemsControl.cs" />
+    <Compile Include="Controls\MaterialButton.cs" />
+    <Compile Include="Controls\DnDItemsControl.cs" />
     <Compile Include="View\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

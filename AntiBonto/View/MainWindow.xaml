@@ -18,8 +18,8 @@
     </Window.DataContext>
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <!-- hack, see http://stackoverflow.com/questions/7660967 -->
         <FrameworkElement x:Key="DataContextProxy" DataContext="{Binding}"/>
-        <!-- hack, see http://stackoverflow.com/questions/7660967-->
         <Storyboard x:Key="ButtonRotateAnimation">
             <DoubleAnimation Storyboard.TargetName="AddOrRemovePersonButton" 
                              Storyboard.TargetProperty="(Button.RenderTransform).(RotateTransform.Angle)"
@@ -73,7 +73,7 @@
             </DockPanel>
         </TabItem>
         <TabItem Header="Szerepek" IsEnabled="{Binding PeopleNotEmpty}" Name="Szerepek">
-            <DockPanel>
+            <StackPanel>
                 <Label DockPanel.Dock="Top" Content="Csoportosítsd a résztvevőket!"/>
                 <Grid>
                     <Grid.RowDefinitions>
@@ -105,7 +105,7 @@
                            dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{StaticResource DropHandler}" dd:DragDrop.DragAdornerTemplate="{StaticResource adorner}"/>
 
                 </Grid>
-            </DockPanel>
+            </StackPanel>
         </TabItem>
         <TabItem Header="Életkor" IsEnabled="{Binding PeopleNotEmpty}" Name="Eletkorok">
             <DockPanel>
@@ -147,8 +147,8 @@
         <TabItem Header="Újoncok" IsEnabled="{Binding PeopleNotEmpty}" Name="UjoncokTab">
             <DockPanel>
                 <Label DockPanel.Dock="Top" Content="Kinek az újonca? (nem kötelező)"/>
-                <ContentControl Visibility="Collapsed" Content="{StaticResource DataContextProxy}"/>
                 <!-- hack part 2 -->
+                <ContentControl Visibility="Collapsed" Content="{StaticResource DataContextProxy}"/>
                 <DataGrid ItemsSource="{Binding Ujoncok}" CanUserAddRows="False" CanUserDeleteRows="False" AutoGenerateColumns="False" KeyUp="Recruiter_KeyUp" Name="DataGrid">
                     <DataGrid.Columns>
                         <DataGridTextColumn Binding="{Binding Name}" Header="Név" IsReadOnly="True"/>
