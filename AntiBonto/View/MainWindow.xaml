@@ -260,6 +260,19 @@
         </TabItem>
         <TabItem Header="Kiscsoportbeosztás" Name="Kiscsoportbeoszto" IsEnabled="{Binding PeopleNotEmpty}">
             <DockPanel>
+                <DockPanel.Resources>
+                    <ResourceDictionary>
+                        <Style TargetType="view:DnDItemsControl">
+                            <Setter Property="Margin" Value="5"/>
+                            <Setter Property="dd:DragDrop.DropHandler" Value="{StaticResource DropHandler}"/>
+                            <Setter Property="ColorUjoncs" Value="True"/>
+                            <Setter Property="ColorLeaders" Value="True"/>
+                            <Setter Property="BoldKiscsoportvezetok" Value="True"/>
+                            <Setter Property="Visibility" Value="Visible"/>
+                            <Setter Property="Pinnable" Value="True"/>
+                        </Style>
+                    </ResourceDictionary>
+                </DockPanel.Resources>
                 <DockPanel DockPanel.Dock="Top" LastChildFill="False" Width="Auto">
                     <Button Content="Magic" Padding="5" Click="Magic" DockPanel.Dock="Left" Name="MagicButton" IsEnabled="{Binding MagicEnabled}"/>
                     <CheckBox IsChecked="{Binding MagicAllowed}" IsEnabled="{Binding MagicPossible}" VerticalAlignment="Center" ToolTip="Magic engedélyezése"/>
@@ -269,53 +282,24 @@
                 <StatusBar DockPanel.Dock="Bottom">
                     <StatusBarItem Content="{Binding StatusText}" MinHeight="22"/>
                 </StatusBar>
-                <Grid Name="Kiscsoportok">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-                    <Grid.Resources>
-                        <ResourceDictionary>
-                            <Style TargetType="view:DnDItemsControl">
-                                <Setter Property="Margin" Value="5"/>
-                                <Setter Property="dd:DragDrop.DropHandler" Value="{StaticResource DropHandler}"/>
-                                <Setter Property="ColorUjoncs" Value="True"/>
-                                <Setter Property="ColorLeaders" Value="True"/>
-                                <Setter Property="BoldKiscsoportvezetok" Value="True"/>
-                                <Setter Property="Visibility" Value="Collapsed"/>
-                                <Setter Property="Pinnable" Value="True"/>
-                            </Style>
-                        </ResourceDictionary>
-                    </Grid.Resources>
-                    <view:DnDItemsControl Grid.Row="0" Grid.Column="0" ItemsSource="{Binding Kiscsoportok[0]}" x:Name="kcs1"/>
-                    <view:DnDItemsControl Grid.Row="0" Grid.Column="1" ItemsSource="{Binding Kiscsoportok[1]}" x:Name="kcs2"/>
-                    <view:DnDItemsControl Grid.Row="0" Grid.Column="2" ItemsSource="{Binding Kiscsoportok[2]}" x:Name="kcs3"/>
-                    <view:DnDItemsControl Grid.Row="0" Grid.Column="3" ItemsSource="{Binding Kiscsoportok[3]}" x:Name="kcs4"/>
-                    <view:DnDItemsControl Grid.Row="0" Grid.Column="4" ItemsSource="{Binding Kiscsoportok[4]}" x:Name="kcs5"/>
-                    <view:DnDItemsControl Grid.Row="0" Grid.Column="5" ItemsSource="{Binding Kiscsoportok[5]}" x:Name="kcs6"/>
-                    <view:DnDItemsControl Grid.Row="0" Grid.Column="6" ItemsSource="{Binding Kiscsoportok[6]}" x:Name="kcs7"/>
-                    <view:DnDItemsControl Grid.Row="1" Grid.Column="0" ItemsSource="{Binding Kiscsoportok[7]}" x:Name="kcs8"/>
-                    <view:DnDItemsControl Grid.Row="1" Grid.Column="1" ItemsSource="{Binding Kiscsoportok[8]}" x:Name="kcs9"/>
-                    <view:DnDItemsControl Grid.Row="1" Grid.Column="2" ItemsSource="{Binding Kiscsoportok[9]}" x:Name="kcs10"/>
-                    <view:DnDItemsControl Grid.Row="1" Grid.Column="3" ItemsSource="{Binding Kiscsoportok[10]}" x:Name="kcs11"/>
-                    <view:DnDItemsControl Grid.Row="1" Grid.Column="4" ItemsSource="{Binding Kiscsoportok[11]}" x:Name="kcs12"/>
-                    <view:DnDItemsControl Grid.Row="1" Grid.Column="5" ItemsSource="{Binding Kiscsoportok[12]}" x:Name="kcs13"/>
-                    <view:DnDItemsControl Grid.Row="1" Grid.Column="6" ItemsSource="{Binding Kiscsoportok[13]}" x:Name="kcs14"/>
-                    <view:DnDItemsControl Grid.Row="2" Grid.ColumnSpan="7" ItemsSource="{Binding NoKiscsoport}" x:Name="nokcs"
-                                          Visibility="Visible" 
-                                          Header="Nincsenek beosztva:"
-                                          Pinnable="False"/>
-                </Grid>
+                <view:DnDItemsControl DockPanel.Dock="Bottom" ItemsSource="{Binding NoKiscsoport}" x:Name="nokcs"
+                                      Visibility="Visible" 
+                                      Header="Nincsenek beosztva:"
+                                      Pinnable="False"/>
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <ItemsControl ItemsSource="{Binding Kiscsoportok}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel ItemHeight="250" ItemWidth="150"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <view:DnDItemsControl ItemsSource="{Binding}"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
             </DockPanel>
         </TabItem>
         <TabItem Header="Alvócsoport-beosztás" Name="Alvocsoportbeoszto" IsEnabled="{Binding PeopleNotEmpty}">
@@ -361,7 +345,6 @@
                                 <Setter Property="BoldAlvocsoportvezetok" Value="True"/>
                                 <Setter Property="ColorKiscsoports" Value="True"/>
                                 <Setter Property="VisualizeConflicts" Value="True"/>
-                                <Setter Property="Visibility" Value="Collapsed"/>
                             </Style>
                         </ResourceDictionary>
                     </Grid.Resources>

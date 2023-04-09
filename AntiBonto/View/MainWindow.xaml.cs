@@ -3,6 +3,7 @@ using AntiBonto.ViewModel;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -22,16 +23,11 @@ namespace AntiBonto
         public MainWindow()
         {
             InitializeComponent();
-            kcs = new DnDItemsControl[] { kcs1, kcs2, kcs3, kcs4, kcs5, kcs6, kcs7, kcs8, kcs9, kcs10, kcs11, kcs12, kcs13, kcs14 };
-            acs = new DnDItemsControl[] { acs1, acs2, acs3, acs4, acs5, acs6, acs7, acs8, acs9, acs10, acs11, acs12, acs13, acs14 };
-            acsn = new TextBox[] { acsn1, acsn2, acsn3, acsn4, acsn5, acsn6, acsn7, acsn8, acsn9, acsn10, acsn11, acsn12, acsn13, acsn14 };
             string folder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "AntiBonto");
             if (!Directory.Exists(folder))
                 Directory.CreateDirectory(folder);
             filepath = Path.Combine(folder, "state.xml");
         }
-        private readonly DnDItemsControl[] kcs, acs;
-        private readonly TextBox[] acsn;
         private readonly string filepath;
         private CancellationTokenSource cts;
 
@@ -162,7 +158,7 @@ namespace AntiBonto
                     viewModel.AlvocsoportExportOrdering();
                     viewModel.KiscsoportExportOrdering();
                     ExcelHelper.SaveXLS(dialog.FileName, viewModel);
-                    viewModel.AlvocsoportDisplayOrdering(acs.Count() - acs.Count() / 2);
+                    viewModel.AlvocsoportDisplayOrdering();
                 }
                 catch (Exception ex) { MessageBox.Show("Hiba az Excel fájl írásakor" + Environment.NewLine + ex.Message ?? "" + Environment.NewLine + ex.InnerException?.Message ?? ""); }
             XLSSavingAnimation.Visibility = Visibility.Hidden;
@@ -297,14 +293,8 @@ namespace AntiBonto
                 else if (newTab == Kiscsoportbeoszto)
                 {
                     viewModel.InitKiscsoport();
-                    var kcsn = viewModel.Kiscsoportvezetok.Count();
-                    for (int i = 0; i < kcs.Count(); i++)
-                    {
-                        kcs[i].Visibility = i < kcsn ? Visibility.Visible : Visibility.Collapsed;
-                        kcs[i].IsEnabled = i < kcsn;
-                        if (i < kcsn)
-                            BindingOperations.GetBindingExpression(kcs[i], ItemsControl.ItemsSourceProperty).UpdateTarget();
-                    }
+                    // TODO for all kcs views
+                    // BindingOperations.GetBindingExpression(kcs[i], ItemsControl.ItemsSourceProperty).UpdateTarget();                    
                     viewModel.Algorithm = new Algorithms(viewModel);
                     viewModel.MagicPossible = true;
                     BindingOperations.SetBinding(SaveButton, IsEnabledProperty, SaveButtonBinding);
@@ -313,19 +303,11 @@ namespace AntiBonto
                 {
                     viewModel.InitKiscsoport();
                     viewModel.InitAlvocsoport();
-                    viewModel.AlvocsoportDisplayOrdering(acs.Count() - acs.Count() / 2);
-                    for (int j = 0; j < acs.Count(); j++)
-                    {
-                        bool b = viewModel.Alvocsoport(j).Any();
-                        acs[j].Visibility = acsn[j].Visibility = b ? Visibility.Visible : Visibility.Collapsed;
-                        acs[j].IsEnabled = acsn[j].IsEnabled = b;
-                        if (b)
-                        {
-                            BindingOperations.GetBindingExpression(acs[j], ItemsControl.ItemsSourceProperty).UpdateTarget();
-                            acs[j].Items.Refresh();
-                        }
-                    }
-                    BindingOperations.GetBindingExpression(SaveButton, IsEnabledProperty)?.UpdateTarget();                    
+                    viewModel.AlvocsoportDisplayOrdering();
+                    // TODO for all acs views
+                    // BindingOperations.GetBindingExpression(acs[j], ItemsControl.ItemsSourceProperty).UpdateTarget();
+                    // acs[j].Items.Refresh();
+                    BindingOperations.GetBindingExpression(SaveButton, IsEnabledProperty)?.UpdateTarget();                 
                 }
                 else if (newTab == LanyokFiuk)
                     viewModel.Nullnemuek.MoveCurrentToFirst();

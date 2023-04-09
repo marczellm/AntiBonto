@@ -98,7 +98,7 @@ namespace AntiBonto.ViewModel
         /// Reorder the sleeping groups so that the girl sleeping groups come first, and if possible, the boys begin in the second row
         /// </summary>
         /// <param name="displayRowLength">The number of groups that can be displayed in one row</param>
-        public void AlvocsoportDisplayOrdering(int displayRowLength)
+        public void AlvocsoportDisplayOrdering(/*int displayRowLength*/)
         {
             if (Alvocsoportvezetok.Any(p => p.Nem == Nem.Undefined))
                 return;
@@ -109,6 +109,7 @@ namespace AntiBonto.ViewModel
                 SwapAlvocsoports(i, j);
                 i++;
             }
+            /*
             if (i <= displayRowLength && Alvocsoportvezetok.Count(p => p.Nem == Nem.Fiu) <= displayRowLength)            
                 i = displayRowLength;
             foreach (Person q in Alvocsoportvezetok.Where(p => p.Nem == Nem.Fiu).OrderBy(p => p.Name).ToList())
@@ -116,7 +117,7 @@ namespace AntiBonto.ViewModel
                 int j = q.Alvocsoport;
                 SwapAlvocsoports(i, j);
                 i++;
-            }
+            }*/
         }
 
         /// <summary>
