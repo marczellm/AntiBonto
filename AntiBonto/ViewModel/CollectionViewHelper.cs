@@ -28,7 +28,7 @@ namespace AntiBonto.ViewModel
             else return new List<string> { };
         }
 
-        private static Dictionary<string, ICollectionView> collectionViewCache = new Dictionary<string, ICollectionView>();
+        private static readonly Dictionary<string, ICollectionView> collectionViewCache = new Dictionary<string, ICollectionView>();
 
         /// <summary>
         /// Returns a newly created CollectionView that live filters the given collection by the given filter expression.

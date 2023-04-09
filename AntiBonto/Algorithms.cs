@@ -8,11 +8,12 @@ namespace AntiBonto
 {
     public class Algorithms
     {
-        private ViewModel.MainWindow d;
-        private List<Person> Ujoncok, Team, Beosztando, Kiscsoportvezetok;
-        private int n, m, k, u, t, tpk, upk, fpk, lpk;
-        private bool consideringSexes;
-        private static Random rng = new Random();
+        private readonly ViewModel.MainWindow d;
+        private readonly List<Person> Ujoncok, Team, Beosztando, Kiscsoportvezetok;
+        private readonly int n, k, u, t, tpk, upk, fpk, lpk;
+        private int m;
+        private readonly bool consideringSexes;
+        private readonly static Random rng = new Random();
         public Algorithms(ViewModel.MainWindow data)
         {
             d = data;
@@ -179,9 +180,7 @@ namespace AntiBonto
             {
                 n--;
                 int k = rng.Next(n + 1);
-                T value = list[k];
-                list[k] = list[n];
-                list[n] = value;
+                (list[n], list[k]) = (list[k], list[n]);
             }
             return list;
         }

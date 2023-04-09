@@ -30,9 +30,9 @@ namespace AntiBonto
                 Directory.CreateDirectory(folder);
             filepath = Path.Combine(folder, "state.xml");
         }
-        private DnDItemsControl[] kcs, acs;
-        private TextBox[] acsn;
-        private string filepath;
+        private readonly DnDItemsControl[] kcs, acs;
+        private readonly TextBox[] acsn;
+        private readonly string filepath;
         private CancellationTokenSource cts;
 
         private ViewModel.MainWindow viewModel => (ViewModel.MainWindow)DataContext;
@@ -75,10 +75,10 @@ namespace AntiBonto
                 }
             }
 
-            int i = 1, tag;
+            int i = 1;
             foreach (TabItem tab in TabControl.Items)
             {
-                if (tab.Tag != null && Int32.TryParse(tab.Tag as string, out tag))
+                if (tab.Tag != null && Int32.TryParse(tab.Tag as string, out int tag))
                 {
                     tab.Header = tab.Tag as string + "HV";
                     tab.Visibility = ViewModel.MainWindow.WeekendNumber == tag ? Visibility.Visible : Visibility.Collapsed;
@@ -181,8 +181,7 @@ namespace AntiBonto
             var cp = (FrameworkElement)PeopleView.ItemContainerGenerator.ContainerFromItem(p);
             cp.ApplyTemplate();
             var label = (ContentControl)PeopleView.ItemTemplate.FindName("PersonButton", cp);
-            TextBox textBox = new TextBox { MinWidth = 10 };
-            textBox.Tag = p;
+            TextBox textBox = new TextBox { MinWidth = 10, Tag = p };
             textBox.KeyDown += TextBox_KeyDown;
             label.Content = textBox;
             Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background, (Action)(() => Keyboard.Focus(textBox)));

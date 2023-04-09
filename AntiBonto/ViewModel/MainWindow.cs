@@ -265,7 +265,7 @@ namespace AntiBonto.ViewModel
             get { return statusText; }
             set { statusText = value; RaisePropertyChanged(); }
         }
-        private string[] alvocsoportNevek = new string[15];
+        private readonly string[] alvocsoportNevek = new string[15];
         public string[] AlvocsoportNevek => alvocsoportNevek;
 
         /// <summary>
@@ -337,9 +337,7 @@ namespace AntiBonto.ViewModel
             foreach (Person p in Alvocsoport(-100).ToList())
                 p.Alvocsoport = j;
 
-            string temp = alvocsoportNevek[i];
-            alvocsoportNevek[i] = alvocsoportNevek[j];
-            alvocsoportNevek[j] = temp;
+            (alvocsoportNevek[j], alvocsoportNevek[i]) = (alvocsoportNevek[i], alvocsoportNevek[j]);
         }
 
         #region Extras
