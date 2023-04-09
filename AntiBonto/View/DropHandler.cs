@@ -4,6 +4,7 @@ using System.Windows;
 using System.Linq;
 using System.Collections.ObjectModel;
 using System.Windows.Controls;
+using System.ComponentModel;
 
 namespace AntiBonto.View
 {
@@ -24,6 +25,10 @@ namespace AntiBonto.View
                 return;
             }
             var p = (Person)dropInfo.Data;
+            bool targetIsKcs = target is DnDItemsControl temp && d.Kiscsoportok?.Contains(temp.ItemsSource) == true;
+            bool targetIsNoKcs = target.Name == "nokcs";
+            bool targetIsAcs = target is DnDItemsControl temp2 && d.Alvocsoportok?.Contains(temp2.ItemsSource) == true;
+            bool targetIsNoAcs = target.Name.StartsWith("noacs");
             if (p.Nem == Nem.Fiu && target.Name == "Lanyvezeto"
              || p.Nem == Nem.Lany && target.Name == "Fiuvezeto"
              || source.Name == "PeopleView" && target.Name != "PeopleView" && target.Name != "AddOrRemovePersonButton"
@@ -37,26 +42,26 @@ namespace AntiBonto.View
                 dropInfo.Effects = DragDropEffects.None;
                 d.StatusText = p + " le van rögzítve!";
             }
-            else if (target.Name.Contains("kcs") && p.Kiscsoportvezeto)
+            else if ((targetIsKcs || targetIsNoKcs) && p.Kiscsoportvezeto)
             {
                 dropInfo.Effects = DragDropEffects.None;
                 d.StatusText = "A kiscsoportvezetők nem mozgathatók!";
             }
-            else if (target.Name.StartsWith("kcs"))
+            else if (targetIsKcs)
             {
-                int kcsn = Int32.Parse(target.Name.Remove(0, 3)) - 1;
+                int kcsn = d.Kiscsoportok.IndexOf((target as DnDItemsControl).ItemsSource as ICollectionView);
                 string message = null;
                 dropInfo.Effects = (kcsn != p.Kiscsoport && d.Algorithm.Conflicts(p, kcsn, out message)) ? DragDropEffects.None : DragDropEffects.Move;
                 d.StatusText = message;
-            }            
-            else if (target.Name.Contains("acs") && p.Alvocsoportvezeto)
+            }
+            else if ((targetIsAcs || targetIsNoAcs) && p.Alvocsoportvezeto)
             {
                 dropInfo.Effects = DragDropEffects.None;
                 d.StatusText = "Az alvócsoportvezetők nem mozgathatók!";
             }
-            else if (target.Name.StartsWith("acs"))
+            else if (targetIsAcs)
             {
-                int acsn = Int32.Parse(target.Name.Remove(0, 3)) - 1;
+                int acsn = d.Alvocsoportok.IndexOf((target as DnDItemsControl).ItemsSource as ICollectionView);
                 var acsvez = d.Alvocsoportvezetok.Single(q => q.Alvocsoport == acsn);
                 dropInfo.Effects = (p.Nem != Nem.Undefined && p.Nem != acsvez.Nem) ? DragDropEffects.None : DragDropEffects.Move;
             }
@@ -173,11 +178,13 @@ namespace AntiBonto.View
                         q.Alvocsoport = -1;
                 }
             }
-            if (target.Name.StartsWith("kcs"))
-                p.Kiscsoport = Int32.Parse(target.Name.Remove(0, 3)) - 1;
-            if (target.Name.StartsWith("acs"))
+            if (target is DnDItemsControl temp && d.Kiscsoportok?.Contains(temp.ItemsSource) == true)
             {
-                p.Alvocsoport = Int32.Parse(target.Name.Remove(0, 3)) - 1;
+                p.Kiscsoport = d.Kiscsoportok.IndexOf(temp.ItemsSource as ICollectionView);
+            }                
+            if (target is DnDItemsControl temp2 && d.Alvocsoportok?.Contains(temp2.ItemsSource) == true)
+            {
+                p.Alvocsoport = d.Alvocsoportok.IndexOf(temp2.ItemsSource as ICollectionView);
                 ((ItemsControl)source).Items.Refresh(); // This updates the visualizing decorations for all others in the source
                 ((ItemsControl)target).Items.Refresh(); // and target sleeping groups
             }

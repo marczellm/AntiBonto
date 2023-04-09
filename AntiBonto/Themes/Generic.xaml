@@ -2,8 +2,8 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="Controls/DnDItemsControl.xaml"/>
-        <ResourceDictionary Source="Controls/MaterialButton.xaml"/>
+        <ResourceDictionary Source="/AntiBonto;component/Controls/DnDItemsControl.xaml"/>
+        <ResourceDictionary Source="/AntiBonto;component/Controls/MaterialButton.xaml"/>
     </ResourceDictionary.MergedDictionaries>
     
     <!-- Definition of the lock-unlock checkbox -->
