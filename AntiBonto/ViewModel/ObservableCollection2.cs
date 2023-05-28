@@ -1,15 +1,27 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Linq;
+using System.Windows.Data;
 
 namespace AntiBonto.ViewModel
 {
+    class TitledCollectionView : ListCollectionView
+    {
+        public string Title { get; set; }
+        
+        public TitledCollectionView(IList list) : base(list)
+        {
+        }
+    }
+
     /// <summary>
     /// ObservableCollection with added AddRange support
     /// </summary>
-    public class ObservableCollection2<T> : ObservableCollection<T>
+    public class ObservableCollection2<T> : ObservableCollection<T>, ICollectionViewFactory
     {
         public ObservableCollection2() : base() { }
         public ObservableCollection2(T[] t) : base(t) { }
@@ -19,6 +31,12 @@ namespace AntiBonto.ViewModel
                 Items.Add(i);
             OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
+
+        public ICollectionView CreateView()
+        {
+            return new TitledCollectionView(this);
+        }
+
         public void RemoveAll(Func<T, bool> cond)
         {
             Items.Where(cond).ToList().All(p => Items.Remove(p));

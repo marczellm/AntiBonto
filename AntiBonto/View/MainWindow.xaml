@@ -285,7 +285,7 @@
                                       Header="Nincsenek beosztva:"
                                       Pinnable="False"/>
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
-                    <ItemsControl ItemsSource="{Binding Kiscsoportok}">
+                    <ItemsControl ItemsSource="{Binding Kiscsoportok}" Name="Kiscsoportok">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <UniformGrid Columns="{Binding GroupColumnCount, Source={x:Reference MainWindowName}}" />
@@ -338,7 +338,7 @@
                                           dd:DragDrop.DropHandler="{StaticResource DropHandler}"/>
                 </Grid>
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
-                    <ItemsControl ItemsSource="{Binding Alvocsoportok}">
+                    <ItemsControl ItemsSource="{Binding Alvocsoportok}" Name="Alvocsoportok">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <UniformGrid Columns="{Binding GroupColumnCount, Source={x:Reference MainWindowName}}" />
@@ -355,7 +355,7 @@
                                                       dd:DragDrop.DropHandler="{StaticResource DropHandler}">
                                     <HeaderedItemsControl.Header>
                                         <!-- TODO bind this to AlvocsoportNevek -->
-                                        <TextBox MinWidth="80" HorizontalAlignment="Left"/> 
+                                        <TextBox MinWidth="80" HorizontalAlignment="Left" Text="{Binding Title}"/> 
                                     </HeaderedItemsControl.Header>
                                 </view:DnDItemsControl>
                             </DataTemplate>

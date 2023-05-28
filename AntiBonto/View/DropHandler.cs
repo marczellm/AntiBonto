@@ -25,19 +25,33 @@ namespace AntiBonto.View
                 return;
             }
             var p = (Person)dropInfo.Data;
+
+            if (source.Name == "PeopleView" && (target.Name == "PeopleView" || target.Name != "AddOrRemovePersonButton"))
+            {
+                dropInfo.Effects = DragDropEffects.Move;
+            }
+            else if (p.Nem == Nem.Lany && target.Name == "Lanyvezeto" || p.Nem == Nem.Fiu && target.Name == "Fiuvezeto")
+            {
+                dropInfo.Effects = DragDropEffects.Move;
+            }
+            //else if (target is DnDItemsControl dnd && dnd.DragOverCallback != null)
+            //{
+            //    var res = dnd.DragOverCallback(p, source, d);
+            //    dropInfo.Effects = res.effect;
+            //    d.StatusText = res.message;
+            //}
+            else
+            {
+                dropInfo.Effects = DragDropEffects.None;
+            }
+
+            return;
+
             bool targetIsKcs = target is DnDItemsControl temp && d.Kiscsoportok?.Contains(temp.ItemsSource) == true;
             bool targetIsNoKcs = target.Name == "nokcs";
             bool targetIsAcs = target is DnDItemsControl temp2 && d.Alvocsoportok?.Contains(temp2.ItemsSource) == true;
             bool targetIsNoAcs = target.Name.StartsWith("noacs");
-            if (p.Nem == Nem.Fiu && target.Name == "Lanyvezeto"
-             || p.Nem == Nem.Lany && target.Name == "Fiuvezeto"
-             || source.Name == "PeopleView" && target.Name != "PeopleView" && target.Name != "AddOrRemovePersonButton"
-             || target.Name == "Kiscsoportvezetok" && d.Kiscsoportvezetok.Count() >= 14
-             || target.Name == "Alvocsoportvezetok" && d.Alvocsoportvezetok.Count() >= 14)
-            {
-                dropInfo.Effects = DragDropEffects.None;
-            }
-            else if (p.Pinned)
+            if (p.Pinned)
             {
                 dropInfo.Effects = DragDropEffects.None;
                 d.StatusText = p + " le van rögzítve!";

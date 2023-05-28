@@ -1,8 +1,21 @@
-﻿using System.Windows;
+﻿/// <summary>
+/// the second arg is the control acting as drag source
+/// </summary>
+// global using DragOverCallback = System.Func<AntiBonto.Person, System.Windows.FrameworkElement, AntiBonto.ViewModel.MainWindow, AntiBonto.View.DragOverResult>;
+
+using System;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace AntiBonto.View
 {
+
+    public struct DragOverResult
+    {
+        public string message;
+        public DragDropEffects effect;
+    }
+
     public class DnDItemsControl : HeaderedItemsControl
     {
         static DnDItemsControl()
@@ -10,6 +23,7 @@ namespace AntiBonto.View
             // Metadata needs to be overriden in static constructor to indicate that the style is declared under Themes/Generic.xaml.
             DefaultStyleKeyProperty.OverrideMetadata(typeof(DnDItemsControl), new FrameworkPropertyMetadata(typeof(DnDItemsControl)));
         }
+
         public bool ColorUjoncs { get; set; } = false;
         public static readonly DependencyProperty ColorUjoncsProperty =
             DependencyProperty.Register("ColorUjoncs", typeof(bool), typeof(DnDItemsControl));
@@ -41,5 +55,13 @@ namespace AntiBonto.View
         public bool Scrollable { get; set; } = false;
         public static readonly DependencyProperty ScrollableProperty =
             DependencyProperty.Register("Scrollable", typeof(bool), typeof(DnDItemsControl));
+
+        //public static readonly DependencyProperty DragOverCallbackProperty =
+        //    DependencyProperty.Register("DragOverCallback", typeof(DragOverCallback), typeof(DnDItemsControl));
+        //public DragOverCallback DragOverCallback
+        //{
+        //    get => (DragOverCallback)GetValue(DragOverCallbackProperty);
+        //    set => SetValue(DragOverCallbackProperty, value);
+        //}
     }
 }

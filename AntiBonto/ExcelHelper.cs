@@ -1,4 +1,5 @@
-﻿using Microsoft.Office.Interop.Excel;
+﻿using AntiBonto.ViewModel;
+using Microsoft.Office.Interop.Excel;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -159,7 +160,7 @@ namespace AntiBonto
                 for (int j = 1; j <= m; j++)
                 {
                     sheet.Cells[j + 1, 1] = ((char)(j + 64)).ToString();
-                    sheet.Cells[j + 1, 2] = data.AlvocsoportNevek[j - 1];
+                    sheet.Cells[j + 1, 2] = ((TitledCollectionView)data.Alvocsoportok[j - 1]).Title;
                 }
 
                 sheet = file.Worksheets["Alapadatok"];

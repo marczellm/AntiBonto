@@ -7,6 +7,7 @@ using System.Diagnostics;
 
 namespace AntiBonto.ViewModel
 {
+
     /// <summary>
     /// Because this is not an enterprise app, I didn't create the plumbing necessary to have separate ViewModels for each tab.
     /// Instead I dumped all of the application state in the below class.
@@ -84,53 +85,15 @@ namespace AntiBonto.ViewModel
         {
             if (alvocsoportInited)
                 return;
+
             alvocsoportok = Enumerable.Range(0, Alvocsoportvezetok.Count()).Select(i => AlvocsoportCollectionView(i)).ToList();
-            
+                        
             NoAlvocsoportFiu.CollectionChanged += (s, e) => RaisePropertyChanged("BeosztasKesz");
             NoAlvocsoportLany.CollectionChanged += (s, e) => RaisePropertyChanged("BeosztasKesz");
 
             alvocsoportInited = true;
             RaisePropertyChanged("Alvocsoportok");
             RaisePropertyChanged("NoAlvocsoport");
-        }
-
-        /// <summary>
-        /// Reorder the sleeping groups so that the girl sleeping groups come first, and if possible, the boys begin in the second row
-        /// </summary>
-        /// <param name="displayRowLength">The number of groups that can be displayed in one row</param>
-        public void AlvocsoportDisplayOrdering(/*int displayRowLength*/)
-        {
-            if (Alvocsoportvezetok.Any(p => p.Nem == Nem.Undefined))
-                return;
-            int i = 0;
-            foreach (Person q in Alvocsoportvezetok.Where(p => p.Nem == Nem.Lany).OrderBy(p => p.Name).ToList())
-            {
-                int j = q.Alvocsoport;
-                SwapAlvocsoports(i, j);
-                i++;
-            }
-            /*
-            if (i <= displayRowLength && Alvocsoportvezetok.Count(p => p.Nem == Nem.Fiu) <= displayRowLength)            
-                i = displayRowLength;
-            foreach (Person q in Alvocsoportvezetok.Where(p => p.Nem == Nem.Fiu).OrderBy(p => p.Name).ToList())
-            {
-                int j = q.Alvocsoport;
-                SwapAlvocsoports(i, j);
-                i++;
-            }*/
-        }
-
-        /// <summary>
-        /// Reorder the sleeping groups so that they are numbered consecutively with no gaps between
-        /// </summary>
-        internal void AlvocsoportExportOrdering()
-        {
-            for (int i = 0; i < Alvocsoportok.Count() - 1; i++)
-            {
-                int j = Enumerable.Range(0, Alvocsoportok.Count()).Last(k => Alvocsoport(k).Any());
-                if (!Alvocsoport(i).Any() && i < j)                    
-                    SwapAlvocsoports(i, j);
-            }
         }
 
         /// <summary>
@@ -164,8 +127,11 @@ namespace AntiBonto.ViewModel
         public ICollectionView Ujoncok => CollectionViewHelper.Lazy<Person>(People, p => p.Type == PersonType.Ujonc, orderByName);
         public ICollectionView Team => CollectionViewHelper.Lazy<Person>(People, p => p.Type != PersonType.Egyeb && p.Type != PersonType.Ujonc, orderByName);
         public ICollectionView Egyeb => CollectionViewHelper.Lazy<Person>(People, p => p.Type == PersonType.Egyeb, orderByName);
+
         public ICollectionView KiscsoportvezetokCollectionView => CollectionViewHelper.Lazy<Person>(People, p => p.Kiscsoportvezeto);
-        public ICollectionView AlvocsoportvezetokCollectionView => CollectionViewHelper.Lazy<Person>(People, p => p.Alvocsoportvezeto, orderByName);
+        
+        public ICollectionView AlvocsoportvezetokCollectionView => CollectionViewHelper.Lazy<Person>(People, p => p.Alvocsoportvezeto, new SortDescription("Nem", ListSortDirection.Ascending));
+        
         public IEnumerable<Person> Kiscsoportvezetok => KiscsoportvezetokCollectionView.Cast<Person>();
         public IEnumerable<Person> Alvocsoportvezetok => AlvocsoportvezetokCollectionView.Cast<Person>();
         public ICollectionView CsoportokbaOsztando => CollectionViewHelper.Lazy<Person>(People, p => p.Type != PersonType.Egyeb, orderByName);
@@ -266,8 +232,6 @@ namespace AntiBonto.ViewModel
             get { return statusText; }
             set { statusText = value; RaisePropertyChanged(); }
         }
-        private readonly string[] alvocsoportNevek = new string[15];
-        public string[] AlvocsoportNevek => alvocsoportNevek;
 
         /// <summary>
         /// Represents groups in which no two persons should get assigned to the same sharing group.
@@ -338,7 +302,7 @@ namespace AntiBonto.ViewModel
             foreach (Person p in Alvocsoport(-100).ToList())
                 p.Alvocsoport = j;
 
-            (alvocsoportNevek[j], alvocsoportNevek[i]) = (alvocsoportNevek[i], alvocsoportNevek[j]);
+            //(alvocsoportNevek[j], alvocsoportNevek[i]) = (alvocsoportNevek[i], alvocsoportNevek[j]);
         }
 
         #region Extras

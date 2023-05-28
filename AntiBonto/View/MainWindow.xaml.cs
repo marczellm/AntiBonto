@@ -162,11 +162,9 @@ namespace AntiBonto
             };
             if (dialog.ShowDialog(this) == true)
                 try
-                {
-                    viewModel.AlvocsoportExportOrdering();
+                {   
                     viewModel.KiscsoportExportOrdering();
                     ExcelHelper.SaveXLS(dialog.FileName, viewModel);
-                    viewModel.AlvocsoportDisplayOrdering();
                 }
                 catch (Exception ex) { MessageBox.Show("Hiba az Excel fájl írásakor" + Environment.NewLine + ex.Message ?? "" + Environment.NewLine + ex.InnerException?.Message ?? ""); }
             XLSSavingAnimation.Visibility = Visibility.Hidden;
@@ -302,7 +300,10 @@ namespace AntiBonto
                 {
                     viewModel.InitKiscsoport();
                     // TODO for all kcs views
-                    // BindingOperations.GetBindingExpression(kcs[i], ItemsControl.ItemsSourceProperty).UpdateTarget();                    
+                    
+                    // BindingOperations.GetBindingExpression(Kiscsoportok, ItemsControl.ItemsSourceProperty).UpdateTarget();    
+                    // Kiscsoportok.Items.Refresh();
+
                     viewModel.Algorithm = new Algorithms(viewModel);
                     viewModel.MagicPossible = true;
                     BindingOperations.SetBinding(SaveButton, IsEnabledProperty, SaveButtonBinding);
@@ -311,10 +312,14 @@ namespace AntiBonto
                 {
                     viewModel.InitKiscsoport();
                     viewModel.InitAlvocsoport();
-                    viewModel.AlvocsoportDisplayOrdering();
+
                     // TODO for all acs views
                     // BindingOperations.GetBindingExpression(acs[j], ItemsControl.ItemsSourceProperty).UpdateTarget();
                     // acs[j].Items.Refresh();
+
+                    // BindingOperations.GetBindingExpression(Alvocsoportok, ItemsControl.ItemsSourceProperty).UpdateTarget();
+                    // Alvocsoportok.Items.Refresh();
+
                     BindingOperations.GetBindingExpression(SaveButton, IsEnabledProperty)?.UpdateTarget();                 
                 }
                 else if (newTab == LanyokFiuk)
