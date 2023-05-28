@@ -84,7 +84,7 @@ namespace AntiBonto
             {
                 if (tab.Tag != null && Int32.TryParse(tab.Tag as string, out int tag))
                 {
-                    tab.Header = tab.Tag as string + "HV";
+                    tab.Header = (tab.Tag as string) + "HV";
                     tab.Visibility = ViewModel.MainWindow.WeekendNumber == tag ? Visibility.Visible : Visibility.Collapsed;
                 }
                 if (tab.Visibility == Visibility.Visible)

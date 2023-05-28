@@ -27,10 +27,10 @@ namespace AntiBonto
                 bool isHVKezelo = file.Worksheets.Cast<Worksheet>().Any(s => s.Name == "Alapadatok");
                 Worksheet sheet = isHVKezelo ? file.Worksheets["Alapadatok"] : file.Worksheets[1];
                 sheet.Unprotect();
-                Range range = sheet.UsedRange,
+                Microsoft.Office.Interop.Excel.Range range = sheet.UsedRange,
                  col1 = range.Columns[1],
                  col2 = range.Columns[2];
-                List<Person> ppl = new List<Person>();
+                List<Person> ppl = new();
                 foreach (string val in col1.Value)
                     ppl.Add(new Person { Name = val });
                 if (col1.Count == col2.Count)
@@ -141,7 +141,7 @@ namespace AntiBonto
 
         public static void SaveXLS(string filename, ViewModel.MainWindow data)
         {
-            Uri uri = new Uri("/Resources/hetvegekezelo.xlsm", UriKind.Relative);
+            Uri uri = new("/Resources/hetvegekezelo.xlsm", UriKind.Relative);
 
             using (var stream = System.Windows.Application.GetResourceStream(uri).Stream)
             using (var f = File.Create(filename))
@@ -166,7 +166,7 @@ namespace AntiBonto
                 sheet = file.Worksheets["Alapadatok"];
                 sheet.Activate();
                 sheet.Unprotect();
-                Range c = sheet.Cells;
+                Microsoft.Office.Interop.Excel.Range c = sheet.Cells;
                 int i = 2;
                 foreach (Person p in data.People)
                 {

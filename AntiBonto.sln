@@ -2,9 +2,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AntiBonto", "AntiBonto\AntiBonto.csproj", "{EC323B53-DA7B-4581-8AFF-7A8B8E853752}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AntiBonto", "AntiBonto\AntiBonto.csproj", "{EC323B53-DA7B-4581-8AFF-7A8B8E853752}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AntiBontoTests", "AntiBontoTests\AntiBontoTests.csproj", "{149CC0EF-3A91-4F6C-9658-D4C9D0F001E4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AntiBontoTests", "AntiBontoTests\AntiBontoTests.csproj", "{149CC0EF-3A91-4F6C-9658-D4C9D0F001E4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
