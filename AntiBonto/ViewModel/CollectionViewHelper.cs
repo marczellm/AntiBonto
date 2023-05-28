@@ -56,7 +56,7 @@ namespace AntiBonto.ViewModel
         public static ICollectionView Lazy<T>(object source, 
             Expression<Func<T, bool>> filter, 
             SortDescription? sortDescription = null, 
-            [CallerMemberName] String name = "")
+            [CallerMemberName] string name = "")
         {
             if (!collectionViewCache.ContainsKey(name))
                 collectionViewCache.Add(name, Get(source, filter, sortDescription));

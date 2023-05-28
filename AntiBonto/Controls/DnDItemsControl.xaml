@@ -66,7 +66,7 @@
                                                             <view:KiscsoportColorConverter/>
                                                         </MultiBinding.Converter>
                                                         <Binding />
-                                                        <Binding Path="DataContext" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}"/>
+                                                        <Binding Path="DataContext" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type Window}}"/>
                                                     </MultiBinding>
                                                 </Setter.Value>
                                             </Setter>
@@ -82,7 +82,7 @@
                                                             <view:ConflictBorderConverter/>
                                                         </MultiBinding.Converter>
                                                         <Binding />
-                                                        <Binding Path="DataContext" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}"/>
+                                                        <Binding Path="DataContext" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type Window}}"/>
                                                     </MultiBinding>
                                                 </Setter.Value>
                                             </Setter>
@@ -100,7 +100,7 @@
                                             <MultiDataTrigger.Conditions>
                                                 <Condition Binding="{Binding Kiscsoportvezeto}" Value="False"/>
                                                 <Condition Binding="{Binding Pinnable, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}" Value="True"/>
-                                                <Condition Binding="{Binding DataContext.MagicEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}" Value="True"/>
+                                                <Condition Binding="{Binding DataContext.MagicEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}" Value="True"/>
                                             </MultiDataTrigger.Conditions>
                                             <Setter Property="Visibility" Value="Visible"/>
                                         </MultiDataTrigger>

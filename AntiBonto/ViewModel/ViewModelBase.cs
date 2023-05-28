@@ -8,7 +8,7 @@ namespace AntiBonto.ViewModel
     {
         public event PropertyChangedEventHandler PropertyChanged;
         
-        protected void RaisePropertyChanged([CallerMemberName] String propertyName = "")
+        protected void RaisePropertyChanged([CallerMemberName] string propertyName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

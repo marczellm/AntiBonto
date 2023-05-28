@@ -12,7 +12,8 @@
         Width="1024" Height="768"
         Background="Transparent"
         Closing="MainWindow_Closing"
-        Loaded="MainWindow_Loaded">
+        Loaded="MainWindow_Loaded"
+        SizeChanged="MainWindow_SizeChanged">
     <Window.DataContext>
         <vm:MainWindow/>
     </Window.DataContext>
@@ -268,8 +269,6 @@
                             <Setter Property="ColorUjoncs" Value="True"/>
                             <Setter Property="ColorLeaders" Value="True"/>
                             <Setter Property="BoldKiscsoportvezetok" Value="True"/>
-                            <Setter Property="Visibility" Value="Visible"/>
-                            <Setter Property="Pinnable" Value="True"/>
                         </Style>
                     </ResourceDictionary>
                 </DockPanel.Resources>
@@ -283,19 +282,20 @@
                     <StatusBarItem Content="{Binding StatusText}" MinHeight="22"/>
                 </StatusBar>
                 <view:DnDItemsControl DockPanel.Dock="Bottom" ItemsSource="{Binding NoKiscsoport}" x:Name="nokcs"
-                                      Visibility="Visible" 
                                       Header="Nincsenek beosztva:"
                                       Pinnable="False"/>
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                     <ItemsControl ItemsSource="{Binding Kiscsoportok}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
-                                <WrapPanel ItemHeight="250" ItemWidth="150"/>
+                                <UniformGrid Columns="{Binding GroupColumnCount, Source={x:Reference MainWindowName}}" />
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <view:DnDItemsControl ItemsSource="{Binding}"/>
+                                <view:DnDItemsControl ItemsSource="{Binding}"
+                                                      Pinnable="True"
+                                                      MinHeight="220"/>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
@@ -304,7 +304,7 @@
         </TabItem>
         <TabItem Header="Alvócsoport-beosztás" Name="Alvocsoportbeoszto" IsEnabled="{Binding PeopleNotEmpty}">
             <DockPanel>
-                <DockPanel DockPanel.Dock="Top" LastChildFill="False" Width="Auto">
+                <DockPanel DockPanel.Dock="Top" Width="Auto" LastChildFill="False">
                     <Button Content="Mentés" Padding="5" Click="SaveXLS" DockPanel.Dock="Left" Name="SaveButton">
                         <Button.IsEnabled>
                             <Binding Path="BeosztasKesz" x:Name="SaveButtonBinding"/>
@@ -319,71 +319,49 @@
                 <StatusBar DockPanel.Dock="Bottom">
                     <StatusBarItem Content="{Binding StatusText}" MinHeight="22"/>
                 </StatusBar>
-                <Grid Name="Alvocsoportok" Margin="0,10,0,0">
+                <Grid DockPanel.Dock="Bottom">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
+                        <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-                    <Grid.Resources>
-                        <ResourceDictionary>
-                            <Style TargetType="view:DnDItemsControl">
-                                <Setter Property="Margin" Value="5"/>
-                                <Setter Property="dd:DragDrop.DropHandler" Value="{StaticResource DropHandler}"/>
-                                <Setter Property="ColorUjoncs" Value="True"/>
-                                <Setter Property="BoldAlvocsoportvezetok" Value="True"/>
-                                <Setter Property="ColorKiscsoports" Value="True"/>
-                                <Setter Property="VisualizeConflicts" Value="True"/>
-                            </Style>
-                        </ResourceDictionary>
-                    </Grid.Resources>
-                    <view:DnDItemsControl Grid.Row="1" Grid.Column="0" ItemsSource="{Binding Alvocsoportok[0]}" x:Name="acs1"/>
-                    <view:DnDItemsControl Grid.Row="1" Grid.Column="1" ItemsSource="{Binding Alvocsoportok[1]}" x:Name="acs2"/>
-                    <view:DnDItemsControl Grid.Row="1" Grid.Column="2" ItemsSource="{Binding Alvocsoportok[2]}" x:Name="acs3"/>
-                    <view:DnDItemsControl Grid.Row="1" Grid.Column="3" ItemsSource="{Binding Alvocsoportok[3]}" x:Name="acs4"/>
-                    <view:DnDItemsControl Grid.Row="1" Grid.Column="4" ItemsSource="{Binding Alvocsoportok[4]}" x:Name="acs5"/>
-                    <view:DnDItemsControl Grid.Row="1" Grid.Column="5" ItemsSource="{Binding Alvocsoportok[5]}" x:Name="acs6"/>
-                    <view:DnDItemsControl Grid.Row="1" Grid.Column="6" ItemsSource="{Binding Alvocsoportok[6]}" x:Name="acs7"/>
-                    <view:DnDItemsControl Grid.Row="3" Grid.Column="0" ItemsSource="{Binding Alvocsoportok[7]}" x:Name="acs8"/>
-                    <view:DnDItemsControl Grid.Row="3" Grid.Column="1" ItemsSource="{Binding Alvocsoportok[8]}" x:Name="acs9"/>
-                    <view:DnDItemsControl Grid.Row="3" Grid.Column="2" ItemsSource="{Binding Alvocsoportok[9]}" x:Name="acs10"/>
-                    <view:DnDItemsControl Grid.Row="3" Grid.Column="3" ItemsSource="{Binding Alvocsoportok[10]}" x:Name="acs11"/>
-                    <view:DnDItemsControl Grid.Row="3" Grid.Column="4" ItemsSource="{Binding Alvocsoportok[11]}" x:Name="acs12"/>
-                    <view:DnDItemsControl Grid.Row="3" Grid.Column="5" ItemsSource="{Binding Alvocsoportok[12]}" x:Name="acs13"/>
-                    <view:DnDItemsControl Grid.Row="3" Grid.Column="6" ItemsSource="{Binding Alvocsoportok[13]}" x:Name="acs14"/>
-                    
-                    <TextBox MinWidth="80" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="0" Margin="7,0,0,0" x:Name="acsn1" Text="{Binding AlvocsoportNevek[0]}"/>
-                    <TextBox MinWidth="80" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="1" Margin="7,0,0,0" x:Name="acsn2" Text="{Binding AlvocsoportNevek[1]}"/>
-                    <TextBox MinWidth="80" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="2" Margin="7,0,0,0" x:Name="acsn3" Text="{Binding AlvocsoportNevek[2]}"/>
-                    <TextBox MinWidth="80" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="3" Margin="7,0,0,0" x:Name="acsn4" Text="{Binding AlvocsoportNevek[3]}"/>
-                    <TextBox MinWidth="80" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="4" Margin="7,0,0,0" x:Name="acsn5" Text="{Binding AlvocsoportNevek[4]}"/>
-                    <TextBox MinWidth="80" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="5" Margin="7,0,0,0" x:Name="acsn6" Text="{Binding AlvocsoportNevek[5]}"/>
-                    <TextBox MinWidth="80" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="6" Margin="7,0,0,0" x:Name="acsn7" Text="{Binding AlvocsoportNevek[6]}"/>
-                    <TextBox MinWidth="80" HorizontalAlignment="Left" Grid.Row="2" Grid.Column="0" Margin="7,0,0,0" x:Name="acsn8" Text="{Binding AlvocsoportNevek[7]}"/>
-                    <TextBox MinWidth="80" HorizontalAlignment="Left" Grid.Row="2" Grid.Column="1" Margin="7,0,0,0" x:Name="acsn9" Text="{Binding AlvocsoportNevek[8]}"/>
-                    <TextBox MinWidth="80" HorizontalAlignment="Left" Grid.Row="2" Grid.Column="2" Margin="7,0,0,0" x:Name="acsn10" Text="{Binding AlvocsoportNevek[9]}"/>
-                    <TextBox MinWidth="80" HorizontalAlignment="Left" Grid.Row="2" Grid.Column="3" Margin="7,0,0,0" x:Name="acsn11" Text="{Binding AlvocsoportNevek[10]}"/>
-                    <TextBox MinWidth="80" HorizontalAlignment="Left" Grid.Row="2" Grid.Column="4" Margin="7,0,0,0" x:Name="acsn12" Text="{Binding AlvocsoportNevek[11]}"/>
-                    <TextBox MinWidth="80" HorizontalAlignment="Left" Grid.Row="2" Grid.Column="5" Margin="7,0,0,0" x:Name="acsn13" Text="{Binding AlvocsoportNevek[12]}"/>
-                    <TextBox MinWidth="80" HorizontalAlignment="Left" Grid.Row="2" Grid.Column="6" Margin="7,0,0,0" x:Name="acsn14" Text="{Binding AlvocsoportNevek[13]}"/>
-                    
-                    <view:DnDItemsControl Grid.Row="4" Grid.ColumnSpan="3" ItemsSource="{Binding NoAlvocsoportLany}" x:Name="noacsl" 
-                                          Visibility="Visible" ColorKiscsoports="False" VisualizeConflicts="False"/>
-                    <Label Grid.Row="4" Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center">Nincsenek beosztva</Label>
-                    <view:DnDItemsControl Grid.Row="4" Grid.Column="4" Grid.ColumnSpan="3" ItemsSource="{Binding NoAlvocsoportFiu}" x:Name="noacsf" 
-                                          Visibility="Visible" ColorKiscsoports="False" VisualizeConflicts="False"/>
+                    <view:DnDItemsControl Grid.Column="0" 
+                                          ItemsSource="{Binding NoAlvocsoportLany}" 
+                                          ColorUjoncs="True" 
+                                          x:Name="noacsl"
+                                          dd:DragDrop.DropHandler="{StaticResource DropHandler}"/>
+                    <Label Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">Nincsenek beosztva</Label>
+                    <view:DnDItemsControl Grid.Column="2" 
+                                          ItemsSource="{Binding NoAlvocsoportFiu}" 
+                                          ColorUjoncs="True"
+                                          x:Name="noacsf"
+                                          dd:DragDrop.DropHandler="{StaticResource DropHandler}"/>
                 </Grid>
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <ItemsControl ItemsSource="{Binding Alvocsoportok}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <UniformGrid Columns="{Binding GroupColumnCount, Source={x:Reference MainWindowName}}" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <view:DnDItemsControl ItemsSource="{Binding}"
+                                                      MinHeight="220"
+                                                      BoldAlvocsoportvezetok="True"
+                                                      ColorUjoncs="True"
+                                                      ColorKiscsoports="True"
+                                                      VisualizeConflicts="True"
+                                                      dd:DragDrop.DropHandler="{StaticResource DropHandler}">
+                                    <HeaderedItemsControl.Header>
+                                        <!-- TODO bind this to AlvocsoportNevek -->
+                                        <TextBox MinWidth="80" HorizontalAlignment="Left"/> 
+                                    </HeaderedItemsControl.Header>
+                                </view:DnDItemsControl>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
             </DockPanel>
         </TabItem>
     </TabControl>

@@ -68,7 +68,7 @@ namespace AntiBonto.ViewModel
         {
             if (kiscsoportInited)
                 return;
-            kiscsoportok = Enumerable.Range(0, 15).Select(i => KiscsoportCollectionView(i)).ToList();
+            kiscsoportok = Enumerable.Range(0, Kiscsoportvezetok.Count()).Select(i => KiscsoportCollectionView(i)).ToList();
             
             NoKiscsoport.CollectionChanged += (s, e) => RaisePropertyChanged("BeosztasKesz");
 
@@ -84,7 +84,7 @@ namespace AntiBonto.ViewModel
         {
             if (alvocsoportInited)
                 return;
-            alvocsoportok = Enumerable.Range(0, 15).Select(i => AlvocsoportCollectionView(i)).ToList();
+            alvocsoportok = Enumerable.Range(0, Alvocsoportvezetok.Count()).Select(i => AlvocsoportCollectionView(i)).ToList();
             
             NoAlvocsoportFiu.CollectionChanged += (s, e) => RaisePropertyChanged("BeosztasKesz");
             NoAlvocsoportLany.CollectionChanged += (s, e) => RaisePropertyChanged("BeosztasKesz");

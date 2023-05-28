@@ -1,5 +1,4 @@
-﻿using AntiBonto.View;
-using AntiBonto.ViewModel;
+﻿using AntiBonto.ViewModel;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -18,7 +17,7 @@ using System.Xml.Serialization;
 
 namespace AntiBonto
 {
-    public partial class MainWindow : System.Windows.Window
+    public partial class MainWindow : System.Windows.Window, INotifyPropertyChanged
     {
         public MainWindow()
         {
@@ -31,6 +30,8 @@ namespace AntiBonto
         private readonly string filepath;
         private CancellationTokenSource cts;
 
+        public event PropertyChangedEventHandler PropertyChanged;
+
         private ViewModel.MainWindow viewModel => (ViewModel.MainWindow)DataContext;
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
@@ -38,6 +39,13 @@ namespace AntiBonto
             ExtendWindowFrame();
             LoadXML();
         }
+
+        private void MainWindow_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("GroupColumnCount"));
+        }
+
+        public int GroupColumnCount => (int)this.ActualWidth / 150;
 
         private void ExtendWindowFrame()
         {
