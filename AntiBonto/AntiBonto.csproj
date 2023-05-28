@@ -46,6 +46,12 @@
   <PropertyGroup>
     <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <NoWarn>1701;1702; CA1416; NU1701</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <NoWarn>1701;1702; CA1416; NU1701</NoWarn>
+  </PropertyGroup>
   <ItemGroup>
     <Resource Include="Resources\hetvegekezelo.xlsm" />
     <AppDesigner Include="Properties\" />

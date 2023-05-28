@@ -29,23 +29,24 @@ namespace AntiBonto.View
             if (source.Name == "PeopleView" && (target.Name == "PeopleView" || target.Name != "AddOrRemovePersonButton"))
             {
                 dropInfo.Effects = DragDropEffects.Move;
+                return;
             }
             else if (p.Nem == Nem.Lany && target.Name == "Lanyvezeto" || p.Nem == Nem.Fiu && target.Name == "Fiuvezeto")
             {
                 dropInfo.Effects = DragDropEffects.Move;
+                return;
             }
-            //else if (target is DnDItemsControl dnd && dnd.DragOverCallback != null)
-            //{
-            //    var res = dnd.DragOverCallback(p, source, d);
-            //    dropInfo.Effects = res.effect;
-            //    d.StatusText = res.message;
-            //}
-            else
+            else if (target is DnDItemsControl dnd && dnd.DragOver2 != null)
             {
-                dropInfo.Effects = DragDropEffects.None;
+                var res = dnd.DragOver2(p, source);
+                dropInfo.Effects = res.effect;
+                d.StatusText = res.message;
+                return;
             }
-
-            return;
+            //else
+            //{
+            //    dropInfo.Effects = DragDropEffects.None;
+            //}
 
             bool targetIsKcs = target is DnDItemsControl temp && d.Kiscsoportok?.Contains(temp.ItemsSource) == true;
             bool targetIsNoKcs = target.Name == "nokcs";

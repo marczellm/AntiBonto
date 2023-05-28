@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System;
 using System.Diagnostics;
+using System.Windows;
 
 namespace AntiBonto.ViewModel
 {
@@ -129,6 +130,8 @@ namespace AntiBonto.ViewModel
         public ICollectionView Egyeb => CollectionViewHelper.Lazy<Person>(People, p => p.Type == PersonType.Egyeb, orderByName);
 
         public ICollectionView KiscsoportvezetokCollectionView => CollectionViewHelper.Lazy<Person>(People, p => p.Kiscsoportvezeto);
+        public DragOverCallback DragOver_AlwaysAllow => (person, element) => new() { effect = DragDropEffects.Move };
+        
         
         public ICollectionView AlvocsoportvezetokCollectionView => CollectionViewHelper.Lazy<Person>(People, p => p.Alvocsoportvezeto, new SortDescription("Nem", ListSortDirection.Ascending));
         

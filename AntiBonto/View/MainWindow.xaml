@@ -93,8 +93,18 @@
                         <Label                 Content="Lány vezető"/>
                         <Label Grid.Column="1" Content="Fiú vezető"/>
                         <Label Grid.Column="3" Content="Zeneteamvezető"/>
-                        <view:DnDItemsControl Header="Kiscsoportvezetők (max. 14)" Grid.Row="2" Grid.Column="0" ItemsSource="{Binding KiscsoportvezetokCollectionView}" dd:DragDrop.DropHandler="{StaticResource DropHandler}" x:Name="Kiscsoportvezetok" Grid.ColumnSpan="2"/>
-                        <view:DnDItemsControl Header="Alvócsoportvezetők" Grid.Row="2" Grid.Column="2" ItemsSource="{Binding AlvocsoportvezetokCollectionView}" dd:DragDrop.DropHandler="{StaticResource DropHandler}" x:Name="Alvocsoportvezetok" Grid.ColumnSpan="2"/>
+                        <view:DnDItemsControl Header="Kiscsoportvezetők"
+                                              Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
+                                              ItemsSource="{Binding KiscsoportvezetokCollectionView}" 
+                                              dd:DragDrop.DropHandler="{StaticResource DropHandler}"
+                                              DragOver2="{Binding DragOver_AlwaysAllow}"
+                                              x:Name="Kiscsoportvezetok" />
+                        <view:DnDItemsControl Header="Alvócsoportvezetők" 
+                                              Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="2"
+                                              ItemsSource="{Binding AlvocsoportvezetokCollectionView}" 
+                                              dd:DragDrop.DropHandler="{StaticResource DropHandler}" 
+                                              DragOver2="{Binding DragOver_AlwaysAllow}"
+                                              x:Name="Alvocsoportvezetok" />
                         <view:DnDItemsControl Header="Újoncok" Grid.Row="3" Grid.Column="0" ItemsSource="{Binding Ujoncok}"        dd:DragDrop.DropHandler="{StaticResource DropHandler}" x:Name="Ujoncok"/>
                         <view:DnDItemsControl Header="Team" Grid.Row="3" Grid.Column="1" ItemsSource="{Binding Team}"              dd:DragDrop.DropHandler="{StaticResource DropHandler}" x:Name="Team"/>
                         <view:DnDItemsControl Header="Zeneteam" Grid.Row="3" Grid.Column="3" ItemsSource="{Binding Zeneteam}"      dd:DragDrop.DropHandler="{StaticResource DropHandler}" x:Name="Zeneteam"/>
