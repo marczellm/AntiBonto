@@ -12,7 +12,7 @@ namespace AntiBonto
         private readonly int n, k, u, t, tpk, upk, fpk, lpk;
         private int m;
         private readonly bool consideringSexes;
-        private readonly static Random rng = new Random();
+        private readonly static Random rng = new();
         public Algorithms(ViewModel.MainWindow data)
         {
             d = data;
@@ -21,10 +21,10 @@ namespace AntiBonto
             Beosztando = d.CsoportokbaOsztando.Cast<Person>().ToList();
             Kiscsoportvezetok = d.Kiscsoportvezetok.ToList();
 
-            m = Kiscsoportvezetok.Count(); // kiscsoportok száma
-            n = Beosztando.Count(); // kiscsoportba osztandók száma
-            u = Ujoncok.Count(); // újoncok száma
-            t = Team.Count(); // team létszáma
+            m = Kiscsoportvezetok.Count; // kiscsoportok száma
+            n = Beosztando.Count; // kiscsoportba osztandók száma
+            u = Ujoncok.Count; // újoncok száma
+            t = Team.Count; // team létszáma
             k = (int)Math.Ceiling(n / (double)m); // kiscsoportok létszáma
             int f = Beosztando.Where(p => p.Nem == Nem.Fiu).Count();
             int l = Beosztando.Where(p => p.Nem == Nem.Lany).Count();
@@ -60,7 +60,7 @@ namespace AntiBonto
             d.Fiuvezeto.kivelNem.Add(d.Lanyvezeto);
             d.Lanyvezeto.kivelNem.Add(d.Fiuvezeto);
             // Split up the MutuallyExclusiveGroups to groups no bigger than m
-            List<List<Person>> mutuallyExclusiveGroups = new List<List<Person>>();
+            List<List<Person>> mutuallyExclusiveGroups = new();
             foreach (IList<Person> group in d.MutuallyExclusiveGroups)
                 for (int i=0, j=i; i<group.Count; i++, j=i%m)
                 {
@@ -161,7 +161,7 @@ namespace AntiBonto
                     r = kcs.FirstOrDefault(q => Math.Abs(q.Age - p.Age) > d.MaxAgeDifference);
                     if (r != null)
                     {
-                        Edge edge = new Edge { Persons = new Person[] { p, r }, Dislike = true, Reason = "a korkülönbség nagyobb, mint " + d.MaxAgeDifference };
+                        Edge edge = new() { Persons = new Person[] { p, r }, Dislike = true, Reason = "a korkülönbség nagyobb, mint " + d.MaxAgeDifference };
                         message = edge.ToString();
                     }
                 }

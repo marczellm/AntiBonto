@@ -1,7 +1,7 @@
 ﻿/// <summary>
-/// the second arg is the control acting as drag source
+/// the second and third arg are the controls acting as drag source and target respectively
 /// </summary>
-global using DragOverCallback = System.Func<AntiBonto.Person, System.Windows.FrameworkElement, AntiBonto.View.DragOverResult>;
+global using DragOverCallback = System.Func<AntiBonto.Person, System.Windows.FrameworkElement, System.Windows.FrameworkElement, AntiBonto.View.DragOverResult>;
 
 using System;
 using System.Windows;

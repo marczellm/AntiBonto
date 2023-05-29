@@ -5,6 +5,8 @@ using System.Linq;
 using System;
 using System.Diagnostics;
 using System.Windows;
+using AntiBonto.View;
+using GongSolutions.Wpf.DragDrop;
 
 namespace AntiBonto.ViewModel
 {
@@ -18,7 +20,7 @@ namespace AntiBonto.ViewModel
         /// <summary>
         /// Most tabs disable if this is false
         /// </summary>
-        public bool PeopleNotEmpty => People.Count() != 0;
+        public bool PeopleNotEmpty => People.Count != 0;
 
         /// <summary>
         /// The Save button disables if this is false
@@ -27,19 +29,19 @@ namespace AntiBonto.ViewModel
 
         private bool magicAllowed = false;
         private bool magicPossible = false;
-        public bool MagicAllowed  { get { return magicAllowed; }  set { magicAllowed = value;  RaisePropertyChanged("MagicEnabled"); } }
-        public bool MagicPossible { get { return magicPossible; } set { magicPossible = value; RaisePropertyChanged(); RaisePropertyChanged("MagicEnabled"); } }
+        public bool MagicAllowed  { get { return magicAllowed; }  set { magicAllowed = value;  RaisePropertyChanged(nameof(MagicEnabled)); } }
+        public bool MagicPossible { get { return magicPossible; } set { magicPossible = value; RaisePropertyChanged(); RaisePropertyChanged(nameof(MagicEnabled)); } }
         public bool MagicEnabled => MagicAllowed && MagicPossible;
 
         public static int WeekendNumber => 2 * DateTime.Now.Year - 4013 + DateTime.Now.Month / 7;
 
         private void People_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            RaisePropertyChanged("PeopleNotEmpty");
-            RaisePropertyChanged("Zeneteamvezeto");
-            RaisePropertyChanged("Fiuvezeto");
-            RaisePropertyChanged("Lanyvezeto");
-            RaisePropertyChanged("Kiscsoportok");
+            RaisePropertyChanged(nameof(PeopleNotEmpty));
+            RaisePropertyChanged(nameof(Zeneteamvezeto));
+            RaisePropertyChanged(nameof(Fiuvezeto));
+            RaisePropertyChanged(nameof(Lanyvezeto));
+            RaisePropertyChanged(nameof(Kiscsoportok));
         }
                 
         private ObservableCollection2<Person> people;
@@ -58,7 +60,7 @@ namespace AntiBonto.ViewModel
             {
                 people = value;
                 RaisePropertyChanged();
-                RaisePropertyChanged("PeopleNotEmpty");
+                RaisePropertyChanged(nameof(PeopleNotEmpty));
             }
         }
         private volatile bool kiscsoportInited = false, alvocsoportInited = false;
@@ -72,11 +74,11 @@ namespace AntiBonto.ViewModel
                 return;
             kiscsoportok = Enumerable.Range(0, Kiscsoportvezetok.Count()).Select(i => KiscsoportCollectionView(i)).ToList();
             
-            NoKiscsoport.CollectionChanged += (s, e) => RaisePropertyChanged("BeosztasKesz");
+            NoKiscsoport.CollectionChanged += (s, e) => RaisePropertyChanged(nameof(BeosztasKesz));
 
             kiscsoportInited = true;
-            RaisePropertyChanged("Kiscsoportok");
-            RaisePropertyChanged("NoKiscsoport");
+            RaisePropertyChanged(nameof(Kiscsoportok));
+            RaisePropertyChanged(nameof(NoKiscsoport));
         }       
 
         /// <summary>
@@ -89,11 +91,11 @@ namespace AntiBonto.ViewModel
 
             alvocsoportok = Enumerable.Range(0, Alvocsoportvezetok.Count()).Select(i => AlvocsoportCollectionView(i)).ToList();
                         
-            NoAlvocsoportFiu.CollectionChanged += (s, e) => RaisePropertyChanged("BeosztasKesz");
-            NoAlvocsoportLany.CollectionChanged += (s, e) => RaisePropertyChanged("BeosztasKesz");
+            NoAlvocsoportFiu.CollectionChanged += (s, e) => RaisePropertyChanged(nameof(BeosztasKesz));
+            NoAlvocsoportLany.CollectionChanged += (s, e) => RaisePropertyChanged(nameof(BeosztasKesz));
 
             alvocsoportInited = true;
-            RaisePropertyChanged("Alvocsoportok");
+            RaisePropertyChanged(nameof(Alvocsoportok));
             RaisePropertyChanged("NoAlvocsoport");
         }
 
@@ -123,18 +125,14 @@ namespace AntiBonto.ViewModel
             }
         }
 
-        private readonly SortDescription orderByName = new SortDescription("Name", ListSortDirection.Ascending);
+        private readonly SortDescription orderByName = new("Name", ListSortDirection.Ascending);
 
         public ICollectionView Ujoncok => CollectionViewHelper.Lazy<Person>(People, p => p.Type == PersonType.Ujonc, orderByName);
         public ICollectionView Team => CollectionViewHelper.Lazy<Person>(People, p => p.Type != PersonType.Egyeb && p.Type != PersonType.Ujonc, orderByName);
         public ICollectionView Egyeb => CollectionViewHelper.Lazy<Person>(People, p => p.Type == PersonType.Egyeb, orderByName);
 
         public ICollectionView KiscsoportvezetokCollectionView => CollectionViewHelper.Lazy<Person>(People, p => p.Kiscsoportvezeto);
-        public DragOverCallback DragOver_AlwaysAllow => (person, element) => new() { effect = DragDropEffects.Move };
-        
-        
-        public ICollectionView AlvocsoportvezetokCollectionView => CollectionViewHelper.Lazy<Person>(People, p => p.Alvocsoportvezeto, new SortDescription("Nem", ListSortDirection.Ascending));
-        
+        public ICollectionView AlvocsoportvezetokCollectionView => CollectionViewHelper.Lazy<Person>(People, p => p.Alvocsoportvezeto, new SortDescription("Nem", ListSortDirection.Ascending));        
         public IEnumerable<Person> Kiscsoportvezetok => KiscsoportvezetokCollectionView.Cast<Person>();
         public IEnumerable<Person> Alvocsoportvezetok => AlvocsoportvezetokCollectionView.Cast<Person>();
         public ICollectionView CsoportokbaOsztando => CollectionViewHelper.Lazy<Person>(People, p => p.Type != PersonType.Egyeb, orderByName);
@@ -175,8 +173,8 @@ namespace AntiBonto.ViewModel
                     Zeneteamvezeto.Type = PersonType.Teamtag;
                 value.Type = PersonType.Zeneteamvezeto;
                 RaisePropertyChanged();
-                RaisePropertyChanged("Fiuvezeto");
-                RaisePropertyChanged("Lanyvezeto");
+                RaisePropertyChanged(nameof(Fiuvezeto));
+                RaisePropertyChanged(nameof(Lanyvezeto));
             }
         }
         public Person Fiuvezeto
@@ -191,7 +189,7 @@ namespace AntiBonto.ViewModel
                     Fiuvezeto.Type = PersonType.Teamtag;
                 value.Type = PersonType.Fiuvezeto;
                 RaisePropertyChanged();
-                RaisePropertyChanged("Zeneteamvezeto");
+                RaisePropertyChanged(nameof(Zeneteamvezeto));
             }
         }
         public Person Lanyvezeto
@@ -206,20 +204,20 @@ namespace AntiBonto.ViewModel
                     Lanyvezeto.Type = PersonType.Teamtag;
                 value.Type = PersonType.Lanyvezeto;
                 RaisePropertyChanged();
-                RaisePropertyChanged("Zeneteamvezeto");
+                RaisePropertyChanged(nameof(Zeneteamvezeto));
             }
         }
         
         private ObservableCollection2<Edge> edges;
         public ObservableCollection2<Edge> Edges
         {
-            get { return edges ?? (edges = new ObservableCollection2<Edge>()); }
+            get { return edges ??= new ObservableCollection2<Edge>(); }
             private set { edges = value; RaisePropertyChanged(); }
         }
         private Edge edge;
         public Edge Edge
         {
-            get { return edge ?? (edge = new Edge()); }
+            get { return edge ??= new Edge(); }
             set { edge = value; RaisePropertyChanged(); }
         }
         private int maxAgeDifference = 8;
@@ -259,7 +257,7 @@ namespace AntiBonto.ViewModel
                 Edges.AddRange(value.Edges);
                 // The XML serializer doesn't handle object references, so we replace Person copies with references
                 foreach (Edge edge in Edges)
-                    for (int i = 0; i < edge.Persons.Count(); i++)
+                    for (int i = 0; i < edge.Persons.Length; i++)
                         edge.Persons[i] = People.Single(p => p.Name == edge.Persons[i].Name);
                 foreach (Person person in People)
                     if (person.KinekAzUjonca != null)
@@ -273,7 +271,7 @@ namespace AntiBonto.ViewModel
                 MutuallyExclusiveGroups.RemoveAll(g => !g.Any());
                 if (!MutuallyExclusiveGroups.Any())
                     MutuallyExclusiveGroups.Add(new ObservableCollection2<Person>());
-                RaisePropertyChanged("MutuallyExclusiveGroups");
+                RaisePropertyChanged(nameof(MutuallyExclusiveGroups));
 
                 if (WeekendNumber == 20)
                     Szentendre.AddRange(value.Szentendre.Select(p => People.Single(q => q.Name == p.Name)));
@@ -307,6 +305,109 @@ namespace AntiBonto.ViewModel
 
             //(alvocsoportNevek[j], alvocsoportNevek[i]) = (alvocsoportNevek[i], alvocsoportNevek[j]);
         }
+
+        public DragOverCallback DragOver_AlwaysAllow => (person, source, target) => new() { effect = DragDropEffects.Move };
+        public DragOverCallback NoKcs_DragOver => (person, source, target) =>
+        {
+            if (person.Pinned)
+            {
+                return new()
+                {
+                    effect = DragDropEffects.None,
+                    message = person + " le van rögzítve!"
+                };
+            }
+            else if (person.Kiscsoportvezeto)
+            {
+                return new()
+                {
+                    effect = DragDropEffects.None,
+                    message = "A kiscsoportvezetők nem mozgathatók!"
+                };
+            }
+
+            return new() { effect = DragDropEffects.Move };
+        };
+        public DragOverCallback Kcs_DragOver => (person, source, target) =>
+        {
+            if (person.Pinned)
+            {
+                return new()
+                {
+                    effect = DragDropEffects.None,
+                    message = person + " le van rögzítve!"
+                };
+            }
+            else if (person.Kiscsoportvezeto)
+            {
+                return new()
+                {
+                    effect = DragDropEffects.None,
+                    message = "A kiscsoportvezetők nem mozgathatók!"
+                };
+            }
+            else
+            {
+                int kcsn = Kiscsoportok.IndexOf((target as DnDItemsControl).ItemsSource as ICollectionView);
+                string message = null;
+
+                var ret = new DragOverResult()
+                {
+                    effect = (kcsn == person.Kiscsoport || Algorithm.Conflicts(person, kcsn, out message)) ? DragDropEffects.None : DragDropEffects.Move
+                };
+                ret.message = message;
+                return ret;
+            }
+        };
+        public DragOverCallback NoAcs_DragOver => (person, source, target) =>
+        {
+            if (person.Pinned)
+            {
+                return new()
+                {
+                    effect = DragDropEffects.None,
+                    message = person + " le van rögzítve!"
+                };
+            }
+            else if (person.Alvocsoportvezeto)
+            {
+                return new()
+                {
+                    effect = DragDropEffects.None,
+                    message = "Az alvócsoportvezetők nem mozgathatók!"
+                };
+            }
+
+            return new() { effect = DragDropEffects.Move };
+        };
+        public DragOverCallback Acs_DragOver => (person, source, target) =>
+        {
+            if (person.Pinned)
+            {
+                return new()
+                {
+                    effect = DragDropEffects.None,
+                    message = person + " le van rögzítve!"
+                };
+            }
+            else if (person.Alvocsoportvezeto)
+            {
+                return new()
+                {
+                    effect = DragDropEffects.None,
+                    message = "A kiscsoportvezetők nem mozgathatók!"
+                };
+            }
+            else
+            {
+                int acsn = Alvocsoportok.IndexOf((target as DnDItemsControl).ItemsSource as ICollectionView);
+                var acsvez = Alvocsoportvezetok.Single(q => q.Alvocsoport == acsn);
+                return new()
+                {
+                    effect = (person.Nem != Nem.Undefined && person.Nem != acsvez.Nem) ? DragDropEffects.None : DragDropEffects.Move
+                };
+            }
+        };
 
         #region Extras
         public ObservableCollection2<Person> Szentendre { get; } = new ObservableCollection2<Person>();

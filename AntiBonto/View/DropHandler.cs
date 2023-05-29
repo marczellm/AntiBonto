@@ -19,7 +19,7 @@ namespace AntiBonto.View
             dropInfo.DropTargetAdorner = null;
             var target = (FrameworkElement)dropInfo.VisualTarget;
             var source = (FrameworkElement)dropInfo.DragInfo.VisualSource;
-            if (!(dropInfo.Data is Person))
+            if (dropInfo.Data is not Person)
             {
                 dropInfo.Effects = DragDropEffects.None;
                 return;
@@ -38,50 +38,15 @@ namespace AntiBonto.View
             }
             else if (target is DnDItemsControl dnd && dnd.DragOver2 != null)
             {
-                var res = dnd.DragOver2(p, source);
+                var res = dnd.DragOver2(p, source, target);
                 dropInfo.Effects = res.effect;
                 d.StatusText = res.message;
                 return;
             }
-            //else
-            //{
-            //    dropInfo.Effects = DragDropEffects.None;
-            //}
-
-            bool targetIsKcs = target is DnDItemsControl temp && d.Kiscsoportok?.Contains(temp.ItemsSource) == true;
-            bool targetIsNoKcs = target.Name == "nokcs";
-            bool targetIsAcs = target is DnDItemsControl temp2 && d.Alvocsoportok?.Contains(temp2.ItemsSource) == true;
-            bool targetIsNoAcs = target.Name.StartsWith("noacs");
-            if (p.Pinned)
-            {
-                dropInfo.Effects = DragDropEffects.None;
-                d.StatusText = p + " le van rögzítve!";
-            }
-            else if ((targetIsKcs || targetIsNoKcs) && p.Kiscsoportvezeto)
-            {
-                dropInfo.Effects = DragDropEffects.None;
-                d.StatusText = "A kiscsoportvezetők nem mozgathatók!";
-            }
-            else if (targetIsKcs)
-            {
-                int kcsn = d.Kiscsoportok.IndexOf((target as DnDItemsControl).ItemsSource as ICollectionView);
-                string message = null;
-                dropInfo.Effects = (kcsn != p.Kiscsoport && d.Algorithm.Conflicts(p, kcsn, out message)) ? DragDropEffects.None : DragDropEffects.Move;
-                d.StatusText = message;
-            }
-            else if ((targetIsAcs || targetIsNoAcs) && p.Alvocsoportvezeto)
-            {
-                dropInfo.Effects = DragDropEffects.None;
-                d.StatusText = "Az alvócsoportvezetők nem mozgathatók!";
-            }
-            else if (targetIsAcs)
-            {
-                int acsn = d.Alvocsoportok.IndexOf((target as DnDItemsControl).ItemsSource as ICollectionView);
-                var acsvez = d.Alvocsoportvezetok.Single(q => q.Alvocsoport == acsn);
-                dropInfo.Effects = (p.Nem != Nem.Undefined && p.Nem != acsvez.Nem) ? DragDropEffects.None : DragDropEffects.Move;
-            }
             else
-                dropInfo.Effects = DragDropEffects.Move;
+            {
+                dropInfo.Effects = DragDropEffects.None;
+            }
         }
 
         /// <summary>

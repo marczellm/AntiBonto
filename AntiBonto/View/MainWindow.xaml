@@ -144,15 +144,26 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    <view:DnDItemsControl Grid.Column="0" ItemsSource="{Binding Lanyok}" Header="{Binding Lanyok.Count}" HeaderStringFormat="Lányok ({0})"
-                                          dd:DragDrop.DropHandler="{StaticResource DropHandler}" x:Name="Lanyok"/>
+                    <view:DnDItemsControl Grid.Column="0" 
+                                          ItemsSource="{Binding Lanyok}" 
+                                          Header="{Binding Lanyok.Count}" 
+                                          HeaderStringFormat="Lányok ({0})"
+                                          dd:DragDrop.DropHandler="{StaticResource DropHandler}"                                           
+                                          DragOver2="{Binding DragOver_AlwaysAllow}"
+                                          x:Name="Lanyok"/>
                     <Label Content="{Binding Nullnemuek.CurrentItem}" Grid.Column="1" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
                             VerticalAlignment="Center" HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="20"/>
-                    <view:DnDItemsControl Grid.Column="2" ItemsSource="{Binding Fiuk}" Header="{Binding Fiuk.Count}" HeaderStringFormat="Fiúk ({0})"
-                                          dd:DragDrop.DropHandler="{StaticResource DropHandler}" x:Name="Fiuk"/>
-                    
-                    <view:DnDItemsControl Grid.ColumnSpan="3" Grid.Row="1" ItemsSource="{Binding Nullnemuek}"
-                                          dd:DragDrop.DropHandler="{StaticResource DropHandler}" x:Name="Nullnemuek"/>
+                    <view:DnDItemsControl Grid.Column="2"
+                                          ItemsSource="{Binding Fiuk}" 
+                                          Header="{Binding Fiuk.Count}" 
+                                          HeaderStringFormat="Fiúk ({0})"
+                                          dd:DragDrop.DropHandler="{StaticResource DropHandler}"
+                                          DragOver2="{Binding DragOver_AlwaysAllow}"
+                                          x:Name="Fiuk"/>
+                    <view:DnDItemsControl Grid.ColumnSpan="3" Grid.Row="1" 
+                                          ItemsSource="{Binding Nullnemuek}"
+                                          dd:DragDrop.DropHandler="{StaticResource DropHandler}" 
+                                          x:Name="Nullnemuek"/>
                 </Grid>
             </DockPanel>
         </TabItem>
@@ -291,9 +302,12 @@
                 <StatusBar DockPanel.Dock="Bottom">
                     <StatusBarItem Content="{Binding StatusText}" MinHeight="22"/>
                 </StatusBar>
-                <view:DnDItemsControl DockPanel.Dock="Bottom" ItemsSource="{Binding NoKiscsoport}" x:Name="nokcs"
+                <view:DnDItemsControl DockPanel.Dock="Bottom"
+                                      ItemsSource="{Binding NoKiscsoport}" 
+                                      x:Name="nokcs"
                                       Header="Nincsenek beosztva:"
-                                      Pinnable="False"/>
+                                      Pinnable="False"
+                                      DragOver2="{Binding NoKcs_DragOver}"/>
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                     <ItemsControl ItemsSource="{Binding Kiscsoportok}" Name="Kiscsoportok">
                         <ItemsControl.ItemsPanel>
@@ -305,7 +319,8 @@
                             <DataTemplate>
                                 <view:DnDItemsControl ItemsSource="{Binding}"
                                                       Pinnable="True"
-                                                      MinHeight="220"/>
+                                                      MinHeight="220"                                                      
+                                                      DragOver2="{Binding DataContext.Kcs_DragOver, Source={StaticResource DataContextProxy}}"/>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
@@ -339,13 +354,15 @@
                                           ItemsSource="{Binding NoAlvocsoportLany}" 
                                           ColorUjoncs="True" 
                                           x:Name="noacsl"
-                                          dd:DragDrop.DropHandler="{StaticResource DropHandler}"/>
+                                          dd:DragDrop.DropHandler="{StaticResource DropHandler}"
+                                          DragOver2="{Binding NoAcs_DragOver}"/>
                     <Label Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">Nincsenek beosztva</Label>
                     <view:DnDItemsControl Grid.Column="2" 
                                           ItemsSource="{Binding NoAlvocsoportFiu}" 
                                           ColorUjoncs="True"
                                           x:Name="noacsf"
-                                          dd:DragDrop.DropHandler="{StaticResource DropHandler}"/>
+                                          dd:DragDrop.DropHandler="{StaticResource DropHandler}"
+                                          DragOver2="{Binding NoAcs_DragOver}"/>
                 </Grid>
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                     <ItemsControl ItemsSource="{Binding Alvocsoportok}" Name="Alvocsoportok">
@@ -362,9 +379,9 @@
                                                       ColorUjoncs="True"
                                                       ColorKiscsoports="True"
                                                       VisualizeConflicts="True"
-                                                      dd:DragDrop.DropHandler="{StaticResource DropHandler}">
+                                                      dd:DragDrop.DropHandler="{StaticResource DropHandler}"
+                                                      DragOver2="{Binding DataContext.Acs_DragOver, Source={StaticResource DataContextProxy}}">
                                     <HeaderedItemsControl.Header>
-                                        <!-- TODO bind this to AlvocsoportNevek -->
                                         <TextBox MinWidth="80" HorizontalAlignment="Left" Text="{Binding Title}"/> 
                                     </HeaderedItemsControl.Header>
                                 </view:DnDItemsControl>

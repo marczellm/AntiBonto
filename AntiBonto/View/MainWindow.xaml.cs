@@ -42,7 +42,7 @@ namespace AntiBonto
 
         private void MainWindow_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("GroupColumnCount"));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(GroupColumnCount)));
         }
 
         public int GroupColumnCount => (int)this.ActualWidth / 150;
@@ -54,7 +54,7 @@ namespace AntiBonto
                 IntPtr windowPtr = new WindowInteropHelper(this).Handle;
                 HwndSource.FromHwnd(windowPtr).CompositionTarget.BackgroundColor = Color.FromArgb(0, 0, 0, 0);
                 float rdpiy = System.Drawing.Graphics.FromHwnd(windowPtr).DpiY / 96;
-                DwmAPI.Margins margins = new DwmAPI.Margins { top = Convert.ToInt32(150 * rdpiy), left = 1, right = 1, bottom = 1 };
+                DwmAPI.Margins margins = new() { top = Convert.ToInt32(150 * rdpiy), left = 1, right = 1, bottom = 1 };
                 if (DwmAPI.DwmExtendFrameIntoClientArea(windowPtr, ref margins) < 0)
                     Background = SystemColors.WindowBrush;
             }
@@ -72,11 +72,9 @@ namespace AntiBonto
             var xs = new XmlSerializer(typeof(AppData));
             if (File.Exists(filepath))
             {
-                using (var file = new StreamReader(filepath))
-                {
-                    try { viewModel.AppData = (AppData)xs.Deserialize(file); }
-                    catch { } // If for example the XML is written by a previous version of this app, we shouldn't attempt to load it
-                }
+                using var file = new StreamReader(filepath);
+                try { viewModel.AppData = (AppData)xs.Deserialize(file); }
+                catch { } // If for example the XML is written by a previous version of this app, we shouldn't attempt to load it
             }
 
             int i = 1;
@@ -95,10 +93,8 @@ namespace AntiBonto
         private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             var xs = new XmlSerializer(typeof(AppData));
-            using (var file = new StreamWriter(filepath))
-            {
-                xs.Serialize(file, viewModel.AppData);
-            }
+            using var file = new StreamWriter(filepath);
+            xs.Serialize(file, viewModel.AppData);
         }
 
         private async void LoadXLS(object sender, RoutedEventArgs e)
@@ -183,7 +179,7 @@ namespace AntiBonto
             var cp = (FrameworkElement)PeopleView.ItemContainerGenerator.ContainerFromItem(p);
             cp.ApplyTemplate();
             var label = (ContentControl)PeopleView.ItemTemplate.FindName("PersonButton", cp);
-            TextBox textBox = new TextBox { MinWidth = 10, Tag = p };
+            TextBox textBox = new() { MinWidth = 10, Tag = p };
             textBox.KeyDown += TextBox_KeyDown;
             label.Content = textBox;
             Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background, (Action)(() => Keyboard.Focus(textBox)));
@@ -249,7 +245,7 @@ namespace AntiBonto
                     return;
                 string message = null;
                 var v = viewModel;
-                if (v.People.Count() == 0)
+                if (v.People.Count == 0)
                 {
                     message = "Nincsenek résztvevők!";
                     newTab = Resztvevok;
