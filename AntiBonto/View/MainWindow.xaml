@@ -379,30 +379,61 @@
                                           dd:DragDrop.DropHandler="{StaticResource DropHandler}"
                                           DragOver2="{Binding NoAcs_DragOver}"/>
                 </Grid>
-                <ScrollViewer VerticalScrollBarVisibility="Auto">
-                    <ItemsControl ItemsSource="{Binding Alvocsoportok}" Name="Alvocsoportok">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <UniformGrid Columns="{Binding GroupColumnCount, Source={x:Reference MainWindowName}}" />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <view:DnDItemsControl ItemsSource="{Binding}"
-                                                      MinHeight="220"
-                                                      BoldAlvocsoportvezetok="True"
-                                                      ColorUjoncs="True"
-                                                      ColorKiscsoports="True"
-                                                      VisualizeConflicts="True"
-                                                      dd:DragDrop.DropHandler="{StaticResource DropHandler}"
-                                                      DragOver2="{Binding DataContext.Acs_DragOver, Source={StaticResource DataContextProxy}}">
-                                    <HeaderedItemsControl.Header>
-                                        <TextBox MinWidth="80" HorizontalAlignment="Left" Text="{Binding Title}"/> 
-                                    </HeaderedItemsControl.Header>
-                                </view:DnDItemsControl>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
+                <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <ItemsControl ItemsSource="{Binding AlvocsoportokLany}" Name="AlvocsoportokLany" Grid.Row="0">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <view:DnDItemsControl ItemsSource="{Binding}"
+                                                          MinHeight="220"
+                                                          MinWidth="150"
+                                                          BoldAlvocsoportvezetok="True"
+                                                          ColorUjoncs="True"
+                                                          ColorKiscsoports="True"
+                                                          VisualizeConflicts="True"
+                                                          dd:DragDrop.DropHandler="{StaticResource DropHandler}"
+                                                          DragOver2="{Binding DataContext.Acs_DragOver, Source={StaticResource DataContextProxy}}">
+                                        <HeaderedItemsControl.Header>
+                                            <TextBox MinWidth="80" HorizontalAlignment="Left" Text="{Binding Title}"/>
+                                        </HeaderedItemsControl.Header>
+                                    </view:DnDItemsControl>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        <ItemsControl ItemsSource="{Binding AlvocsoportokFiu}" Name="AlvocsoportokFiu" Grid.Row="1">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <view:DnDItemsControl ItemsSource="{Binding}"
+                                                          MinHeight="220"
+                                                          MinWidth="150"
+                                                          BoldAlvocsoportvezetok="True"
+                                                          ColorUjoncs="True"
+                                                          ColorKiscsoports="True"
+                                                          VisualizeConflicts="True"
+                                                          dd:DragDrop.DropHandler="{StaticResource DropHandler}"
+                                                          DragOver2="{Binding DataContext.Acs_DragOver, Source={StaticResource DataContextProxy}}">
+                                        <HeaderedItemsControl.Header>
+                                            <TextBox MinWidth="80" HorizontalAlignment="Left" Text="{Binding Title}"/>
+                                        </HeaderedItemsControl.Header>
+                                    </view:DnDItemsControl>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </Grid>
                 </ScrollViewer>
             </DockPanel>
         </TabItem>

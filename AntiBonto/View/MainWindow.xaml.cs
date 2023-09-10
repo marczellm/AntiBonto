@@ -295,10 +295,11 @@ namespace AntiBonto
                 else if (newTab == Kiscsoportbeoszto)
                 {
                     viewModel.InitKiscsoport();
-                    // TODO for all kcs views
-                    
-                    BindingOperations.GetBindingExpression(Kiscsoportok, ItemsControl.ItemsSourceProperty).UpdateTarget();    
+
+                    BindingOperations.GetBindingExpression(Kiscsoportok, ItemsControl.ItemsSourceProperty).UpdateTarget();
                     Kiscsoportok.Items.Refresh();
+
+                    // TODO update all kcs views individually?
 
                     viewModel.Algorithm = new Algorithms(viewModel);
                     viewModel.MagicPossible = true;
@@ -309,17 +310,20 @@ namespace AntiBonto
                     viewModel.InitKiscsoport();
                     viewModel.InitAlvocsoport();
 
-                    // TODO for all acs views
-                    // BindingOperations.GetBindingExpression(acs[j], ItemsControl.ItemsSourceProperty).UpdateTarget();
-                    // acs[j].Items.Refresh();
+                    BindingOperations.GetBindingExpression(AlvocsoportokFiu, ItemsControl.ItemsSourceProperty).UpdateTarget();
+                    AlvocsoportokFiu.Items.Refresh();
 
-                    // BindingOperations.GetBindingExpression(Alvocsoportok, ItemsControl.ItemsSourceProperty).UpdateTarget();
-                    // Alvocsoportok.Items.Refresh();
+                    BindingOperations.GetBindingExpression(AlvocsoportokLany, ItemsControl.ItemsSourceProperty).UpdateTarget();
+                    AlvocsoportokLany.Items.Refresh();
 
-                    BindingOperations.GetBindingExpression(SaveButton, IsEnabledProperty)?.UpdateTarget();                 
+                    // TODO update all acs views individually?
+
+                    BindingOperations.GetBindingExpression(SaveButton, IsEnabledProperty)?.UpdateTarget();
                 }
                 else if (newTab == LanyokFiuk)
+                {
                     viewModel.Nullnemuek.MoveCurrentToFirst();
+                }
             }
         }
 

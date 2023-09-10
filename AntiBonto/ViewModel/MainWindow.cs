@@ -63,10 +63,9 @@ namespace AntiBonto.ViewModel
                 RaisePropertyChanged(nameof(PeopleNotEmpty));
             }
         }
-        private volatile bool alvocsoportInited = false;
 
         /// <summary>
-        /// This method is called when the kiscsoportbeoszto tab is opened
+        /// This method is called when the kiscsoportbeoszto tab is opened and all conditions have been met.
         /// </summary>
         internal void InitKiscsoport()
         {
@@ -77,21 +76,19 @@ namespace AntiBonto.ViewModel
         }       
 
         /// <summary>
-        /// This method is called when the alvocsoportbeoszto tab is successfully opened and all conditions have been met.
+        /// This method is called when the alvocsoportbeoszto tab is opened and all conditions have been met.
         /// </summary>
         internal void InitAlvocsoport()
         {
-            if (alvocsoportInited)
-                return;
+            alvocsoportok = Alvocsoportvezetok.Select((v, i) => AlvocsoportCollectionView(i)).ToList();
+            alvocsoportokFiu = Alvocsoportvezetok.Select((leader, index) => new { leader, index }).Where(item => item.leader.Nem == Nem.Fiu).Select(item => AlvocsoportCollectionView(item.index)).ToList();
+            alvocsoportokLany = Alvocsoportvezetok.Select((leader, index) => new { leader, index }).Where(item => item.leader.Nem == Nem.Lany).Select(item => AlvocsoportCollectionView(item.index)).ToList();
 
-            alvocsoportok = Enumerable.Range(0, Alvocsoportvezetok.Count()).Select(i => AlvocsoportCollectionView(i)).ToList();
-                        
-            NoAlvocsoportFiu.CollectionChanged += (s, e) => RaisePropertyChanged(nameof(BeosztasKesz));
-            NoAlvocsoportLany.CollectionChanged += (s, e) => RaisePropertyChanged(nameof(BeosztasKesz));
-
-            alvocsoportInited = true;
             RaisePropertyChanged(nameof(Alvocsoportok));
-            RaisePropertyChanged("NoAlvocsoport");
+            RaisePropertyChanged(nameof(AlvocsoportokFiu));
+            RaisePropertyChanged(nameof(AlvocsoportokLany));
+            RaisePropertyChanged(nameof(NoAlvocsoportFiu));
+            RaisePropertyChanged(nameof(NoAlvocsoportLany));
         }
 
         /// <summary>
@@ -127,18 +124,18 @@ namespace AntiBonto.ViewModel
         public ICollectionView Egyeb => CollectionViewHelper.Lazy<Person>(People, p => p.Type == PersonType.Egyeb, orderByName);
 
         public ICollectionView KiscsoportvezetokCollectionView => CollectionViewHelper.Lazy<Person>(People, p => p.Kiscsoportvezeto);
-        public ICollectionView AlvocsoportvezetokCollectionView => CollectionViewHelper.Lazy<Person>(People, p => p.Alvocsoportvezeto, new SortDescription("Nem", ListSortDirection.Ascending));        
+        public ICollectionView AlvocsoportvezetokCollectionView => CollectionViewHelper.Lazy<Person>(People, p => p.Alvocsoportvezeto);
         public IEnumerable<Person> Kiscsoportvezetok => KiscsoportvezetokCollectionView.Cast<Person>();
         public IEnumerable<Person> Alvocsoportvezetok => AlvocsoportvezetokCollectionView.Cast<Person>();
         public ICollectionView CsoportokbaOsztando => CollectionViewHelper.Lazy<Person>(People, p => p.Type != PersonType.Egyeb, orderByName);
         public ICollectionView Zeneteam => CollectionViewHelper.Lazy<Person>(People, p => p.Type == PersonType.Zeneteamtag);
         private ICollectionView KiscsoportCollectionView(int i)
         {
-            return CollectionViewHelper.Get<Person>(People, p => p.Kiscsoport == i && p.Type != PersonType.Egyeb, new SortDescription("Kiscsoportvezeto", ListSortDirection.Descending));
+            return CollectionViewHelper.Get<Person>(People, p => p.Kiscsoport == i && p.Type != PersonType.Egyeb, new SortDescription(nameof(Person.Kiscsoportvezeto), ListSortDirection.Descending));
         }
         private ICollectionView AlvocsoportCollectionView(int i)
         {
-            return CollectionViewHelper.Get<Person>(People, p => p.Alvocsoport == i && p.Type != PersonType.Egyeb, new SortDescription("Alvocsoportvezeto", ListSortDirection.Descending));
+            return CollectionViewHelper.Get<Person>(People, p => p.Alvocsoport == i && p.Type != PersonType.Egyeb, new SortDescription(nameof(Person.Alvocsoportvezeto), ListSortDirection.Descending));
         }
         public IEnumerable<Person> Kiscsoport(int i)
         {
@@ -152,9 +149,11 @@ namespace AntiBonto.ViewModel
         public ICollectionView NoAlvocsoportFiu => CollectionViewHelper.Lazy<Person>(People, p => p.Alvocsoport == -1 && p.Type != PersonType.Egyeb && p.Nem == Nem.Fiu);
         public ICollectionView NoAlvocsoportLany => CollectionViewHelper.Lazy<Person>(People, p => p.Alvocsoport == -1 && p.Type != PersonType.Egyeb && p.Nem == Nem.Lany);
 
-        private List<ICollectionView> kiscsoportok, alvocsoportok;
+        private List<ICollectionView> kiscsoportok, alvocsoportok, alvocsoportokFiu, alvocsoportokLany;
         public List<ICollectionView> Kiscsoportok => kiscsoportok;
         public List<ICollectionView> Alvocsoportok => alvocsoportok;
+        public List<ICollectionView> AlvocsoportokFiu => alvocsoportokFiu;
+        public List<ICollectionView> AlvocsoportokLany => alvocsoportokLany;
 
         public Person Zeneteamvezeto
         {
@@ -227,6 +226,8 @@ namespace AntiBonto.ViewModel
         public MainWindow()
         {
             NoKiscsoport.CollectionChanged += (s, e) => RaisePropertyChanged(nameof(BeosztasKesz));
+            NoAlvocsoportFiu.CollectionChanged += (s, e) => RaisePropertyChanged(nameof(BeosztasKesz));
+            NoAlvocsoportLany.CollectionChanged += (s, e) => RaisePropertyChanged(nameof(BeosztasKesz));
         }
 
         public string StatusText
@@ -352,11 +353,11 @@ namespace AntiBonto.ViewModel
                 int kcsn = Kiscsoportok.IndexOf((target as DnDItemsControl).ItemsSource as ICollectionView);
                 string message = null;
 
-                var ret = new DragOverResult()
+                var ret = new DragOverResult
                 {
-                    effect = (kcsn == person.Kiscsoport || Algorithm.Conflicts(person, kcsn, out message)) ? DragDropEffects.None : DragDropEffects.Move
+                    effect = (kcsn == person.Kiscsoport || Algorithm.Conflicts(person, kcsn, out message)) ? DragDropEffects.None : DragDropEffects.Move,
+                    message = message
                 };
-                ret.message = message;
                 return ret;
             }
         };
