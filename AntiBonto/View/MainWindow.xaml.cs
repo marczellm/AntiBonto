@@ -297,8 +297,8 @@ namespace AntiBonto
                     viewModel.InitKiscsoport();
                     // TODO for all kcs views
                     
-                    // BindingOperations.GetBindingExpression(Kiscsoportok, ItemsControl.ItemsSourceProperty).UpdateTarget();    
-                    // Kiscsoportok.Items.Refresh();
+                    BindingOperations.GetBindingExpression(Kiscsoportok, ItemsControl.ItemsSourceProperty).UpdateTarget();    
+                    Kiscsoportok.Items.Refresh();
 
                     viewModel.Algorithm = new Algorithms(viewModel);
                     viewModel.MagicPossible = true;

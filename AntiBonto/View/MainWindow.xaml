@@ -93,22 +93,37 @@
                         <Label                 Content="Lány vezető"/>
                         <Label Grid.Column="1" Content="Fiú vezető"/>
                         <Label Grid.Column="3" Content="Zeneteamvezető"/>
-                        <view:DnDItemsControl Header="Kiscsoportvezetők"
+                        <view:DnDItemsControl Header="Kiscsoportvezetők" x:Name="Kiscsoportvezetok"
                                               Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
                                               ItemsSource="{Binding KiscsoportvezetokCollectionView}" 
                                               dd:DragDrop.DropHandler="{StaticResource DropHandler}"
-                                              DragOver2="{Binding DragOver_AlwaysAllow}"
-                                              x:Name="Kiscsoportvezetok" />
-                        <view:DnDItemsControl Header="Alvócsoportvezetők" 
+                                              DragOver2="{Binding DragOver_AlwaysAllow}" />
+                        <view:DnDItemsControl Header="Alvócsoportvezetők" x:Name="Alvocsoportvezetok"
                                               Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="2"
                                               ItemsSource="{Binding AlvocsoportvezetokCollectionView}" 
                                               dd:DragDrop.DropHandler="{StaticResource DropHandler}" 
-                                              DragOver2="{Binding DragOver_AlwaysAllow}"
-                                              x:Name="Alvocsoportvezetok" />
-                        <view:DnDItemsControl Header="Újoncok" Grid.Row="3" Grid.Column="0" ItemsSource="{Binding Ujoncok}"        dd:DragDrop.DropHandler="{StaticResource DropHandler}" x:Name="Ujoncok"/>
-                        <view:DnDItemsControl Header="Team" Grid.Row="3" Grid.Column="1" ItemsSource="{Binding Team}"              dd:DragDrop.DropHandler="{StaticResource DropHandler}" x:Name="Team"/>
-                        <view:DnDItemsControl Header="Zeneteam" Grid.Row="3" Grid.Column="3" ItemsSource="{Binding Zeneteam}"      dd:DragDrop.DropHandler="{StaticResource DropHandler}" x:Name="Zeneteam"/>
-                        <view:DnDItemsControl Header="Egyéb résztvevők" Grid.Row="3" Grid.Column="2" ItemsSource="{Binding Egyeb}" dd:DragDrop.DropHandler="{StaticResource DropHandler}" x:Name="Egyeb"/>
+                                              DragOver2="{Binding DragOver_AlwaysAllow}" />
+                        <view:DnDItemsControl Header="Újoncok" x:Name="Ujoncok"
+                                              Grid.Row="3" 
+                                              Grid.Column="0" 
+                                              ItemsSource="{Binding Ujoncok}"
+                                              dd:DragDrop.DropHandler="{StaticResource DropHandler}"
+                                              DragOver2="{Binding DragOver_AlwaysAllow}" />
+                        <view:DnDItemsControl Header="Team" x:Name="Team"
+                                              Grid.Row="3" Grid.Column="1" 
+                                              ItemsSource="{Binding Team}"
+                                              dd:DragDrop.DropHandler="{StaticResource DropHandler}" 
+                                              DragOver2="{Binding DragOver_AlwaysAllow}" />
+                        <view:DnDItemsControl Header="Zeneteam" x:Name="Zeneteam"
+                                              Grid.Row="3" Grid.Column="3" 
+                                              ItemsSource="{Binding Zeneteam}"      
+                                              dd:DragDrop.DropHandler="{StaticResource DropHandler}"
+                                              DragOver2="{Binding DragOver_AlwaysAllow}" />
+                        <view:DnDItemsControl Header="Egyéb résztvevők" x:Name="Egyeb"
+                                              Grid.Row="3" Grid.Column="2" 
+                                              ItemsSource="{Binding Egyeb}" 
+                                              dd:DragDrop.DropHandler="{StaticResource DropHandler}"
+                                              DragOver2="{Binding DragOver_AlwaysAllow}" />
                         <Label Grid.Row="1" Content="{Binding Lanyvezeto}" x:Name="Lanyvezeto" Margin="5" Padding="3" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
                            dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{StaticResource DropHandler}" dd:DragDrop.DragAdornerTemplate="{StaticResource adorner}"/>
                         <Label Grid.Row="1" Grid.Column="1" Content="{Binding Fiuvezeto}" x:Name="Fiuvezeto" Margin="5" Padding="3" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"

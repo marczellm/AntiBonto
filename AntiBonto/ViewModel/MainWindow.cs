@@ -63,20 +63,15 @@ namespace AntiBonto.ViewModel
                 RaisePropertyChanged(nameof(PeopleNotEmpty));
             }
         }
-        private volatile bool kiscsoportInited = false, alvocsoportInited = false;
+        private volatile bool alvocsoportInited = false;
 
         /// <summary>
-        /// This method is called when the kiscsoportbeoszto tab is opened and all conditions have been met.
+        /// This method is called when the kiscsoportbeoszto tab is opened
         /// </summary>
         internal void InitKiscsoport()
         {
-            if (kiscsoportInited)
-                return;
             kiscsoportok = Enumerable.Range(0, Kiscsoportvezetok.Count()).Select(i => KiscsoportCollectionView(i)).ToList();
-            
-            NoKiscsoport.CollectionChanged += (s, e) => RaisePropertyChanged(nameof(BeosztasKesz));
 
-            kiscsoportInited = true;
             RaisePropertyChanged(nameof(Kiscsoportok));
             RaisePropertyChanged(nameof(NoKiscsoport));
         }       
@@ -228,6 +223,12 @@ namespace AntiBonto.ViewModel
         }
         public Algorithms Algorithm { get; set; }
         private string statusText = "";
+
+        public MainWindow()
+        {
+            NoKiscsoport.CollectionChanged += (s, e) => RaisePropertyChanged(nameof(BeosztasKesz));
+        }
+
         public string StatusText
         {
             get { return statusText; }
