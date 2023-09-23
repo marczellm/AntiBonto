@@ -6,7 +6,7 @@ using System;
 using System.Diagnostics;
 using System.Windows;
 using AntiBonto.View;
-using GongSolutions.Wpf.DragDrop;
+using System.Windows.Data;
 
 namespace AntiBonto.ViewModel
 {
@@ -80,6 +80,15 @@ namespace AntiBonto.ViewModel
         /// </summary>
         internal void InitAlvocsoport()
         {
+            for (int i = 0; i < Alvocsoportvezetok.Count(); i++)
+            {
+                var vez = Alvocsoportvezetok.ElementAt(i);
+                int prevNum = vez.Alvocsoport;
+                foreach (var tag in AlvocsoportCollectionView(prevNum).Cast<Person>()) 
+                {
+                    tag.Alvocsoport = i;
+                }
+            }
             alvocsoportok = Alvocsoportvezetok.Select((v, i) => AlvocsoportCollectionView(i)).ToList();
             alvocsoportokFiu = Alvocsoportvezetok.Select((leader, index) => new { leader, index }).Where(item => item.leader.Nem == Nem.Fiu).Select(item => AlvocsoportCollectionView(item.index)).ToList();
             alvocsoportokLany = Alvocsoportvezetok.Select((leader, index) => new { leader, index }).Where(item => item.leader.Nem == Nem.Lany).Select(item => AlvocsoportCollectionView(item.index)).ToList();
@@ -402,7 +411,7 @@ namespace AntiBonto.ViewModel
             }
             else
             {
-                int acsn = Alvocsoportok.IndexOf((target as DnDItemsControl).ItemsSource as ICollectionView);
+                int acsn = ((target as DnDItemsControl).ItemsSource as CollectionView).Cast<Person>().First().Alvocsoport;
                 var acsvez = Alvocsoportvezetok.Single(q => q.Alvocsoport == acsn);
                 return new()
                 {
