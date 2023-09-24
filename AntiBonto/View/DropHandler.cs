@@ -162,9 +162,9 @@ namespace AntiBonto.View
             {
                 p.Kiscsoport = d.Kiscsoportok.IndexOf(temp.ItemsSource as ICollectionView);
             }                
-            if (target is DnDItemsControl temp2 && d.Alvocsoportok?.Contains(temp2.ItemsSource) == true)
+            if (target is DnDItemsControl temp2 && (d.AlvocsoportokFiu?.Contains(temp2.ItemsSource) == true || d.AlvocsoportokLany?.Contains(temp2.ItemsSource) == true))
             {
-                p.Alvocsoport = d.Alvocsoportok.IndexOf(temp2.ItemsSource as ICollectionView);
+                p.Alvocsoport = temp2.ItemsSource.Cast<Person>().First().Alvocsoport;
                 ((ItemsControl)source).Items.Refresh(); // This updates the visualizing decorations for all others in the source
                 ((ItemsControl)target).Items.Refresh(); // and target sleeping groups
             }
