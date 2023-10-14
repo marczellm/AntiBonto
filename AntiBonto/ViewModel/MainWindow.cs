@@ -174,7 +174,8 @@ namespace AntiBonto.ViewModel
             {
                 if (Zeneteamvezeto != null)
                     Zeneteamvezeto.Type = PersonType.Teamtag;
-                value.Type = PersonType.Zeneteamvezeto;
+                if (value != null)
+                    value.Type = PersonType.Zeneteamvezeto;
                 RaisePropertyChanged();
                 RaisePropertyChanged(nameof(Fiuvezeto));
                 RaisePropertyChanged(nameof(Lanyvezeto));
@@ -190,7 +191,8 @@ namespace AntiBonto.ViewModel
             {
                 if (Fiuvezeto != null)
                     Fiuvezeto.Type = PersonType.Teamtag;
-                value.Type = PersonType.Fiuvezeto;
+                if (value != null)
+                    value.Type = PersonType.Fiuvezeto;
                 RaisePropertyChanged();
                 RaisePropertyChanged(nameof(Zeneteamvezeto));
             }
@@ -205,7 +207,8 @@ namespace AntiBonto.ViewModel
             {
                 if (Lanyvezeto != null)
                     Lanyvezeto.Type = PersonType.Teamtag;
-                value.Type = PersonType.Lanyvezeto;
+                if (value != null)
+                    value.Type = PersonType.Lanyvezeto;
                 RaisePropertyChanged();
                 RaisePropertyChanged(nameof(Zeneteamvezeto));
             }
@@ -318,6 +321,17 @@ namespace AntiBonto.ViewModel
         }
 
         public DragOverCallback DragOver_AlwaysAllow => (person, source, target) => new() { effect = DragDropEffects.Move };
+        public DragOverCallback Ujoncok_DragOver => (person, source, target) =>
+        {
+            if (person.Type == PersonType.Fiuvezeto || person.Type == PersonType.Lanyvezeto || person.Type == PersonType.Zeneteamvezeto)
+            {
+                return new()
+                {
+                    effect = DragDropEffects.None
+                };
+            }
+            return new() { effect = DragDropEffects.Move };
+        };
         public DragOverCallback NoKcs_DragOver => (person, source, target) =>
         {
             if (person.Pinned)

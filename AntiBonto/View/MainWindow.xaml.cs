@@ -32,6 +32,7 @@ namespace AntiBonto
 
         public event PropertyChangedEventHandler PropertyChanged;
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles")]
         private ViewModel.MainWindow viewModel => (ViewModel.MainWindow)DataContext;
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)

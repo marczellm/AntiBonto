@@ -32,7 +32,9 @@ namespace AntiBonto.View
                 dropInfo.Effects = DragDropEffects.Move;
                 return;
             }
-            else if (p.Nem == Nem.Lany && target.Name == "Lanyvezeto" || p.Nem == Nem.Fiu && target.Name == "Fiuvezeto")
+            else if (p.Type != PersonType.Ujonc
+                     && p.Type != PersonType.Egyeb
+                     && (p.Nem == Nem.Lany && target.Name == "Lanyvezeto" || p.Nem == Nem.Fiu && target.Name == "Fiuvezeto" || target.Name == "Zeneteamvezeto"))
             {
                 dropInfo.Effects = DragDropEffects.Move;
                 return;
@@ -83,6 +85,8 @@ namespace AntiBonto.View
         {
             var target = (FrameworkElement)dropInfo.VisualTarget;
             var source = (FrameworkElement)dropInfo.DragInfo.VisualSource;
+            if (source == target)
+                return;
             Person p = (Person)dropInfo.Data;
             switch (target.Name)
             {
@@ -106,11 +110,17 @@ namespace AntiBonto.View
                     Degroup(p);
                     break;
                 case "Team":
-                    if (source.Name != "Kiscsoportvezetok" && source.Name != "Alvocsoportvezetok")
-                        p.Type = PersonType.Teamtag;
+                    if (p.Type == PersonType.Lanyvezeto && source.Name == "Lanyvezeto")
+                        d.Lanyvezeto = null;
+                    else if (p.Type == PersonType.Fiuvezeto && source.Name == "Fiuvezeto")
+                        d.Fiuvezeto = null;
+                    else if (p.Type == PersonType.Zeneteamvezeto && source.Name == "Zeneteamvezeto")
+                        d.Zeneteamvezeto = null;
+                    else if (source.Name != "Kiscsoportvezetok" && source.Name != "Alvocsoportvezetok")
+                        p.Type = PersonType.Teamtag;                    
                     break;
                 case "Zeneteam":
-                    if (p.Type != PersonType.Fiuvezeto && p.Type != PersonType.Lanyvezeto)
+                    if (p.Type != PersonType.Lanyvezeto && p.Type != PersonType.Fiuvezeto && p.Type != PersonType.Zeneteamvezeto)
                         p.Type = PersonType.Zeneteamtag;
                     break;
                 case "Kiscsoportvezetok":

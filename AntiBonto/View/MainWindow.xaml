@@ -80,6 +80,47 @@
                 </Grid>
             </DockPanel>
         </TabItem>
+        <TabItem Header="Lányok-fiúk" IsEnabled="{Binding PeopleNotEmpty}" Name="LanyokFiuk">
+            <DockPanel KeyUp="LanyokFiuk_KeyUp">
+                <Label DockPanel.Dock="Top" Content="Válogasd szét a lányokat és a fiúkat! Használd a jobbra és balra gombokat!"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <view:DnDItemsControl Grid.Column="0" 
+                                          ItemsSource="{Binding Lanyok}" 
+                                          Header="{Binding Lanyok.Count}" 
+                                          HeaderStringFormat="Lányok ({0})"
+                                          dd:DragDrop.DropHandler="{StaticResource DropHandler}"                                           
+                                          DragOver2="{Binding DragOver_AlwaysAllow}"
+                                          x:Name="Lanyok"/>
+                    <Label Content="{Binding Nullnemuek.CurrentItem}" 
+                           Grid.Column="1" 
+                           Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+                           HorizontalAlignment="Center" VerticalAlignment="Center"
+                           HorizontalContentAlignment="Center" VerticalContentAlignment="Center" 
+                           FontSize="20"/>
+                    <view:DnDItemsControl Grid.Column="2"
+                                          ItemsSource="{Binding Fiuk}" 
+                                          Header="{Binding Fiuk.Count}" 
+                                          HeaderStringFormat="Fiúk ({0})"
+                                          dd:DragDrop.DropHandler="{StaticResource DropHandler}"
+                                          DragOver2="{Binding DragOver_AlwaysAllow}"
+                                          x:Name="Fiuk"/>
+                    <view:DnDItemsControl Grid.ColumnSpan="3" Grid.Row="1" 
+                                          ItemsSource="{Binding Nullnemuek}"
+                                          dd:DragDrop.DropHandler="{StaticResource DropHandler}" 
+                                          DragOver2="{Binding DragOver_AlwaysAllow}"
+                                          x:Name="Nullnemuek"/>
+                </Grid>
+            </DockPanel>
+        </TabItem>
         <TabItem Header="Szerepek" IsEnabled="{Binding PeopleNotEmpty}" Name="Szerepek">
             <DockPanel>
                 <Label DockPanel.Dock="Top" Content="Csoportosítsd a résztvevőket!"/>
@@ -87,8 +128,8 @@
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
+                            <RowDefinition MinHeight="35px" Height="Auto"/>
+                            <RowDefinition MinHeight="55px" Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
@@ -115,7 +156,7 @@
                                               Grid.Column="0" 
                                               ItemsSource="{Binding Ujoncok}"
                                               dd:DragDrop.DropHandler="{StaticResource DropHandler}"
-                                              DragOver2="{Binding DragOver_AlwaysAllow}" />
+                                              DragOver2="{Binding Ujoncok_DragOver}" />
                         <view:DnDItemsControl Header="Team" x:Name="Team"
                                               Grid.Row="3" Grid.Column="1" 
                                               ItemsSource="{Binding Team}"
@@ -130,7 +171,7 @@
                                               Grid.Row="3" Grid.Column="2" 
                                               ItemsSource="{Binding Egyeb}" 
                                               dd:DragDrop.DropHandler="{StaticResource DropHandler}"
-                                              DragOver2="{Binding DragOver_AlwaysAllow}" />
+                                              DragOver2="{Binding Ujoncok_DragOver}" />
                         <Label Grid.Row="1" Content="{Binding Lanyvezeto}" x:Name="Lanyvezeto" Margin="5" Padding="3" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
                            dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True" dd:DragDrop.DropHandler="{StaticResource DropHandler}" dd:DragDrop.DragAdornerTemplate="{StaticResource adorner}"/>
                         <Label Grid.Row="1" Grid.Column="1" Content="{Binding Fiuvezeto}" x:Name="Fiuvezeto" Margin="5" Padding="3" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
@@ -153,42 +194,7 @@
                 </DataGrid>
             </DockPanel>
         </TabItem>
-        <TabItem Header="Lányok-fiúk" IsEnabled="{Binding PeopleNotEmpty}" Name="LanyokFiuk">
-            <DockPanel KeyUp="LanyokFiuk_KeyUp">
-                <Label DockPanel.Dock="Top" Content="Válogasd szét a lányokat és a fiúkat! Használd a jobbra és balra gombokat!"/>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-                    <view:DnDItemsControl Grid.Column="0" 
-                                          ItemsSource="{Binding Lanyok}" 
-                                          Header="{Binding Lanyok.Count}" 
-                                          HeaderStringFormat="Lányok ({0})"
-                                          dd:DragDrop.DropHandler="{StaticResource DropHandler}"                                           
-                                          DragOver2="{Binding DragOver_AlwaysAllow}"
-                                          x:Name="Lanyok"/>
-                    <Label Content="{Binding Nullnemuek.CurrentItem}" Grid.Column="1" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
-                            VerticalAlignment="Center" HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="20"/>
-                    <view:DnDItemsControl Grid.Column="2"
-                                          ItemsSource="{Binding Fiuk}" 
-                                          Header="{Binding Fiuk.Count}" 
-                                          HeaderStringFormat="Fiúk ({0})"
-                                          dd:DragDrop.DropHandler="{StaticResource DropHandler}"
-                                          DragOver2="{Binding DragOver_AlwaysAllow}"
-                                          x:Name="Fiuk"/>
-                    <view:DnDItemsControl Grid.ColumnSpan="3" Grid.Row="1" 
-                                          ItemsSource="{Binding Nullnemuek}"
-                                          dd:DragDrop.DropHandler="{StaticResource DropHandler}" 
-                                          x:Name="Nullnemuek"/>
-                </Grid>
-            </DockPanel>
-        </TabItem>
+        
         <TabItem Header="Újoncok" IsEnabled="{Binding PeopleNotEmpty}" Name="UjoncokTab">
             <DockPanel>
                 <Label DockPanel.Dock="Top" Content="Kinek az újonca? (nem kötelező)"/>

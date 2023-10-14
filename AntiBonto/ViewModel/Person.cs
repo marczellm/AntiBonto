@@ -48,13 +48,13 @@ namespace AntiBonto
         public int BirthYear
         {
             get { return birthYear; }
-            set { birthYear = value; RaisePropertyChanged(); RaisePropertyChanged("Age"); }
+            set { birthYear = value; RaisePropertyChanged(); RaisePropertyChanged(nameof(Age)); }
         }
         [XmlIgnore]
         public int Age
         {
             get { return DateTime.Now.Year - BirthYear; }
-            set { BirthYear = DateTime.Now.Year - value; RaisePropertyChanged(); RaisePropertyChanged("BirthYear"); }
+            set { BirthYear = DateTime.Now.Year - value; RaisePropertyChanged(); RaisePropertyChanged(nameof(BirthYear)); }
         }
         private Nem nem = Nem.Undefined;
         public Nem Nem
@@ -121,7 +121,7 @@ namespace AntiBonto
         /// <summary>
         /// These will be filled out by <see cref="Algorithms.ConvertEdges"/> 
         /// </summary>
-        internal HashSet<Person> kivelIgen = new HashSet<Person>(), kivelNem = new HashSet<Person>();
+        internal HashSet<Person> kivelIgen = new(), kivelNem = new();
         
         /// <summary>
         /// Traverse the graphs defined by kivelIgen and kivelNem.
@@ -129,8 +129,8 @@ namespace AntiBonto
         /// </summary>
         internal void CollectRecursiveEdges()
         {
-            HashSet<Person> visitedSet = new HashSet<Person>();
-            Queue<Person> queue = new Queue<Person>();
+            var visitedSet = new HashSet<Person>();
+            var queue = new Queue<Person>();
             foreach (Person p in kivelIgen)
                 queue.Enqueue(p);            
             while (queue.Count > 0)
