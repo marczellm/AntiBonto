@@ -10,6 +10,7 @@ namespace AntiBonto.View
 {
     class DropHandler : FrameworkElement, IDropTarget
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles")]
         private ViewModel.MainWindow d => (ViewModel.MainWindow)DataContext;
         /// <summary>
         /// Set where drops are allowed
@@ -26,7 +27,7 @@ namespace AntiBonto.View
             }
             var p = (Person)dropInfo.Data;
 
-            if (source.Name == "PeopleView" && (target.Name == "PeopleView" || target.Name != "AddOrRemovePersonButton"))
+            if (source.Name == "PeopleView" && target.Name == "AddOrRemovePersonButton")
             {
                 dropInfo.Effects = DragDropEffects.Move;
                 return;
