@@ -69,7 +69,7 @@ namespace AntiBonto.ViewModel
         /// </summary>
         internal void InitKiscsoport()
         {
-            kiscsoportok = Enumerable.Range(0, Kiscsoportvezetok.Count()).Select(i => KiscsoportCollectionView(i)).ToList();
+            kiscsoportok = Kiscsoportvezetok.Select((v, i) => KiscsoportCollectionView(i)).ToList();
 
             RaisePropertyChanged(nameof(Kiscsoportok));
             RaisePropertyChanged(nameof(NoKiscsoport));
@@ -80,18 +80,9 @@ namespace AntiBonto.ViewModel
         /// </summary>
         internal void InitAlvocsoport()
         {
-            for (int i = 0; i < Alvocsoportvezetok.Count(); i++)
-            {
-                var vez = Alvocsoportvezetok.ElementAt(i);
-                int prevNum = vez.Alvocsoport;
-                foreach (var tag in AlvocsoportCollectionView(prevNum).Cast<Person>()) 
-                {
-                    tag.Alvocsoport = i;
-                }
-            }
             alvocsoportok = Alvocsoportvezetok.Select((v, i) => AlvocsoportCollectionView(i)).ToList();
-            alvocsoportokFiu = Alvocsoportvezetok.Select((leader, index) => new { leader, index }).Where(item => item.leader.Nem == Nem.Fiu).Select(item => AlvocsoportCollectionView(item.index)).ToList();
-            alvocsoportokLany = Alvocsoportvezetok.Select((leader, index) => new { leader, index }).Where(item => item.leader.Nem == Nem.Lany).Select(item => AlvocsoportCollectionView(item.index)).ToList();
+            alvocsoportokFiu = Alvocsoportvezetok.Where(item => item.Nem == Nem.Fiu).Select(item => AlvocsoportCollectionView(item.Alvocsoport)).ToList();
+            alvocsoportokLany = Alvocsoportvezetok.Where(item => item.Nem == Nem.Lany).Select(item => AlvocsoportCollectionView(item.Alvocsoport)).ToList();
 
             RaisePropertyChanged(nameof(Alvocsoportok));
             RaisePropertyChanged(nameof(AlvocsoportokFiu));
