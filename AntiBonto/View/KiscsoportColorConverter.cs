@@ -21,7 +21,7 @@ namespace AntiBonto.View
         {
             Person p = (Person)values[0];
             var viewModel = (ViewModel.MainWindow)values[1];
-            int i = p.Kiscsoport;
+            int i = p.Kiscsoport % colors.Length;
             if (i != -1 && viewModel.Kiscsoportok[i].Cast<Person>().Any(q => p != q && p.Alvocsoport == q.Alvocsoport))
                 return new SolidColorBrush(Color.FromArgb(127, colors[i, 0], colors[i, 1], colors[i, 2]));
             else return SystemColors.ControlBrush;            
