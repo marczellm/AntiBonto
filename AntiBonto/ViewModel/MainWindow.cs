@@ -80,6 +80,25 @@ namespace AntiBonto.ViewModel
         /// </summary>
         internal void InitAlvocsoport()
         {
+            // Renumber sleeping groups: girls first
+            int i = 0;
+            foreach (var person in Alvocsoportvezetok.Where(p => p.Nem == Nem.Lany))
+            {
+                if (person.Alvocsoport != i)
+                {
+                    SwapAlvocsoports(person.Alvocsoport, i);
+                }
+                i++;
+            }
+            foreach (var person in Alvocsoportvezetok.Where(p => p.Nem == Nem.Fiu))
+            {
+                if (person.Alvocsoport != i)
+                {
+                    SwapAlvocsoports(person.Alvocsoport, i);
+                }
+                i++;
+            }
+
             alvocsoportok = Alvocsoportvezetok.Select((v, i) => AlvocsoportCollectionView(i)).ToList();
             alvocsoportokFiu = Alvocsoportvezetok.Where(item => item.Nem == Nem.Fiu).Select(item => AlvocsoportCollectionView(item.Alvocsoport)).ToList();
             alvocsoportokLany = Alvocsoportvezetok.Where(item => item.Nem == Nem.Lany).Select(item => AlvocsoportCollectionView(item.Alvocsoport)).ToList();

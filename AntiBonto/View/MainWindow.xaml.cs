@@ -120,7 +120,7 @@ namespace AntiBonto
             {
                 viewModel.Edges.Clear();
                 viewModel.People.Clear();
-                viewModel.People.AddRange(await Task.Run<List<Person>>(() =>
+                viewModel.People.AddRange(await Task.Run(() =>
                 {
                     try { return ExcelHelper.LoadXLS(dialog.FileName); }
                     catch (Exception ex)
@@ -142,12 +142,16 @@ namespace AntiBonto
                 return;
             }
             foreach (Person p in viewModel.CsoportokbaOsztando)
+            {
                 foreach (Person q in p.kivelIgen)
+                {
                     if (p.Kiscsoport != q.Kiscsoport)
                     {
                         MessageBox.Show(String.Format("{0} és {1} együtt kéne legyenek kiscsoportban, de elmozgattad őket!", p, q));
                         return;
                     }
+                }
+            }
             XLSSavingAnimation.Visibility = Visibility.Visible;
             var dialog = new SaveFileDialog
             {
@@ -158,12 +162,17 @@ namespace AntiBonto
                 CheckPathExists = true
             };
             if (dialog.ShowDialog(this) == true)
+            {
                 try
-                {   
+                {
                     viewModel.KiscsoportExportOrdering();
                     ExcelHelper.SaveXLS(dialog.FileName, viewModel);
                 }
-                catch (Exception ex) { MessageBox.Show("Hiba az Excel fájl írásakor" + Environment.NewLine + ex.Message ?? "" + Environment.NewLine + ex.InnerException?.Message ?? ""); }
+                catch (Exception ex)
+                { 
+                    MessageBox.Show("Hiba az Excel fájl írásakor" + Environment.NewLine + ex.Message ?? "" + Environment.NewLine + ex.InnerException?.Message ?? ""); 
+                }
+            }
             XLSSavingAnimation.Visibility = Visibility.Hidden;
         }
 
