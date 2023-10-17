@@ -134,7 +134,7 @@ namespace AntiBonto
             btn.Click += LoadXLS;
         }
 
-        private void SaveXLS(object sender, RoutedEventArgs e)
+        private async void SaveXLS(object sender, RoutedEventArgs e)
         {
             if (Type.GetTypeFromProgID("Excel.Application") == null)
             {
@@ -166,7 +166,7 @@ namespace AntiBonto
                 try
                 {
                     viewModel.KiscsoportExportOrdering();
-                    ExcelHelper.SaveXLS(dialog.FileName, viewModel);
+                    await ExcelHelper.SaveXLS(dialog.FileName, viewModel);
                 }
                 catch (Exception ex)
                 { 

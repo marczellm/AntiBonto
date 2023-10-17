@@ -34,7 +34,6 @@ namespace AntiBonto
             fpk = (int)Math.Ceiling(f / (double)m); // fiú per kiscsoport
             lpk = (int)Math.Ceiling(l / (double)m); // lány per kiscsoport
 
-            ExtraInitialization();
             ConvertEdges();
         }
 
@@ -94,7 +93,6 @@ namespace AntiBonto
                         e.Persons[1].kivelIgen.Add(e.Persons[0]);
                 }
             }
-            ExtraEdges();
             foreach (Person p in Beosztando)
                 p.CollectRecursiveEdges();
         }
@@ -213,7 +211,6 @@ namespace AntiBonto
             {
                 kesz = true;
                 Shuffle(Beosztando);
-                ExtraPreparation();
                 foreach (Person p in Beosztando)
                 {
                     if (!p.Kiscsoportvezeto)
@@ -241,37 +238,5 @@ namespace AntiBonto
             }
             return kesz;
         }
-
-        #region Extras
-        // 20. HV: Minden szentendrei újonc mellett legyen szentendrei régenc
-        private List<Person> szentendreiUjoncok, szentendreiRegencek;
-        private void ExtraInitialization()
-        {
-            if (ViewModel.MainWindow.WeekendNumber != 20)
-                return;
-            szentendreiUjoncok = d.Szentendre.Intersect(Ujoncok).ToList();
-            szentendreiRegencek = d.Szentendre.Except(Ujoncok).ToList();
-        }
-        private void ExtraEdges()
-        {
-            if (szentendreiRegencek?.Any() != true && szentendreiUjoncok?.Any() != true)
-                return;
-            Shuffle(szentendreiRegencek);
-            Shuffle(szentendreiUjoncok);
-            for (int i = 0; i < szentendreiUjoncok.Count; i++)
-            {
-                var p = szentendreiUjoncok[i];
-                var regencek = szentendreiRegencek.Except(new Person[] { p.KinekAzUjonca }).ToList();
-                var q = regencek[i % regencek.Count];
-                p.kivelIgen.Add(q);
-                q.kivelIgen.Add(p);
-            }
-        }
-        private void ExtraPreparation()
-        {
-            if (szentendreiRegencek?.Any() == true && szentendreiUjoncok?.Any() == true)
-                ConvertEdges();
-        }       
-        #endregion
     }
 }

@@ -183,27 +183,6 @@ namespace AntiBonto.View
                 p.Kiscsoport = -1;
             if (target.Name.StartsWith("noacs"))
                 p.Alvocsoport = -1;
-
-            ExtraDropCases(source, target, p);
         }
-
-        #region Extras
-        // 20HV: Minden szentendrei újonc mellett legyen szentendrei régenc
-        private void ExtraDropCases(FrameworkElement source, FrameworkElement target, Person p)
-        {
-            if (AntiBonto.ViewModel.MainWindow.WeekendNumber != 20)
-                return;
-            if (target.Name == "Zugliget" || target.Name == "Szentendre")
-            {
-                d.Szentendre.Remove(p);
-                d.MutuallyExclusiveGroups[0].Remove(p);
-                var list = (ObservableCollection<Person>)((ItemsControl)target).ItemsSource;
-                if (!list.Contains(p))
-                    list.Add(p);
-            }
-            if ((source.Name == "Zugliget" || source.Name == "Szentendre") && source != target)
-                ((ObservableCollection<Person>)((ItemsControl)source).ItemsSource).Remove(p);
-        }
-        #endregion
     }
 }

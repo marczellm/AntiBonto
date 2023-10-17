@@ -287,27 +287,6 @@
                 </ItemsControl>
             </DockPanel>
         </TabItem>
-        <TabItem Tag="20" IsEnabled="{Binding PeopleNotEmpty}">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
-                <Label Content="Zugliget"/>
-                <Label Content="Szentendre" Grid.Column="1"/>
-                <view:DnDItemsControl Grid.Row="1" ItemsSource="{Binding MutuallyExclusiveGroups[0]}" x:Name="Zugliget"
-                                      dd:DragDrop.DropHandler="{StaticResource DropHandler}" ColorUjoncs="True"/>
-                <view:DnDItemsControl Grid.Row="1" Grid.Column="1" ItemsSource="{Binding Szentendre}" x:Name="Szentendre"
-                                      dd:DragDrop.DropHandler="{StaticResource DropHandler}" ColorUjoncs="True"/>
-                <view:DnDItemsControl Grid.Row="2" Grid.ColumnSpan="2" ItemsSource="{Binding CsoportokbaOsztando}" x:Name="HV20All"
-                                      dd:DragDrop.DropHandler="{StaticResource DropHandler}" ColorUjoncs="True"/>
-            </Grid>
-        </TabItem>
         <TabItem Header="Kiscsoportbeosztás" Name="Kiscsoportbeoszto" IsEnabled="{Binding PeopleNotEmpty}">
             <DockPanel>
                 <DockPanel.Resources>

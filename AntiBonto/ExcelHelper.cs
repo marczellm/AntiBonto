@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 
 namespace AntiBonto
@@ -139,69 +140,66 @@ namespace AntiBonto
             }
         }
 
-        public static void SaveXLS(string filename, ViewModel.MainWindow data)
+        public static async Task SaveXLS(string filename, ViewModel.MainWindow data)
         {
             Uri uri = new("/Resources/hetvegekezelo.xlsm", UriKind.Relative);
+            var acsn = data.Alvocsoportvezetok.Count();
+            var sleepingGroupTitles = data.Alvocsoportok.Select(group => ((TitledCollectionView)group).Title).ToList();
+            var people = data.People.ToList();
 
-            using (var stream = System.Windows.Application.GetResourceStream(uri).Stream)
-            using (var f = File.Create(filename))
+            await Task.Run(() =>
             {
-                stream.CopyTo(f);
-            }
-            var excel = new Microsoft.Office.Interop.Excel.Application { Visible = true };
-            Workbook file = excel.Workbooks.Open(filename);
-            try
-            {
-                Worksheet sheet = file.Worksheets["Vezérlő adatok"];
-                sheet.Cells[2, 2] = ViewModel.MainWindow.WeekendNumber;
-
-                sheet = file.Worksheets["Alvócsoport címek"];
-                var m = data.Alvocsoportvezetok.Count();
-                for (int j = 1; j <= m; j++)
+                using (var stream = System.Windows.Application.GetResourceStream(uri).Stream)
+                using (var f = File.Create(filename))
                 {
-                    sheet.Cells[j + 1, 1] = ((char)(j + 64)).ToString();
-                    sheet.Cells[j + 1, 2] = ((TitledCollectionView)data.Alvocsoportok[j - 1]).Title;
+                    stream.CopyTo(f);
                 }
-
-                sheet = file.Worksheets["Alapadatok"];
-                sheet.Activate();
-                sheet.Unprotect();
-                Microsoft.Office.Interop.Excel.Range c = sheet.Cells;
-                int i = 2;
-                foreach (Person p in data.People)
+                var excel = new Microsoft.Office.Interop.Excel.Application { Visible = true };
+                Workbook file = excel.Workbooks.Open(filename);
+                try
                 {
-                    c[i, 1].Activate();
-                    string[] nev = p.Name.Split(new Char[] { ' ' }, 2);
-                    c[i, 1] = nev[0];
-                    c[i, 2] = nev[1];
-                    c[i, 3] = p.Nickname;
-                    if (p.Type != PersonType.Teamtag)
-                        c[i, 4] = (int) p.Type;
-                    if (p.Type != PersonType.Egyeb)
-                    {
-                        c[i, 5] = p.Kiscsoport + 1;
-                        if (p.Kiscsoportvezeto)
-                            c[i, 6] = p.Kiscsoport + 1;
+                    Worksheet sheet = file.Worksheets["Vezérlő adatok"];
+                    sheet.Cells[2, 2] = ViewModel.MainWindow.WeekendNumber;
 
-                        c[i, 7] = ((char)(p.Alvocsoport + 65)).ToString();
-                        if (p.Alvocsoportvezeto)
-                            c[i, 8] = ((char)(p.Alvocsoport + 65)).ToString();
+                    sheet = file.Worksheets["Alvócsoport címek"];
+                    for (int j = 1; j <= acsn; j++)
+                    {
+                        sheet.Cells[j + 1, 1] = ((char)(j + 64)).ToString();
+                        sheet.Cells[j + 1, 2] = sleepingGroupTitles[j - 1];
                     }
 
-                    if (ViewModel.MainWindow.WeekendNumber == 20)
+                    sheet = file.Worksheets["Alapadatok"];
+                    sheet.Activate();
+                    sheet.Unprotect();
+                    Microsoft.Office.Interop.Excel.Range c = sheet.Cells;
+                    int i = 2;
+                    foreach (Person p in people)
                     {
-                        if (data.Szentendre.Contains(p))
-                            c[i, 9] = "Szentendre";
-                        if (data.MutuallyExclusiveGroups[0].Contains(p))
-                            c[i, 9] = "Zugliget";
+                        c[i, 1].Activate();
+                        string[] nev = p.Name.Split(new Char[] { ' ' }, 2);
+                        c[i, 1] = nev[0];
+                        c[i, 2] = nev[1];
+                        c[i, 3] = p.Nickname;
+                        if (p.Type != PersonType.Teamtag)
+                            c[i, 4] = (int)p.Type;
+                        if (p.Type != PersonType.Egyeb)
+                        {
+                            c[i, 5] = p.Kiscsoport + 1;
+                            if (p.Kiscsoportvezeto)
+                                c[i, 6] = p.Kiscsoport + 1;
+
+                            c[i, 7] = ((char)(p.Alvocsoport + 65)).ToString();
+                            if (p.Alvocsoportvezeto)
+                                c[i, 8] = ((char)(p.Alvocsoport + 65)).ToString();
+                        }
+                        i++;
                     }
-                    i++;
                 }
-            }
-            finally
-            {
-                file.Save();
-            }
+                finally
+                {
+                    file.Save();
+                }
+            });
         }
     }
 }

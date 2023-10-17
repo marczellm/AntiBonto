@@ -271,8 +271,7 @@ namespace AntiBonto.ViewModel
                 {
                     Persons = People.ToArray(),
                     Edges = Edges.ToArray(),
-                    MutuallyExclusiveGroups = MutuallyExclusiveGroups.Select(g => g.ToArray()).ToArray(),
-                    Szentendre = Szentendre.ToArray()
+                    MutuallyExclusiveGroups = MutuallyExclusiveGroups.Select(g => g.ToArray()).ToArray()
                 };
             }
             set
@@ -296,9 +295,6 @@ namespace AntiBonto.ViewModel
                 if (!MutuallyExclusiveGroups.Any())
                     MutuallyExclusiveGroups.Add(new ObservableCollection2<Person>());
                 RaisePropertyChanged(nameof(MutuallyExclusiveGroups));
-
-                if (WeekendNumber == 20)
-                    Szentendre.AddRange(value.Szentendre.Select(p => People.Single(q => q.Name == p.Name)));
             }
         }
 
@@ -443,9 +439,5 @@ namespace AntiBonto.ViewModel
                 };
             }
         };
-
-        #region Extras
-        public ObservableCollection2<Person> Szentendre { get; } = new ObservableCollection2<Person>();
-        #endregion
     }
 }
