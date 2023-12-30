@@ -13,6 +13,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
+using System.Windows.Threading;
 using System.Xml.Serialization;
 
 namespace AntiBonto
@@ -39,6 +40,12 @@ namespace AntiBonto
         {
             ExtendWindowFrame();
             LoadXML();
+            DispatcherTimer dispatcherTimer = new()
+            {
+                Interval = new TimeSpan(0, 4, 0)
+            };
+            dispatcherTimer.Tick += new EventHandler((sender, e) => SaveXML());            
+            dispatcherTimer.Start();
         }
 
         private void MainWindow_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -91,11 +98,19 @@ namespace AntiBonto
             }
         }
 
+        private void SaveXML()
+        {
+            if (viewModel.AppData.Persons.Any())
+            {
+                var xs = new XmlSerializer(typeof(AppData));
+                using var file = new StreamWriter(filepath);
+                xs.Serialize(file, viewModel.AppData);
+            }
+        }
+
         private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            var xs = new XmlSerializer(typeof(AppData));
-            using var file = new StreamWriter(filepath);
-            xs.Serialize(file, viewModel.AppData);
+            SaveXML();
         }
 
         private async void LoadXLS(object sender, RoutedEventArgs e)

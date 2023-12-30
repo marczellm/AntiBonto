@@ -243,7 +243,6 @@ namespace AntiBonto.ViewModel
             set { maxAgeDifference = value; RaisePropertyChanged(); }
         }
         public Algorithms Algorithm { get; set; }
-        private string statusText = "";
 
         public MainWindow()
         {
@@ -252,6 +251,7 @@ namespace AntiBonto.ViewModel
             NoAlvocsoportLany.CollectionChanged += (s, e) => RaisePropertyChanged(nameof(BeosztasKesz));
         }
 
+        private string statusText = "";
         public string StatusText
         {
             get { return statusText; }
@@ -439,5 +439,6 @@ namespace AntiBonto.ViewModel
                 };
             }
         };
+
     }
 }

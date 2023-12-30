@@ -131,16 +131,7 @@ namespace AntiBonto
                 message = "Nem lehet a kiscsoportban több újonc";
             else if (p.Type == PersonType.Teamtag && kcs.Count(q => q.Type == PersonType.Teamtag) >= tpk)
                 message = "Nem lehet a kiscsoportban több teamtag";
-            else if (consideringSexes && p.Nem == Nem.Lany && kcs.Count(q => q.Nem == Nem.Lany) >= lpk)
-            {
-                message = "Elvileg nem lehet a kiscsoportban több lány";
-                return false;
-            }
-            else if (consideringSexes && p.Nem == Nem.Fiu && kcs.Count(q => q.Nem == Nem.Fiu) >= fpk)
-            {
-                message = "Elvileg nem lehet a kiscsoportban több fiú";
-                return false;
-            }
+            
             else
             {
                 Person r = kcs.FirstOrDefault(q => q.kivelNem.Contains(p));
@@ -164,7 +155,19 @@ namespace AntiBonto
                     }
                 }
             }
-            return message != null;
+            if (message != null)
+            {
+                return true;
+            }
+            if (consideringSexes && p.Nem == Nem.Lany && kcs.Count(q => q.Nem == Nem.Lany) >= lpk)
+            {
+                message = "Elvileg nem lehet a kiscsoportban több lány";
+            }
+            else if (consideringSexes && p.Nem == Nem.Fiu && kcs.Count(q => q.Nem == Nem.Fiu) >= fpk)
+            {
+                message = "Elvileg nem lehet a kiscsoportban több fiú";
+            }
+            return false;
         }
 
         /// <summary>
