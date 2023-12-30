@@ -12,25 +12,25 @@ namespace AntiBonto.ViewModel.Tests
         [TestMethod()]
         public void AccessedPropertiesTest()
         {
-            List<Expression<Func<object, bool>>> exps = new List<Expression<Func<object, bool>>>
+            List<Expression<Func<object, bool>>> exps = new()
             {
-                 p => ((Person)p).Nem == Nem.Fiu,
-                 p => ((Person)p).Type != PersonType.Egyeb && ((Person)p).Type != PersonType.Ujonc,
-                 p => ((Person)p).Kiscsoportvezeto,
-                 p => ((Person)p).Kiscsoport == 1 && ((Person)p).Type != PersonType.Egyeb,
-                 p => ((Person)p).Kiscsoport == 1 || ((Person)p).Kiscsoport == 2 || ((Person)p).Kiscsoport == 3
+                 p => ((Person)p).Sex == Sex.Boy,
+                 p => ((Person)p).Type != PersonType.Others && ((Person)p).Type != PersonType.Newcomer,
+                 p => ((Person)p).SharingGroupLeader,
+                 p => ((Person)p).SharingGroup == 1 && ((Person)p).Type != PersonType.Others,
+                 p => ((Person)p).SharingGroup == 1 || ((Person)p).SharingGroup == 2 || ((Person)p).SharingGroup == 3
             };
-            List<string> expected = new List<string>
+            List<string> expected = new()
             {
-                nameof(Person.Nem),
+                nameof(Person.Sex),
                 nameof(Person.Type),
                 nameof(Person.Type),
-                nameof(Person.Kiscsoportvezeto),
-                nameof(Person.Kiscsoport),
+                nameof(Person.SharingGroupLeader),
+                nameof(Person.SharingGroup),
                 nameof(Person.Type),
-                nameof(Person.Kiscsoport),
-                nameof(Person.Kiscsoport),
-                nameof(Person.Kiscsoport)
+                nameof(Person.SharingGroup),
+                nameof(Person.SharingGroup),
+                nameof(Person.SharingGroup)
             };
             var actual = new List<string>();
             foreach (var exp in exps)

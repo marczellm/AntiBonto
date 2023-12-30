@@ -10,17 +10,17 @@ namespace AntiBonto
     /// </summary>
     public enum PersonType
     {
-        Teamtag = 0,
-        Fiuvezeto = 1,
-        Lanyvezeto = 2,
-        Zeneteamvezeto = 3,
-        Zeneteamtag = 4,
-        Egyeb = 10,
-        Ujonc = 11
+        Team = 0,
+        BoyLeader = 1,
+        GirlLeader = 2,
+        MusicLeader = 3,
+        MusicTeam = 4,
+        Others = 10,
+        Newcomer = 11
     }
-    public enum Nem
+    public enum Sex
     {
-        Lany, Fiu, Undefined
+        Girl, Boy, Undefined
     }
 
     [Serializable]
@@ -37,7 +37,7 @@ namespace AntiBonto
             {
                 pinned = value;
                 RaisePropertyChanged();
-                foreach (Person p in kivelIgen)
+                foreach (Person p in includeEdges)
                     if (p.Pinned != value)
                         p.Pinned = value;
             }
@@ -56,11 +56,11 @@ namespace AntiBonto
             get { return DateTime.Now.Year - BirthYear; }
             set { BirthYear = DateTime.Now.Year - value; RaisePropertyChanged(); RaisePropertyChanged(nameof(BirthYear)); }
         }
-        private Nem nem = Nem.Undefined;
-        public Nem Nem
+        private Sex sex = Sex.Undefined;
+        public Sex Sex
         {
-            get { return nem; }
-            set { nem = value; RaisePropertyChanged(); }
+            get { return sex; }
+            set { sex = value; RaisePropertyChanged(); }
         }
         private PersonType type;
         public PersonType Type
@@ -68,60 +68,60 @@ namespace AntiBonto
             get { return type; }
             set { type = value; RaisePropertyChanged(); }
         }
-        private bool kcsvez = false, acsvez = false;
-        public bool Kiscsoportvezeto
+        private bool sharinggroupleader = false, sleepinggroupleader = false;
+        public bool SharingGroupLeader
         {
-            get { return kcsvez; }
+            get { return sharinggroupleader; }
             set
             {
-                kcsvez = value;
+                sharinggroupleader = value;
                 RaisePropertyChanged();
-                if (value && (Type == PersonType.Ujonc || Type == PersonType.Egyeb))
-                    Type = PersonType.Teamtag;
+                if (value && (Type == PersonType.Newcomer || Type == PersonType.Others))
+                    Type = PersonType.Team;
             }
         }
-        public bool Alvocsoportvezeto
+        public bool SleepingGroupLeader
         {
-            get { return acsvez; }
+            get { return sleepinggroupleader; }
             set
             {
-                acsvez = value;
+                sleepinggroupleader = value;
                 RaisePropertyChanged();
-                if (value && (Type == PersonType.Ujonc || Type == PersonType.Egyeb))
-                    Type = PersonType.Teamtag;
+                if (value && (Type == PersonType.Newcomer || Type == PersonType.Others))
+                    Type = PersonType.Team;
             }
         }
-        private int kcs = -1;
+        private int sharingGroup = -1;
         
         /// <summary>Zero-based</summary>
-        public int Kiscsoport
+        public int SharingGroup
         {
-            get { return kcs; }
-            set { kcs = value; RaisePropertyChanged(); }
+            get { return sharingGroup; }
+            set { sharingGroup = value; RaisePropertyChanged(); }
         }
-        private int acs = -1;
+        private int sleepingGroup = -1;
 
         /// <summary>Zero-based</summary>
-        public int Alvocsoport
+        public int SleepingGroup
         {
-            get { return acs; }
-            set { acs = value; RaisePropertyChanged(); }
+            get { return sleepingGroup; }
+            set { sleepingGroup = value; RaisePropertyChanged(); }
         }
         public override string ToString()
         {
             return Name;
         }
-        private Person kinekAzUjonca;
-        public Person KinekAzUjonca
+        private Person whoseNewcomer;
+        public Person WhoseNewcomer
         {
-            get { return kinekAzUjonca; }
-            set { kinekAzUjonca = value; RaisePropertyChanged(); }
+            get { return whoseNewcomer; }
+            set { whoseNewcomer = value; RaisePropertyChanged(); }
         }
 
         /// <summary>
         /// These will be filled out by <see cref="Algorithms.ConvertEdges"/> 
         /// </summary>
-        internal HashSet<Person> kivelIgen = new(), kivelNem = new();
+        internal HashSet<Person> includeEdges = new(), excludeEdges = new();
         
         /// <summary>
         /// Traverse the graphs defined by kivelIgen and kivelNem.
@@ -131,18 +131,18 @@ namespace AntiBonto
         {
             var visitedSet = new HashSet<Person>();
             var queue = new Queue<Person>();
-            foreach (Person p in kivelIgen)
+            foreach (Person p in includeEdges)
                 queue.Enqueue(p);            
             while (queue.Count > 0)
             {
                 Person p = queue.Dequeue();
-                kivelIgen.Add(p);
+                includeEdges.Add(p);
                 visitedSet.Add(p);
-                foreach (Person q in p.kivelIgen)
+                foreach (Person q in p.includeEdges)
                     if (!visitedSet.Contains(q))
                         queue.Enqueue(q);
-                foreach (Person q in p.kivelNem)
-                    kivelNem.Add(q);
+                foreach (Person q in p.excludeEdges)
+                    excludeEdges.Add(q);
             }
         }
     }

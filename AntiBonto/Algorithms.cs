@@ -8,7 +8,7 @@ namespace AntiBonto
     public class Algorithms
     {
         private readonly ViewModel.MainWindow d;
-        private readonly List<Person> Ujoncok, Team, Beosztando, Kiscsoportvezetok;
+        private readonly List<Person> Newcomers, Team, PeopleToAssign, SharingGroupLeaders;
         private readonly int n, k, u, t, tpk, upk, fpk, lpk;
         private int m;
         private readonly bool consideringSexes;
@@ -16,19 +16,19 @@ namespace AntiBonto
         public Algorithms(ViewModel.MainWindow data)
         {
             d = data;
-            Ujoncok = d.Ujoncok.Cast<Person>().ToList();
+            Newcomers = d.Newcomers.Cast<Person>().ToList();
             Team = d.Team.Cast<Person>().ToList();
-            Beosztando = d.CsoportokbaOsztando.Cast<Person>().ToList();
-            Kiscsoportvezetok = d.Kiscsoportvezetok.ToList();
+            PeopleToAssign = d.PeopleToAssign.Cast<Person>().ToList();
+            SharingGroupLeaders = d.SharingGroupLeaders.ToList();
 
-            m = Kiscsoportvezetok.Count; // kiscsoportok száma
-            n = Beosztando.Count; // kiscsoportba osztandók száma
-            u = Ujoncok.Count; // újoncok száma
+            m = SharingGroupLeaders.Count; // kiscsoportok száma
+            n = PeopleToAssign.Count; // kiscsoportba osztandók száma
+            u = Newcomers.Count; // újoncok száma
             t = Team.Count; // team létszáma
             k = (int)Math.Ceiling(n / (double)m); // kiscsoportok létszáma
-            int f = Beosztando.Where(p => p.Nem == Nem.Fiu).Count();
-            int l = Beosztando.Where(p => p.Nem == Nem.Lany).Count();
-            consideringSexes = d.Nullnemuek.IsEmpty;
+            int f = PeopleToAssign.Where(p => p.Sex == Sex.Boy).Count();
+            int l = PeopleToAssign.Where(p => p.Sex == Sex.Girl).Count();
+            consideringSexes = d.SexUndefined.IsEmpty;
             upk = (int)Math.Ceiling(u / (double)m); // újonc per kiscsoport
             tpk = (int)Math.Ceiling(t / (double)m); // teamtag per kiscsoport
             fpk = (int)Math.Ceiling(f / (double)m); // fiú per kiscsoport
@@ -47,17 +47,17 @@ namespace AntiBonto
         {
             foreach(Person p in d.People)
             {
-                p.kivelIgen.Clear();
-                p.kivelNem.Clear();
+                p.includeEdges.Clear();
+                p.excludeEdges.Clear();
             }
-            foreach (Person p in Ujoncok)
-                if (p.KinekAzUjonca != null)
+            foreach (Person p in Newcomers)
+                if (p.WhoseNewcomer != null)
                 {
-                    p.kivelNem.Add(p.KinekAzUjonca);
-                    p.KinekAzUjonca.kivelNem.Add(p);
+                    p.excludeEdges.Add(p.WhoseNewcomer);
+                    p.WhoseNewcomer.excludeEdges.Add(p);
                 }
-            d.Fiuvezeto.kivelNem.Add(d.Lanyvezeto);
-            d.Lanyvezeto.kivelNem.Add(d.Fiuvezeto);
+            d.BoyLeader.excludeEdges.Add(d.GirlLeader);
+            d.GirlLeader.excludeEdges.Add(d.BoyLeader);
             // Split up the MutuallyExclusiveGroups to groups no bigger than m
             List<List<Person>> mutuallyExclusiveGroups = new();
             foreach (IList<Person> group in d.MutuallyExclusiveGroups)
@@ -72,76 +72,76 @@ namespace AntiBonto
                     foreach (Person q in group)
                         if (p != q)
                         {
-                            p.kivelNem.Add(q);
-                            q.kivelNem.Add(p);
+                            p.excludeEdges.Add(q);
+                            q.excludeEdges.Add(p);
                         }            
             foreach (Edge e in d.Edges)
             {
                 if (e.Dislike)
                 {
-                    e.Persons[0].kivelNem.Add(e.Persons[1]);
-                    e.Persons[1].kivelNem.Add(e.Persons[0]);
+                    e.Persons[0].excludeEdges.Add(e.Persons[1]);
+                    e.Persons[1].excludeEdges.Add(e.Persons[0]);
                 }
                 else
                 {
                     // We can safely leave out edges pointing towards group leaders,
                     // because the first step of the algorithm calls RecursiveSet on them.
                     // If we don't exclude these edges, group leaders may get reassigned later.
-                    if (!e.Persons[1].Kiscsoportvezeto)
-                        e.Persons[0].kivelIgen.Add(e.Persons[1]);
-                    if (!e.Persons[0].Kiscsoportvezeto)
-                        e.Persons[1].kivelIgen.Add(e.Persons[0]);
+                    if (!e.Persons[1].SharingGroupLeader)
+                        e.Persons[0].includeEdges.Add(e.Persons[1]);
+                    if (!e.Persons[0].SharingGroupLeader)
+                        e.Persons[1].includeEdges.Add(e.Persons[0]);
                 }
             }
-            foreach (Person p in Beosztando)
+            foreach (Person p in PeopleToAssign)
                 p.CollectRecursiveEdges();
         }
 
         /// <summary>
         /// Assign the given group number to the person and all of their BFFs.
         /// </summary>
-        private void AssignToKiscsoport(Person p, int kiscsoport)
+        private void AssignToSharingGroup(Person p, int sharingGroup)
         {
-            p.Kiscsoport = kiscsoport;
-            foreach (Person q in p.kivelIgen)
-                q.Kiscsoport = kiscsoport;
+            p.SharingGroup = sharingGroup;
+            foreach (Person q in p.includeEdges)
+                q.SharingGroup = sharingGroup;
         }
 
-        public bool Conflicts(Person p, int kiscsoport)
+        public bool Conflicts(Person p, int sharingGroup)
         {
-            var kcs = d.Kiscsoport(kiscsoport);
-            bool ret = p.Kiscsoportvezeto || kcs.Count() + p.kivelIgen.Count + 1 > k
-                || (p.Type == PersonType.Ujonc && kcs.Count(q => q.Type == PersonType.Ujonc) >= upk)
-                || (p.Type == PersonType.Teamtag && kcs.Count(q => q.Type == PersonType.Teamtag) >= tpk)
-                || (consideringSexes && p.Nem == Nem.Lany && kcs.Count(q => q.Nem == Nem.Lany) >= lpk)
-                || (consideringSexes && p.Nem == Nem.Fiu  && kcs.Count(q => q.Nem == Nem.Fiu) >= fpk)
-                || kcs.Any(q => q.kivelNem.Contains(p) || Math.Abs(q.Age - p.Age) > d.MaxAgeDifference);
+            var kcs = d.SharingGroup(sharingGroup);
+            bool ret = p.SharingGroupLeader || kcs.Count() + p.includeEdges.Count + 1 > k
+                || (p.Type == PersonType.Newcomer && kcs.Count(q => q.Type == PersonType.Newcomer) >= upk)
+                || (p.Type == PersonType.Team && kcs.Count(q => q.Type == PersonType.Team) >= tpk)
+                || (consideringSexes && p.Sex == Sex.Girl && kcs.Count(q => q.Sex == Sex.Girl) >= lpk)
+                || (consideringSexes && p.Sex == Sex.Boy  && kcs.Count(q => q.Sex == Sex.Boy) >= fpk)
+                || kcs.Any(q => q.excludeEdges.Contains(p) || Math.Abs(q.Age - p.Age) > d.MaxAgeDifference);
             return ret;
             }
 
-        public bool Conflicts(Person p, int kiscsoport, out string message)
+        public bool Conflicts(Person p, int sharingGroup, out string message)
         {
-            var kcs = d.Kiscsoport(kiscsoport);
+            var kcs = d.SharingGroup(sharingGroup);
             message = null;
-            if (p.Kiscsoportvezeto)
+            if (p.SharingGroupLeader)
                 message = "Nem lehet egy csoportban két kiscsoportvezető!";
-            else if (kcs.Count() + p.kivelIgen.Count + 1 > k)
+            else if (kcs.Count() + p.includeEdges.Count + 1 > k)
                 message = "Nem lehet a kiscsoportban több ember";
-            else if (p.Type == PersonType.Ujonc && kcs.Count(q => q.Type == PersonType.Ujonc) >= upk)
+            else if (p.Type == PersonType.Newcomer && kcs.Count(q => q.Type == PersonType.Newcomer) >= upk)
                 message = "Nem lehet a kiscsoportban több újonc";
-            else if (p.Type == PersonType.Teamtag && kcs.Count(q => q.Type == PersonType.Teamtag) >= tpk)
+            else if (p.Type == PersonType.Team && kcs.Count(q => q.Type == PersonType.Team) >= tpk)
                 message = "Nem lehet a kiscsoportban több teamtag";
             
             else
             {
-                Person r = kcs.FirstOrDefault(q => q.kivelNem.Contains(p));
+                Person r = kcs.FirstOrDefault(q => q.excludeEdges.Contains(p));
                 if (r != null)
                 {
                     Edge edge = d.Edges.FirstOrDefault(e => e.Dislike && e.Persons.Contains(p) && e.Persons.Contains(r)) ?? new Edge
                     {
                         Persons = new Person[] { p, r },
                         Dislike = true,
-                        Reason = p.KinekAzUjonca == r || r.KinekAzUjonca == p ? "az újonca" : "ezt kérted"
+                        Reason = p.WhoseNewcomer == r || r.WhoseNewcomer == p ? "az újonca" : "ezt kérted"
                     };
                     message = edge.ToString();
                 }
@@ -159,11 +159,11 @@ namespace AntiBonto
             {
                 return true;
             }
-            if (consideringSexes && p.Nem == Nem.Lany && kcs.Count(q => q.Nem == Nem.Lany) >= lpk)
+            if (consideringSexes && p.Sex == Sex.Girl && kcs.Count(q => q.Sex == Sex.Girl) >= lpk)
             {
                 message = "Elvileg nem lehet a kiscsoportban több lány";
             }
-            else if (consideringSexes && p.Nem == Nem.Fiu && kcs.Count(q => q.Nem == Nem.Fiu) >= fpk)
+            else if (consideringSexes && p.Sex == Sex.Boy && kcs.Count(q => q.Sex == Sex.Boy) >= fpk)
             {
                 message = "Elvileg nem lehet a kiscsoportban több fiú";
             }
@@ -202,37 +202,37 @@ namespace AntiBonto
         public bool NaiveFirstFit(CancellationToken? ct = null)
         {
             m = 0; // kiscsoportok száma
-            foreach (Person p in Beosztando)
+            foreach (Person p in PeopleToAssign)
                 if (!p.Pinned)
-                    p.Kiscsoport = -1;
-            foreach (Person p in Kiscsoportvezetok)
-                AssignToKiscsoport(p, m++);
-            Beosztando.RemoveAll((Person p) => p.Kiscsoport != -1);
+                    p.SharingGroup = -1;
+            foreach (Person p in SharingGroupLeaders)
+                AssignToSharingGroup(p, m++);
+            PeopleToAssign.RemoveAll((Person p) => p.SharingGroup != -1);
 
             bool kesz = false;
             while (!kesz && ct?.IsCancellationRequested != true) // generate random orderings of People and run the first-fit coloring until it is complete or cancelled
             {
                 kesz = true;
-                Shuffle(Beosztando);
-                foreach (Person p in Beosztando)
+                Shuffle(PeopleToAssign);
+                foreach (Person p in PeopleToAssign)
                 {
-                    if (!p.Kiscsoportvezeto)
+                    if (!p.SharingGroupLeader)
                     {
                         var options = Enumerable.Range(0, m).Where(i => !Conflicts(p, i));
                         if (options.Any())
                         {   
-                            if (p.Type == PersonType.Ujonc) // ha újonc, akkor próbáljuk olyan helyre tenni, ahol még kevés újonc van
-                                AssignToKiscsoport(p, options.MinBy(i => d.Kiscsoport(i).Count(q => q.Type == PersonType.Ujonc)));                            
+                            if (p.Type == PersonType.Newcomer) // ha újonc, akkor próbáljuk olyan helyre tenni, ahol még kevés újonc van
+                                AssignToSharingGroup(p, options.MinBy(i => d.SharingGroup(i).Count(q => q.Type == PersonType.Newcomer)));                            
                             else // különben ahol kevés ember van
-                                AssignToKiscsoport(p, options.MinBy(i => d.Kiscsoport(i).Count()));
+                                AssignToSharingGroup(p, options.MinBy(i => d.SharingGroup(i).Count()));
                         }
                         else // Nincs olyan kiscsoport, ahova be lehetne tenni => elölről kezdjük
                         {
-                            foreach (Person q in Beosztando)
-                                if (!q.Kiscsoportvezeto)
-                                    q.Kiscsoport = -1;
-                            foreach (Person q in Kiscsoportvezetok)
-                                AssignToKiscsoport(q, q.Kiscsoport);
+                            foreach (Person q in PeopleToAssign)
+                                if (!q.SharingGroupLeader)
+                                    q.SharingGroup = -1;
+                            foreach (Person q in SharingGroupLeaders)
+                                AssignToSharingGroup(q, q.SharingGroup);
                             kesz = false;
                             break;
                         }

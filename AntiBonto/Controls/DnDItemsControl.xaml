@@ -25,45 +25,45 @@
                                     <Style.Triggers>
                                         <MultiDataTrigger>
                                             <MultiDataTrigger.Conditions>
-                                                <Condition Binding="{Binding BoldKiscsoportvezetok, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}" Value="True"/>
-                                                <Condition Binding="{Binding Kiscsoportvezeto}" Value="True"/>
+                                                <Condition Binding="{Binding BoldSharingGroupLeaders, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}" Value="True"/>
+                                                <Condition Binding="{Binding SharingGroupLeader}" Value="True"/>
                                             </MultiDataTrigger.Conditions>
                                             <Setter Property="FontWeight" Value="Bold"/>
                                         </MultiDataTrigger>
                                         <MultiDataTrigger>
                                             <MultiDataTrigger.Conditions>
-                                                <Condition Binding="{Binding BoldAlvocsoportvezetok, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}" Value="True"/>
-                                                <Condition Binding="{Binding Alvocsoportvezeto}" Value="True"/>
+                                                <Condition Binding="{Binding BoldSleepingGroupLeaders, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}" Value="True"/>
+                                                <Condition Binding="{Binding SleepingGroupLeader}" Value="True"/>
                                             </MultiDataTrigger.Conditions>
                                             <Setter Property="FontWeight" Value="Bold"/>
                                         </MultiDataTrigger>
                                         <MultiDataTrigger>
                                             <MultiDataTrigger.Conditions>
-                                                <Condition Binding="{Binding ColorUjoncs, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}" Value="True"/>
-                                                <Condition Binding="{Binding Type}" Value="{x:Static main:PersonType.Ujonc}"/>
+                                                <Condition Binding="{Binding ColorNewcomers, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}" Value="True"/>
+                                                <Condition Binding="{Binding Type}" Value="{x:Static main:PersonType.Newcomer}"/>
                                             </MultiDataTrigger.Conditions>
                                             <Setter Property="Foreground" Value="Green"/>
                                         </MultiDataTrigger>
                                         <MultiDataTrigger>
                                             <MultiDataTrigger.Conditions>
                                                 <Condition Binding="{Binding ColorLeaders, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}" Value="True"/>
-                                                <Condition Binding="{Binding Type}" Value="{x:Static main:PersonType.Fiuvezeto}"/>
+                                                <Condition Binding="{Binding Type}" Value="{x:Static main:PersonType.BoyLeader}"/>
                                             </MultiDataTrigger.Conditions>
                                             <Setter Property="Foreground" Value="Blue"/>
                                         </MultiDataTrigger>
                                         <MultiDataTrigger>
                                             <MultiDataTrigger.Conditions>
                                                 <Condition Binding="{Binding ColorLeaders, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}" Value="True"/>
-                                                <Condition Binding="{Binding Type}" Value="{x:Static main:PersonType.Lanyvezeto}"/>
+                                                <Condition Binding="{Binding Type}" Value="{x:Static main:PersonType.GirlLeader}"/>
                                             </MultiDataTrigger.Conditions>
                                             <Setter Property="Foreground" Value="Blue"/>
                                         </MultiDataTrigger>
-                                        <DataTrigger Binding="{Binding ColorKiscsoports, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}" Value="True">
+                                        <DataTrigger Binding="{Binding ColorSharingGroups, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}" Value="True">
                                             <Setter Property="Background">
                                                 <Setter.Value>
                                                     <MultiBinding>
                                                         <MultiBinding.Converter>
-                                                            <view:KiscsoportColorConverter/>
+                                                            <view:SharingGroupColorConverter/>
                                                         </MultiBinding.Converter>
                                                         <Binding />
                                                         <Binding Path="DataContext" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type Window}}"/>
@@ -71,7 +71,7 @@
                                                 </Setter.Value>
                                             </Setter>
                                         </DataTrigger>
-                                        <DataTrigger Binding="{Binding ColorKiscsoports, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}" Value="False">
+                                        <DataTrigger Binding="{Binding ColorSharingGroups, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}" Value="False">
                                             <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
                                         </DataTrigger>
                                         <DataTrigger Binding="{Binding VisualizeConflicts, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}" Value="True">
@@ -98,7 +98,7 @@
                                     <Style.Triggers>
                                         <MultiDataTrigger>
                                             <MultiDataTrigger.Conditions>
-                                                <Condition Binding="{Binding Kiscsoportvezeto}" Value="False"/>
+                                                <Condition Binding="{Binding SharingGroupLeader}" Value="False"/>
                                                 <Condition Binding="{Binding Pinnable, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}" Value="True"/>
                                                 <Condition Binding="{Binding DataContext.MagicEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}" Value="True"/>
                                             </MultiDataTrigger.Conditions>

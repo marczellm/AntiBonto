@@ -32,9 +32,9 @@ namespace AntiBonto.View
                 dropInfo.Effects = DragDropEffects.Move;
                 return;
             }
-            else if (p.Type != PersonType.Ujonc
-                     && p.Type != PersonType.Egyeb
-                     && (p.Nem == Nem.Lany && target.Name == "Lanyvezeto" || p.Nem == Nem.Fiu && target.Name == "Fiuvezeto" || target.Name == "Zeneteamvezeto"))
+            else if (p.Type != PersonType.Newcomer
+                     && p.Type != PersonType.Others
+                     && (p.Sex == Sex.Girl && target.Name == "GirlLeader" || p.Sex == Sex.Boy && target.Name == "BoyLeader" || target.Name == "MusicLeader"))
             {
                 dropInfo.Effects = DragDropEffects.Move;
                 return;
@@ -57,24 +57,24 @@ namespace AntiBonto.View
         /// </summary>
         private void Degroup(Person p)
         {
-            if (p.Kiscsoportvezeto)
+            if (p.SharingGroupLeader)
             {
-                int numKiscsoportok = d.Kiscsoportvezetok.Count();
-                d.SwapKiscsoports(p.Kiscsoport, numKiscsoportok - 1);
-                d.Kiscsoport(numKiscsoportok - 1).ToList().ForEach(q => { q.Kiscsoport = -1; });
-                p.Kiscsoportvezeto = false;
+                int numSharingGroups = d.SharingGroupLeaders.Count();
+                d.SwapSharingGroups(p.SharingGroup, numSharingGroups - 1);
+                d.SharingGroup(numSharingGroups - 1).ToList().ForEach(q => { q.SharingGroup = -1; });
+                p.SharingGroupLeader = false;
             }
-            if (p.Alvocsoportvezeto)
+            if (p.SleepingGroupLeader)
             {
-                if (d.Alvocsoportvezetok.Any(q => q.Nem == Nem.Undefined))
+                if (d.SleepingGroupLeaders.Any(q => q.Sex == Sex.Undefined))
                 {
-                    int numAlvocsoportok = d.Alvocsoportvezetok.Count();
-                    d.SwapAlvocsoports(p.Alvocsoport, numAlvocsoportok - 1);
-                    d.Alvocsoport(numAlvocsoportok - 1).ToList().ForEach(q => { q.Alvocsoport = -1; });
+                    int numSleepingGroups = d.SleepingGroupLeaders.Count();
+                    d.SwapSleepingGroups(p.SleepingGroup, numSleepingGroups - 1);
+                    d.SleepingGroup(numSleepingGroups - 1).ToList().ForEach(q => { q.SleepingGroup = -1; });
                 }
                 else
-                    d.Alvocsoport(p.Alvocsoport).ToList().ForEach(q => { q.Alvocsoport = -1; });
-                p.Alvocsoportvezeto = false;
+                    d.SleepingGroup(p.SleepingGroup).ToList().ForEach(q => { q.SleepingGroup = -1; });
+                p.SleepingGroupLeader = false;
             }
         }
 
@@ -90,18 +90,18 @@ namespace AntiBonto.View
             Person p = (Person)dropInfo.Data;
             switch (target.Name)
             {
-                case "Fiuk": p.Nem = Nem.Fiu; break;
-                case "Lanyok": p.Nem = Nem.Lany; break;
-                case "Nullnemuek": p.Nem = Nem.Undefined; break;                
-                case "Zeneteamvezeto": d.Zeneteamvezeto = p; break;
-                case "Lanyvezeto": d.Lanyvezeto = p; break;
-                case "Fiuvezeto": d.Fiuvezeto = p; break;
-                case "Ujoncok":
-                    p.Type = PersonType.Ujonc;
+                case "Boys": p.Sex = Sex.Boy; break;
+                case "Girls": p.Sex = Sex.Girl; break;
+                case "SexUndefined": p.Sex = Sex.Undefined; break;                
+                case "MusicLeader": d.MusicLeader = p; break;
+                case "GirlLeader": d.GirlLeader = p; break;
+                case "BoyLeader": d.BoyLeader = p; break;
+                case "Newcomers":
+                    p.Type = PersonType.Newcomer;
                     Degroup(p);
                     break;
-                case "Egyeb":
-                    p.Type = PersonType.Egyeb;
+                case "Others":
+                    p.Type = PersonType.Others;
                     Degroup(p);
                     break;
                 case "AddOrRemovePersonButton":
@@ -110,79 +110,85 @@ namespace AntiBonto.View
                     Degroup(p);
                     break;
                 case "Team":
-                    if (p.Type == PersonType.Lanyvezeto && source.Name == "Lanyvezeto")
-                        d.Lanyvezeto = null;
-                    else if (p.Type == PersonType.Fiuvezeto && source.Name == "Fiuvezeto")
-                        d.Fiuvezeto = null;
-                    else if (p.Type == PersonType.Zeneteamvezeto && source.Name == "Zeneteamvezeto")
-                        d.Zeneteamvezeto = null;
-                    else if (source.Name != "Kiscsoportvezetok" && source.Name != "Alvocsoportvezetok")
-                        p.Type = PersonType.Teamtag;                    
+                    if (p.Type == PersonType.GirlLeader && source.Name == "GirlLeader")
+                        d.GirlLeader = null;
+                    else if (p.Type == PersonType.BoyLeader && source.Name == "BoyLeader")
+                        d.BoyLeader = null;
+                    else if (p.Type == PersonType.MusicLeader && source.Name == "MusicLeader")
+                        d.MusicLeader = null;
+                    else if (source.Name != "SharingGroupLeaders" && source.Name != "SleepingGroupLeaders")
+                        p.Type = PersonType.Team;                    
                     break;
-                case "Zeneteam":
-                    if (p.Type != PersonType.Lanyvezeto && p.Type != PersonType.Fiuvezeto && p.Type != PersonType.Zeneteamvezeto)
-                        p.Type = PersonType.Zeneteamtag;
+                case "MusicTeam":
+                    if (p.Type != PersonType.GirlLeader && p.Type != PersonType.BoyLeader && p.Type != PersonType.MusicLeader)
+                        p.Type = PersonType.MusicTeam;
                     break;
-                case "Kiscsoportvezetok":
-                    Edge edge = d.Edges.FirstOrDefault(e => e.Persons.Contains(p) && e.Persons.First(q => q != p).Kiscsoportvezeto);
+                case "SharingGroupLeaders":
+                    Edge edge = d.Edges.FirstOrDefault(e => e.Persons.Contains(p) && e.Persons.First(q => q != p).SharingGroupLeader);
                     if (edge == null || MessageBox.Show(String.Format("Ez a megszorítás törlődni fog:\n\n{0}\n\nAkarod folytatni?", edge.ToString()), "", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
                     {
-                        if (!p.Kiscsoportvezeto)
+                        if (!p.SharingGroupLeader)
                         {
-                            p.Kiscsoportvezeto = true;
-                            p.Kiscsoport = d.Kiscsoportvezetok.Count();
+                            p.SharingGroupLeader = true;
+                            p.SharingGroup = d.SharingGroupLeaders.Count();
                         }
                         if (edge != null)
                             d.Edges.Remove(edge);
                     }
                     break;
-                case "Alvocsoportvezetok":
-                    if (!p.Alvocsoportvezeto)
+                case "SleepingGroupLeaders":
+                    if (!p.SleepingGroupLeader)
                     {
-                        p.Alvocsoportvezeto = true;
-                        p.Alvocsoport = d.Alvocsoportvezetok.Select(q => q.Alvocsoport).DefaultIfEmpty(-1).Max() + 1;
+                        p.SleepingGroupLeader = true;
+                        p.SleepingGroup = d.SleepingGroupLeaders.Select(q => q.SleepingGroup).DefaultIfEmpty(-1).Max() + 1;
                     }
                     break;                
             }
-            if (source.Name == "Kiscsoportvezetok" && (target.Name == "Team" || target.Name == "Ujoncok" || target.Name == "Egyeb"))
+            if (source.Name == "SharingGroupLeaders" && (target.Name == "Team" || target.Name == "Newcomers" || target.Name == "Others"))
             {
-                p.Kiscsoportvezeto = false;
-                int numKiscsoportok = d.Kiscsoportvezetok.Count();
-                d.SwapKiscsoports(p.Kiscsoport, numKiscsoportok - 1);
-                foreach (Person q in d.Kiscsoport(numKiscsoportok - 1))
-                    q.Kiscsoport = -1;
+                p.SharingGroupLeader = false;
+                int numSharingGroups = d.SharingGroupLeaders.Count();
+                d.SwapSharingGroups(p.SharingGroup, numSharingGroups - 1);
+                foreach (Person q in d.SharingGroup(numSharingGroups - 1))
+                    q.SharingGroup = -1;
             }
-            if (source.Name == "Alvocsoportvezetok" && (target.Name == "Team" || target.Name == "Ujoncok" || target.Name == "Egyeb"))
+            if (source.Name == "SleepingGroupLeaders" && (target.Name == "Team" || target.Name == "Newcomers" || target.Name == "Others"))
             {
-                p.Alvocsoportvezeto = false;
-                if (d.Alvocsoportvezetok.Any(q => q.Nem == Nem.Undefined))
+                p.SleepingGroupLeader = false;
+                if (d.SleepingGroupLeaders.Any(q => q.Sex == Sex.Undefined))
                 {
-                    int numAlvocsoportok = d.Alvocsoportvezetok.Count();
-                    d.SwapAlvocsoports(p.Alvocsoport, numAlvocsoportok - 1);
-                    foreach (Person q in d.Alvocsoport(numAlvocsoportok - 1))
-                        q.Alvocsoport = -1;
+                    int numSleepingGroups = d.SleepingGroupLeaders.Count();
+                    d.SwapSleepingGroups(p.SleepingGroup, numSleepingGroups - 1);
+                    foreach (Person q in d.SleepingGroup(numSleepingGroups - 1))
+                        q.SleepingGroup = -1;
                 }
                 else
                 {
                     // No swapping here, because we reorder the sleeping groups anyway on opening of their tab
-                    foreach (Person q in d.Alvocsoport(p.Alvocsoport))
-                        q.Alvocsoport = -1;
+                    foreach (Person q in d.SleepingGroup(p.SleepingGroup))
+                        q.SleepingGroup = -1;
                 }
             }
-            if (target is DnDItemsControl temp && d.Kiscsoportok?.Contains(temp.ItemsSource) == true)
+            if (target is DnDItemsControl temp && d.SharingGroups?.Contains(temp.ItemsSource) == true)
             {
-                p.Kiscsoport = d.Kiscsoportok.IndexOf(temp.ItemsSource as ICollectionView);
+                p.SharingGroup = d.SharingGroups.IndexOf(temp.ItemsSource as ICollectionView);
             }                
-            if (target is DnDItemsControl temp2 && (d.AlvocsoportokFiu?.Contains(temp2.ItemsSource) == true || d.AlvocsoportokLany?.Contains(temp2.ItemsSource) == true))
+            if (target is DnDItemsControl temp2 && (d.BoySleepingGroups?.Contains(temp2.ItemsSource) == true || d.GirlSleepingGroups?.Contains(temp2.ItemsSource) == true))
             {
-                p.Alvocsoport = temp2.ItemsSource.Cast<Person>().First().Alvocsoport;
+                p.SleepingGroup = temp2.ItemsSource.Cast<Person>().First().SleepingGroup;
                 ((ItemsControl)source).Items.Refresh(); // This updates the visualizing decorations for all others in the source
                 ((ItemsControl)target).Items.Refresh(); // and target sleeping groups
             }
-            if (target.Name == "nokcs")
-                p.Kiscsoport = -1;
-            if (target.Name.StartsWith("noacs"))
-                p.Alvocsoport = -1;
+            if (target.Name == "sharingGroupless")
+            {
+                p.SharingGroup = -1;
+                ((ItemsControl)source).Items.Refresh();
+            } 
+            else if (target.Name.StartsWith("sleepingGroupless"))
+            {
+                p.SleepingGroup = -1;
+                ((ItemsControl)source).Items.Refresh();
+            }
         }
     }
 }

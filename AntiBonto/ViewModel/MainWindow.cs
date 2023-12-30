@@ -25,7 +25,7 @@ namespace AntiBonto.ViewModel
         /// <summary>
         /// The Save button disables if this is false
         /// </summary>
-        public bool BeosztasKesz => !Kiscsoport(-1).Any() && !Alvocsoport(-1).Any();
+        public bool AssignmentsComplete => !SharingGroup(-1).Any() && !SleepingGroup(-1).Any();
 
         private bool magicAllowed = false;
         private bool magicPossible = false;
@@ -38,10 +38,10 @@ namespace AntiBonto.ViewModel
         private void People_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             RaisePropertyChanged(nameof(PeopleNotEmpty));
-            RaisePropertyChanged(nameof(Zeneteamvezeto));
-            RaisePropertyChanged(nameof(Fiuvezeto));
-            RaisePropertyChanged(nameof(Lanyvezeto));
-            RaisePropertyChanged(nameof(Kiscsoportok));
+            RaisePropertyChanged(nameof(MusicLeader));
+            RaisePropertyChanged(nameof(BoyLeader));
+            RaisePropertyChanged(nameof(GirlLeader));
+            RaisePropertyChanged(nameof(SharingGroups));
         }
                 
         private ObservableCollection2<Person> people;
@@ -65,71 +65,71 @@ namespace AntiBonto.ViewModel
         }
 
         /// <summary>
-        /// This method is called when the kiscsoportbeoszto tab is opened and all conditions have been met.
+        /// This method is called when the sharing groups tab is opened and all conditions have been met.
         /// </summary>
-        internal void InitKiscsoport()
+        internal void InitSharingGroups()
         {
-            kiscsoportok = Kiscsoportvezetok.Select((v, i) => KiscsoportCollectionView(i)).ToList();
+            sharingGroups = SharingGroupLeaders.Select((v, i) => SharingGroupCollectionView(i)).ToList();
 
-            RaisePropertyChanged(nameof(Kiscsoportok));
-            RaisePropertyChanged(nameof(NoKiscsoport));
+            RaisePropertyChanged(nameof(SharingGroups));
+            RaisePropertyChanged(nameof(SharingGroupless));
         }       
 
         /// <summary>
-        /// This method is called when the alvocsoportbeoszto tab is opened and all conditions have been met.
+        /// This method is called when the sleeping groups tab is opened and all conditions have been met.
         /// </summary>
-        internal void InitAlvocsoport()
+        internal void InitSleepingGroups()
         {
             // Renumber sleeping groups: girls first
             int i = 0;
-            foreach (var person in Alvocsoportvezetok.Where(p => p.Nem == Nem.Lany))
+            foreach (var person in SleepingGroupLeaders.Where(p => p.Sex == Sex.Girl))
             {
-                if (person.Alvocsoport != i)
+                if (person.SleepingGroup != i)
                 {
-                    SwapAlvocsoports(person.Alvocsoport, i);
+                    SwapSleepingGroups(person.SleepingGroup, i);
                 }
                 i++;
             }
-            foreach (var person in Alvocsoportvezetok.Where(p => p.Nem == Nem.Fiu))
+            foreach (var person in SleepingGroupLeaders.Where(p => p.Sex == Sex.Boy))
             {
-                if (person.Alvocsoport != i)
+                if (person.SleepingGroup != i)
                 {
-                    SwapAlvocsoports(person.Alvocsoport, i);
+                    SwapSleepingGroups(person.SleepingGroup, i);
                 }
                 i++;
             }
 
-            alvocsoportok = Alvocsoportvezetok.Select((v, i) => AlvocsoportCollectionView(i)).ToList();
-            alvocsoportokFiu = Alvocsoportvezetok.Where(item => item.Nem == Nem.Fiu).Select(item => AlvocsoportCollectionView(item.Alvocsoport)).ToList();
-            alvocsoportokLany = Alvocsoportvezetok.Where(item => item.Nem == Nem.Lany).Select(item => AlvocsoportCollectionView(item.Alvocsoport)).ToList();
+            sleepingGroups = SleepingGroupLeaders.Select((v, i) => SleepingGroupCollectionView(i)).ToList();
+            boySleepingGroups = SleepingGroupLeaders.Where(item => item.Sex == Sex.Boy).Select(item => SleepingGroupCollectionView(item.SleepingGroup)).ToList();
+            girlSleepingGroups = SleepingGroupLeaders.Where(item => item.Sex == Sex.Girl).Select(item => SleepingGroupCollectionView(item.SleepingGroup)).ToList();
 
-            RaisePropertyChanged(nameof(Alvocsoportok));
-            RaisePropertyChanged(nameof(AlvocsoportokFiu));
-            RaisePropertyChanged(nameof(AlvocsoportokLany));
-            RaisePropertyChanged(nameof(NoAlvocsoportFiu));
-            RaisePropertyChanged(nameof(NoAlvocsoportLany));
+            RaisePropertyChanged(nameof(SleepingGroups));
+            RaisePropertyChanged(nameof(BoySleepingGroups));
+            RaisePropertyChanged(nameof(GirlSleepingGroups));
+            RaisePropertyChanged(nameof(SleepingGrouplessBoys));
+            RaisePropertyChanged(nameof(SleepingGrouplessGirls));
         }
 
         /// <summary>
         /// Renumbers the share groups so that the weekend leaders and the music team leader are in the groups with the highest number
         /// </summary>
-        internal void KiscsoportExportOrdering()
+        internal void SharingGroupExportOrdering()
         {
-            int l = Lanyvezeto.Kiscsoport, f = Fiuvezeto.Kiscsoport, z = Zeneteamvezeto.Kiscsoport, m = Kiscsoportvezetok.Count();
-            SwapKiscsoports(Lanyvezeto.Kiscsoport, m - 1);
+            int l = GirlLeader.SharingGroup, f = BoyLeader.SharingGroup, z = MusicLeader.SharingGroup, m = SharingGroupLeaders.Count();
+            SwapSharingGroups(GirlLeader.SharingGroup, m - 1);
             if (f != l)
-                SwapKiscsoports(Fiuvezeto.Kiscsoport, m - 2);
+                SwapSharingGroups(BoyLeader.SharingGroup, m - 2);
             if (z != l && z != f)
-                SwapKiscsoports(Zeneteamvezeto.Kiscsoport, m - 3);
+                SwapSharingGroups(MusicLeader.SharingGroup, m - 3);
         }
 
-        public ICollectionView Fiuk => CollectionViewHelper.Lazy<Person>(People, p => p.Nem == Nem.Fiu && p.Type != PersonType.Egyeb);
-        public ICollectionView Lanyok => CollectionViewHelper.Lazy<Person>(People, p => p.Nem == Nem.Lany && p.Type != PersonType.Egyeb);
-        public ICollectionView Nullnemuek
+        public ICollectionView Boys => CollectionViewHelper.Lazy<Person>(People, p => p.Sex == Sex.Boy && p.Type != PersonType.Others);
+        public ICollectionView Girls => CollectionViewHelper.Lazy<Person>(People, p => p.Sex == Sex.Girl && p.Type != PersonType.Others);
+        public ICollectionView SexUndefined
         {
             get
             {
-                var ret = CollectionViewHelper.Lazy<Person>(People, p => p.Nem == Nem.Undefined && p.Type != PersonType.Egyeb);
+                var ret = CollectionViewHelper.Lazy<Person>(People, p => p.Sex == Sex.Undefined && p.Type != PersonType.Others);
                 ret.CollectionChanged += (sender, e) => ret.MoveCurrentToFirst();
                 ret.MoveCurrentToFirst();
                 return ret;
@@ -138,89 +138,89 @@ namespace AntiBonto.ViewModel
 
         private readonly SortDescription orderByName = new("Name", ListSortDirection.Ascending);
 
-        public ICollectionView Ujoncok => CollectionViewHelper.Lazy<Person>(People, p => p.Type == PersonType.Ujonc, orderByName);
-        public ICollectionView Team => CollectionViewHelper.Lazy<Person>(People, p => p.Type != PersonType.Egyeb && p.Type != PersonType.Ujonc, orderByName);
-        public ICollectionView Egyeb => CollectionViewHelper.Lazy<Person>(People, p => p.Type == PersonType.Egyeb, orderByName);
+        public ICollectionView Newcomers => CollectionViewHelper.Lazy<Person>(People, p => p.Type == PersonType.Newcomer, orderByName);
+        public ICollectionView Team => CollectionViewHelper.Lazy<Person>(People, p => p.Type != PersonType.Others && p.Type != PersonType.Newcomer, orderByName);
+        public ICollectionView Others => CollectionViewHelper.Lazy<Person>(People, p => p.Type == PersonType.Others, orderByName);
 
-        public ICollectionView KiscsoportvezetokCollectionView => CollectionViewHelper.Lazy<Person>(People, p => p.Kiscsoportvezeto);
-        public ICollectionView AlvocsoportvezetokCollectionView => CollectionViewHelper.Lazy<Person>(People, p => p.Alvocsoportvezeto);
-        public IEnumerable<Person> Kiscsoportvezetok => KiscsoportvezetokCollectionView.Cast<Person>();
-        public IEnumerable<Person> Alvocsoportvezetok => AlvocsoportvezetokCollectionView.Cast<Person>();
-        public ICollectionView CsoportokbaOsztando => CollectionViewHelper.Lazy<Person>(People, p => p.Type != PersonType.Egyeb, orderByName);
-        public ICollectionView Zeneteam => CollectionViewHelper.Lazy<Person>(People, p => p.Type == PersonType.Zeneteamtag);
-        private ICollectionView KiscsoportCollectionView(int i)
+        public ICollectionView SharingGroupLeadersCollectionView => CollectionViewHelper.Lazy<Person>(People, p => p.SharingGroupLeader);
+        public ICollectionView SleepingGroupLeadersCollectionView => CollectionViewHelper.Lazy<Person>(People, p => p.SleepingGroupLeader);
+        public IEnumerable<Person> SharingGroupLeaders => SharingGroupLeadersCollectionView.Cast<Person>();
+        public IEnumerable<Person> SleepingGroupLeaders => SleepingGroupLeadersCollectionView.Cast<Person>();
+        public ICollectionView PeopleToAssign => CollectionViewHelper.Lazy<Person>(People, p => p.Type != PersonType.Others, orderByName);
+        public ICollectionView MusicTeam => CollectionViewHelper.Lazy<Person>(People, p => p.Type == PersonType.MusicTeam);
+        private ICollectionView SharingGroupCollectionView(int i)
         {
-            return CollectionViewHelper.Get<Person>(People, p => p.Kiscsoport == i && p.Type != PersonType.Egyeb, new SortDescription(nameof(Person.Kiscsoportvezeto), ListSortDirection.Descending));
+            return CollectionViewHelper.Get<Person>(People, p => p.SharingGroup == i && p.Type != PersonType.Others, new SortDescription(nameof(Person.SharingGroupLeader), ListSortDirection.Descending));
         }
-        private ICollectionView AlvocsoportCollectionView(int i)
+        private ICollectionView SleepingGroupCollectionView(int i)
         {
-            return CollectionViewHelper.Get<Person>(People, p => p.Alvocsoport == i && p.Type != PersonType.Egyeb, new SortDescription(nameof(Person.Alvocsoportvezeto), ListSortDirection.Descending));
+            return CollectionViewHelper.Get<Person>(People, p => p.SleepingGroup == i && p.Type != PersonType.Others, new SortDescription(nameof(Person.SleepingGroupLeader), ListSortDirection.Descending));
         }
-        public IEnumerable<Person> Kiscsoport(int i)
+        public IEnumerable<Person> SharingGroup(int i)
         {
-            return People.Where(p => p.Type != PersonType.Egyeb && p.Kiscsoport == i);
+            return People.Where(p => p.Type != PersonType.Others && p.SharingGroup == i);
         }
-        public IEnumerable<Person> Alvocsoport(int i)
+        public IEnumerable<Person> SleepingGroup(int i)
         {
-            return People.Where(p => p.Type != PersonType.Egyeb && p.Alvocsoport == i);
+            return People.Where(p => p.Type != PersonType.Others && p.SleepingGroup == i);
         }
-        public ICollectionView NoKiscsoport => CollectionViewHelper.Lazy<Person>(People, p => p.Kiscsoport == -1 && p.Type != PersonType.Egyeb);
-        public ICollectionView NoAlvocsoportFiu => CollectionViewHelper.Lazy<Person>(People, p => p.Alvocsoport == -1 && p.Type != PersonType.Egyeb && p.Nem == Nem.Fiu);
-        public ICollectionView NoAlvocsoportLany => CollectionViewHelper.Lazy<Person>(People, p => p.Alvocsoport == -1 && p.Type != PersonType.Egyeb && p.Nem == Nem.Lany);
+        public ICollectionView SharingGroupless => CollectionViewHelper.Lazy<Person>(People, p => p.SharingGroup == -1 && p.Type != PersonType.Others);
+        public ICollectionView SleepingGrouplessBoys => CollectionViewHelper.Lazy<Person>(People, p => p.SleepingGroup == -1 && p.Type != PersonType.Others && p.Sex == Sex.Boy);
+        public ICollectionView SleepingGrouplessGirls => CollectionViewHelper.Lazy<Person>(People, p => p.SleepingGroup == -1 && p.Type != PersonType.Others && p.Sex == Sex.Girl);
 
-        private List<ICollectionView> kiscsoportok, alvocsoportok, alvocsoportokFiu, alvocsoportokLany;
-        public List<ICollectionView> Kiscsoportok => kiscsoportok;
-        public List<ICollectionView> Alvocsoportok => alvocsoportok;
-        public List<ICollectionView> AlvocsoportokFiu => alvocsoportokFiu;
-        public List<ICollectionView> AlvocsoportokLany => alvocsoportokLany;
+        private List<ICollectionView> sharingGroups, sleepingGroups, boySleepingGroups, girlSleepingGroups;
+        public List<ICollectionView> SharingGroups => sharingGroups;
+        public List<ICollectionView> SleepingGroups => sleepingGroups;
+        public List<ICollectionView> BoySleepingGroups => boySleepingGroups;
+        public List<ICollectionView> GirlSleepingGroups => girlSleepingGroups;
 
-        public Person Zeneteamvezeto
+        public Person MusicLeader
         {
             get
             {
-                return People.SingleOrDefault(p => p.Type == PersonType.Zeneteamvezeto);
+                return People.SingleOrDefault(p => p.Type == PersonType.MusicLeader);
             }
             set
             {
-                if (Zeneteamvezeto != null)
-                    Zeneteamvezeto.Type = PersonType.Teamtag;
+                if (MusicLeader != null)
+                    MusicLeader.Type = PersonType.Team;
                 if (value != null)
-                    value.Type = PersonType.Zeneteamvezeto;
+                    value.Type = PersonType.MusicLeader;
                 RaisePropertyChanged();
-                RaisePropertyChanged(nameof(Fiuvezeto));
-                RaisePropertyChanged(nameof(Lanyvezeto));
+                RaisePropertyChanged(nameof(BoyLeader));
+                RaisePropertyChanged(nameof(GirlLeader));
             }
         }
-        public Person Fiuvezeto
+        public Person BoyLeader
         {
             get
             {
-                return People.SingleOrDefault(p => p.Type == PersonType.Fiuvezeto);
+                return People.SingleOrDefault(p => p.Type == PersonType.BoyLeader);
             }
             set
             {
-                if (Fiuvezeto != null)
-                    Fiuvezeto.Type = PersonType.Teamtag;
+                if (BoyLeader != null)
+                    BoyLeader.Type = PersonType.Team;
                 if (value != null)
-                    value.Type = PersonType.Fiuvezeto;
+                    value.Type = PersonType.BoyLeader;
                 RaisePropertyChanged();
-                RaisePropertyChanged(nameof(Zeneteamvezeto));
+                RaisePropertyChanged(nameof(MusicLeader));
             }
         }
-        public Person Lanyvezeto
+        public Person GirlLeader
         {
             get
             {
-                return People.SingleOrDefault(p => p.Type == PersonType.Lanyvezeto);
+                return People.SingleOrDefault(p => p.Type == PersonType.GirlLeader);
             }
             set
             {
-                if (Lanyvezeto != null)
-                    Lanyvezeto.Type = PersonType.Teamtag;
+                if (GirlLeader != null)
+                    GirlLeader.Type = PersonType.Team;
                 if (value != null)
-                    value.Type = PersonType.Lanyvezeto;
+                    value.Type = PersonType.GirlLeader;
                 RaisePropertyChanged();
-                RaisePropertyChanged(nameof(Zeneteamvezeto));
+                RaisePropertyChanged(nameof(MusicLeader));
             }
         }
         
@@ -246,9 +246,9 @@ namespace AntiBonto.ViewModel
 
         public MainWindow()
         {
-            NoKiscsoport.CollectionChanged += (s, e) => RaisePropertyChanged(nameof(BeosztasKesz));
-            NoAlvocsoportFiu.CollectionChanged += (s, e) => RaisePropertyChanged(nameof(BeosztasKesz));
-            NoAlvocsoportLany.CollectionChanged += (s, e) => RaisePropertyChanged(nameof(BeosztasKesz));
+            SharingGroupless.CollectionChanged += (s, e) => RaisePropertyChanged(nameof(AssignmentsComplete));
+            SleepingGrouplessBoys.CollectionChanged += (s, e) => RaisePropertyChanged(nameof(AssignmentsComplete));
+            SleepingGrouplessGirls.CollectionChanged += (s, e) => RaisePropertyChanged(nameof(AssignmentsComplete));
         }
 
         private string statusText = "";
@@ -261,7 +261,7 @@ namespace AntiBonto.ViewModel
         /// <summary>
         /// Represents groups in which no two persons should get assigned to the same sharing group.
         /// </summary>
-        public ObservableCollection2<ObservableCollection2<Person>> MutuallyExclusiveGroups { get; } = new ObservableCollection2<ObservableCollection2<Person>> { new ObservableCollection2<Person>() };
+        public ObservableCollection2<ObservableCollection2<Person>> MutuallyExclusiveGroups { get; } = new ObservableCollection2<ObservableCollection2<Person>> { new() };
 
         internal AppData AppData
         {
@@ -283,8 +283,8 @@ namespace AntiBonto.ViewModel
                     for (int i = 0; i < edge.Persons.Length; i++)
                         edge.Persons[i] = People.Single(p => p.Name == edge.Persons[i].Name);
                 foreach (Person person in People)
-                    if (person.KinekAzUjonca != null)
-                        person.KinekAzUjonca = People.Single(p => p.Name == person.KinekAzUjonca.Name);
+                    if (person.WhoseNewcomer != null)
+                        person.WhoseNewcomer = People.Single(p => p.Name == person.WhoseNewcomer.Name);
                 foreach (var group in value.MutuallyExclusiveGroups)
                 {
                     var og = new ViewModel.ObservableCollection2<Person>();
@@ -298,38 +298,36 @@ namespace AntiBonto.ViewModel
             }
         }
 
-        public void SwapKiscsoports(int i, int j)
+        public void SwapSharingGroups(int i, int j)
         {
             Debug.Assert(i != -100);
             Debug.Assert(j != -100);
             if (i == j) return;
-            foreach (Person p in Kiscsoport(i).ToList())
-                p.Kiscsoport = -100;
-            foreach (Person p in Kiscsoport(j).ToList())
-                p.Kiscsoport = i;
-            foreach (Person p in Kiscsoport(-100).ToList())
-                p.Kiscsoport = j;
+            foreach (Person p in SharingGroup(i).ToList())
+                p.SharingGroup = -100;
+            foreach (Person p in SharingGroup(j).ToList())
+                p.SharingGroup = i;
+            foreach (Person p in SharingGroup(-100).ToList())
+                p.SharingGroup = j;
         }
 
-        public void SwapAlvocsoports(int i, int j)
+        public void SwapSleepingGroups(int i, int j)
         {
             Debug.Assert(i != -100);
             Debug.Assert(j != -100);
             if (i == j) return;
-            foreach (Person p in Alvocsoport(i).ToList())
-                p.Alvocsoport = -100;
-            foreach (Person p in Alvocsoport(j).ToList())
-                p.Alvocsoport = i;
-            foreach (Person p in Alvocsoport(-100).ToList())
-                p.Alvocsoport = j;
-
-            //(alvocsoportNevek[j], alvocsoportNevek[i]) = (alvocsoportNevek[i], alvocsoportNevek[j]);
+            foreach (Person p in SleepingGroup(i).ToList())
+                p.SleepingGroup = -100;
+            foreach (Person p in SleepingGroup(j).ToList())
+                p.SleepingGroup = i;
+            foreach (Person p in SleepingGroup(-100).ToList())
+                p.SleepingGroup = j;
         }
 
         public DragOverCallback DragOver_AlwaysAllow => (person, source, target) => new() { effect = DragDropEffects.Move };
-        public DragOverCallback Ujoncok_DragOver => (person, source, target) =>
+        public DragOverCallback Newcomers_DragOver => (person, source, target) =>
         {
-            if (person.Type == PersonType.Fiuvezeto || person.Type == PersonType.Lanyvezeto || person.Type == PersonType.Zeneteamvezeto)
+            if (person.Type == PersonType.BoyLeader || person.Type == PersonType.GirlLeader || person.Type == PersonType.MusicLeader)
             {
                 return new()
                 {
@@ -338,7 +336,7 @@ namespace AntiBonto.ViewModel
             }
             return new() { effect = DragDropEffects.Move };
         };
-        public DragOverCallback NoKcs_DragOver => (person, source, target) =>
+        public DragOverCallback SharingGroupless_DragOver => (person, source, target) =>
         {
             if (person.Pinned)
             {
@@ -348,7 +346,7 @@ namespace AntiBonto.ViewModel
                     message = person + " le van rögzítve!"
                 };
             }
-            else if (person.Kiscsoportvezeto)
+            else if (person.SharingGroupLeader)
             {
                 return new()
                 {
@@ -359,7 +357,7 @@ namespace AntiBonto.ViewModel
 
             return new() { effect = DragDropEffects.Move };
         };
-        public DragOverCallback Kcs_DragOver => (person, source, target) =>
+        public DragOverCallback SharingGroup_DragOver => (person, source, target) =>
         {
             if (person.Pinned)
             {
@@ -369,7 +367,7 @@ namespace AntiBonto.ViewModel
                     message = person + " le van rögzítve!"
                 };
             }
-            else if (person.Kiscsoportvezeto)
+            else if (person.SharingGroupLeader)
             {
                 return new()
                 {
@@ -379,18 +377,18 @@ namespace AntiBonto.ViewModel
             }
             else
             {
-                int kcsn = Kiscsoportok.IndexOf((target as DnDItemsControl).ItemsSource as ICollectionView);
+                int kcsn = SharingGroups.IndexOf((target as DnDItemsControl).ItemsSource as ICollectionView);
                 string message = null;
 
                 var ret = new DragOverResult
                 {
-                    effect = (kcsn == person.Kiscsoport || Algorithm.Conflicts(person, kcsn, out message)) ? DragDropEffects.None : DragDropEffects.Move,
+                    effect = (kcsn == person.SharingGroup || Algorithm.Conflicts(person, kcsn, out message)) ? DragDropEffects.None : DragDropEffects.Move,
                     message = message
                 };
                 return ret;
             }
         };
-        public DragOverCallback NoAcs_DragOver => (person, source, target) =>
+        public DragOverCallback SleepingGroupless_DragOver => (person, source, target) =>
         {
             if (person.Pinned)
             {
@@ -400,7 +398,7 @@ namespace AntiBonto.ViewModel
                     message = person + " le van rögzítve!"
                 };
             }
-            else if (person.Alvocsoportvezeto)
+            else if (person.SleepingGroupLeader)
             {
                 return new()
                 {
@@ -411,7 +409,7 @@ namespace AntiBonto.ViewModel
 
             return new() { effect = DragDropEffects.Move };
         };
-        public DragOverCallback Acs_DragOver => (person, source, target) =>
+        public DragOverCallback SleepingGroup_DragOver => (person, source, target) =>
         {
             if (person.Pinned)
             {
@@ -421,7 +419,7 @@ namespace AntiBonto.ViewModel
                     message = person + " le van rögzítve!"
                 };
             }
-            else if (person.Alvocsoportvezeto)
+            else if (person.SleepingGroupLeader)
             {
                 return new()
                 {
@@ -431,11 +429,11 @@ namespace AntiBonto.ViewModel
             }
             else
             {
-                int acsn = ((target as DnDItemsControl).ItemsSource as CollectionView).Cast<Person>().First().Alvocsoport;
-                var acsvez = Alvocsoportvezetok.Single(q => q.Alvocsoport == acsn);
+                int acsn = ((target as DnDItemsControl).ItemsSource as CollectionView).Cast<Person>().First().SleepingGroup;
+                var acsvez = SleepingGroupLeaders.Single(q => q.SleepingGroup == acsn);
                 return new()
                 {
-                    effect = (person.Nem != Nem.Undefined && person.Nem != acsvez.Nem) ? DragDropEffects.None : DragDropEffects.Move
+                    effect = (person.Sex != Sex.Undefined && person.Sex != acsvez.Sex) ? DragDropEffects.None : DragDropEffects.Move
                 };
             }
         };

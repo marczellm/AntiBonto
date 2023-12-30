@@ -8,9 +8,9 @@ using System.Linq;
 namespace AntiBonto.View
 {
     /// <summary>
-    /// Mapping from kiscsoport numbers to colors. The coloring is conditional on them being in the same sleeping group
+    /// Mapping from sharing group numbers to colors. The coloring is conditional on them being in the same sleeping group
     /// </summary>
-    class KiscsoportColorConverter : IMultiValueConverter
+    class SharingGroupColorConverter : IMultiValueConverter
     {
         private static readonly byte[,] colors = new byte[,] { { 125, 135, 185 }, { 190, 193, 212 }, { 214, 188, 192 }, { 187, 119, 132 },
              { 133, 149, 225 }, { 181, 187, 227 }, { 230, 175, 185 }, { 224, 123, 145 },
@@ -21,8 +21,8 @@ namespace AntiBonto.View
         {
             Person p = (Person)values[0];
             var viewModel = (ViewModel.MainWindow)values[1];
-            int i = p.Kiscsoport % colors.Length;
-            if (i != -1 && viewModel.Kiscsoportok[i].Cast<Person>().Any(q => p != q && p.Alvocsoport == q.Alvocsoport))
+            int i = p.SharingGroup % colors.Length;
+            if (i != -1 && viewModel.SharingGroups[i].Cast<Person>().Any(q => p != q && p.SleepingGroup == q.SleepingGroup))
                 return new SolidColorBrush(Color.FromArgb(127, colors[i, 0], colors[i, 1], colors[i, 2]));
             else return SystemColors.ControlBrush;            
         }

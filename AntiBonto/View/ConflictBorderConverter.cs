@@ -17,9 +17,9 @@ namespace AntiBonto.View
             var viewModel = (ViewModel.MainWindow)values[1];
             Edge edge = viewModel.Edges.FirstOrDefault(e => e.Dislike && e.Persons.Contains(p));
             var pp = edge?.Persons;
-            if (edge != null && pp[0].Alvocsoport == pp[1].Alvocsoport)
+            if (edge != null && pp[0].SleepingGroup == pp[1].SleepingGroup)
                 return Brushes.Red;
-            else if (p.KinekAzUjonca?.Alvocsoport == p.Alvocsoport || viewModel.Alvocsoportok[p.Alvocsoport].Cast<Person>().Any(q => q.KinekAzUjonca == p))
+            else if (p.WhoseNewcomer?.SleepingGroup == p.SleepingGroup || viewModel.SleepingGroups[p.SleepingGroup].Cast<Person>().Any(q => q.WhoseNewcomer == p))
                 return Brushes.Green;
             else return Brushes.Transparent;
         }

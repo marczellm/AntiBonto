@@ -156,11 +156,11 @@ namespace AntiBonto
                 MessageBox.Show("Excel nincs telepítve!");
                 return;
             }
-            foreach (Person p in viewModel.CsoportokbaOsztando)
+            foreach (Person p in viewModel.PeopleToAssign)
             {
-                foreach (Person q in p.kivelIgen)
+                foreach (Person q in p.includeEdges)
                 {
-                    if (p.Kiscsoport != q.Kiscsoport)
+                    if (p.SharingGroup != q.SharingGroup)
                     {
                         MessageBox.Show(String.Format("{0} és {1} együtt kéne legyenek kiscsoportban, de elmozgattad őket!", p, q));
                         return;
@@ -180,7 +180,7 @@ namespace AntiBonto
             {
                 try
                 {
-                    viewModel.KiscsoportExportOrdering();
+                    viewModel.SharingGroupExportOrdering();
                     await ExcelHelper.SaveXLS(dialog.FileName, viewModel);
                 }
                 catch (Exception ex)
@@ -231,13 +231,13 @@ namespace AntiBonto
             if (edge.Persons.Contains(null))
                 return;
             var p = edge.Persons;
-            if (p[0].Kiscsoportvezeto && p[1].Kiscsoportvezeto)
+            if (p[0].SharingGroupLeader && p[1].SharingGroupLeader)
                 MessageBox.Show("Mindketten kiscsoportvezetők!");
             else if (p[0] != p[1])
             {
                 viewModel.Edges.Add(edge);
-                if (edge.Dislike && p[0].Kiscsoport == p[1].Kiscsoport)
-                    p.First(q => !q.Kiscsoportvezeto).Kiscsoport = -1;
+                if (edge.Dislike && p[0].SharingGroup == p[1].SharingGroup)
+                    p.First(q => !q.SharingGroupLeader).SharingGroup = -1;
                 viewModel.Edge = new Edge { Dislike = edge.Dislike };
             }
         }
@@ -266,49 +266,49 @@ namespace AntiBonto
             {
                 viewModel.StatusText = "";
                 var newTab = e.AddedItems[0];
-                if (newTab != Kiscsoportbeoszto && newTab != Alvocsoportbeoszto)
+                if (newTab != SharingGroupsTab && newTab != SleepingGroupsTab)
                     return;
                 string message = null;
                 var v = viewModel;
                 if (v.People.Count == 0)
                 {
                     message = "Nincsenek résztvevők!";
-                    newTab = Resztvevok;
+                    newTab = Participants;
                 }
-                else if (!v.Kiscsoportvezetok.Any() && newTab == Kiscsoportbeoszto)
+                else if (!v.SharingGroupLeaders.Any() && newTab == SharingGroupsTab)
                 {
                     message = "Még nem jelölted ki a kiscsoportvezetőket!";
-                    newTab = Szerepek;
+                    newTab = Roles;
                 }
-                else if (!v.Alvocsoportvezetok.Any() && newTab == Alvocsoportbeoszto)
+                else if (!v.SleepingGroupLeaders.Any() && newTab == SleepingGroupsTab)
                 {
                     message = "Még nem jelölted ki az alvócsoportvezetőket!";
-                    newTab = Szerepek;
+                    newTab = Roles;
                 }
-                else if (v.Ujoncok.IsEmpty)
+                else if (v.Newcomers.IsEmpty)
                 {
                     message = "Nincsenek újoncok!";
-                    newTab = Szerepek;
+                    newTab = Roles;
                 }
                 else if (v.Team.IsEmpty)
                 {
                     message = "Nincs team!";
-                    newTab = Szerepek;
+                    newTab = Roles;
                 }
-                else if (v.Fiuvezeto == null || v.Lanyvezeto == null)
+                else if (v.BoyLeader == null || v.GirlLeader == null)
                 {
                     message = "Még nem jelölted ki a vezetőket!";
-                    newTab = Szerepek;
+                    newTab = Roles;
                 }
-                else if (v.Zeneteamvezeto == null)
+                else if (v.MusicLeader == null)
                 {
                     message = "Még nem jelölted ki a zeneteamvezetőt!";
-                    newTab = Szerepek;
+                    newTab = Roles;
                 }
-                else if (!viewModel.Nullnemuek.IsEmpty)
+                else if (!viewModel.SexUndefined.IsEmpty)
                 {
                     message = "Még nem osztottad be a lányokat és a fiúkat!";
-                    newTab = LanyokFiuk;
+                    newTab = Sexes;
                 }
                 if (message != null)
                 {
@@ -317,12 +317,12 @@ namespace AntiBonto
                     SaveButton.IsEnabled = false;
                     // we don't activate newTab here anymore, because it caused weird behaviour
                 }
-                else if (newTab == Kiscsoportbeoszto)
+                else if (newTab == SharingGroupsTab)
                 {
-                    viewModel.InitKiscsoport();
+                    viewModel.InitSharingGroups();
 
-                    BindingOperations.GetBindingExpression(Kiscsoportok, ItemsControl.ItemsSourceProperty).UpdateTarget();
-                    Kiscsoportok.Items.Refresh();
+                    BindingOperations.GetBindingExpression(SharingGroups, ItemsControl.ItemsSourceProperty).UpdateTarget();
+                    SharingGroups.Items.Refresh();
 
                     // TODO update all kcs views individually?
 
@@ -330,24 +330,24 @@ namespace AntiBonto
                     viewModel.MagicPossible = true;
                     BindingOperations.SetBinding(SaveButton, IsEnabledProperty, SaveButtonBinding);
                 }
-                else if (newTab == Alvocsoportbeoszto)
+                else if (newTab == SleepingGroupsTab)
                 {
-                    viewModel.InitKiscsoport();
-                    viewModel.InitAlvocsoport();
+                    viewModel.InitSharingGroups();
+                    viewModel.InitSleepingGroups();
 
-                    BindingOperations.GetBindingExpression(AlvocsoportokFiu, ItemsControl.ItemsSourceProperty).UpdateTarget();
-                    AlvocsoportokFiu.Items.Refresh();
+                    BindingOperations.GetBindingExpression(BoySleepingGroups, ItemsControl.ItemsSourceProperty).UpdateTarget();
+                    BoySleepingGroups.Items.Refresh();
 
-                    BindingOperations.GetBindingExpression(AlvocsoportokLany, ItemsControl.ItemsSourceProperty).UpdateTarget();
-                    AlvocsoportokLany.Items.Refresh();
+                    BindingOperations.GetBindingExpression(GirlSleepingGroups, ItemsControl.ItemsSourceProperty).UpdateTarget();
+                    GirlSleepingGroups.Items.Refresh();
 
                     // TODO update all acs views individually?
 
                     BindingOperations.GetBindingExpression(SaveButton, IsEnabledProperty)?.UpdateTarget();
                 }
-                else if (newTab == LanyokFiuk)
+                else if (newTab == Sexes)
                 {
-                    viewModel.Nullnemuek.MoveCurrentToFirst();
+                    viewModel.SexUndefined.MoveCurrentToFirst();
                 }
             }
         }
@@ -380,29 +380,29 @@ namespace AntiBonto
             btn.Content = oldContent;
         }
 
-        private void ClearKiscsoportok(object sender, RoutedEventArgs e)
+        private void ClearSharingGroups(object sender, RoutedEventArgs e)
         {
-            foreach (Person p in viewModel.CsoportokbaOsztando)
-                if (!p.Kiscsoportvezeto)
-                    p.Kiscsoport = -1;
+            foreach (Person p in viewModel.PeopleToAssign)
+                if (!p.SharingGroupLeader)
+                    p.SharingGroup = -1;
         }
 
-        private void ClearAlvocsoportok(object sender, RoutedEventArgs e)
+        private void ClearSleepingGroups(object sender, RoutedEventArgs e)
         {
-            foreach (Person p in viewModel.CsoportokbaOsztando)
-                if (!p.Alvocsoportvezeto)
-                    p.Alvocsoport = -1;
+            foreach (Person p in viewModel.PeopleToAssign)
+                if (!p.SleepingGroupLeader)
+                    p.SleepingGroup = -1;
         }
 
-        private void LanyokFiuk_KeyUp(object sender, KeyEventArgs e)
+        private void Sexes_KeyUp(object sender, KeyEventArgs e)
         {
-            Person p = (Person)viewModel.Nullnemuek.CurrentItem;
+            Person p = (Person)viewModel.SexUndefined.CurrentItem;
             if (p != null)
             {
                 if (e.Key == Key.Left)
-                    p.Nem = Nem.Lany;
+                    p.Sex = Sex.Girl;
                 else if (e.Key == Key.Right)
-                    p.Nem = Nem.Fiu;
+                    p.Sex = Sex.Boy;
             }
         }
 
@@ -410,16 +410,16 @@ namespace AntiBonto
         {
             var dataGrid = (DataGrid)sender;
             if (e.Key == Key.Delete && (string)dataGrid.CurrentColumn.Header == "Kinek az újonca")
-                ((Person)dataGrid.CurrentItem).KinekAzUjonca = null;
+                ((Person)dataGrid.CurrentItem).WhoseNewcomer = null;
         }
 
-        private void KinekAzUjonca_Updated(object sender, SelectionChangedEventArgs e)
+        private void WhoseNewcomer_Updated(object sender, SelectionChangedEventArgs e)
         {
             if (e.AddedItems.Count > 0)
             {
                 Person p = (Person)DataGrid.CurrentItem, q = (Person)e.AddedItems[0];
-                if (q != null && p.Kiscsoport == q.Kiscsoport)
-                    new Person[] { p, q }.First(r => !r.Kiscsoportvezeto).Kiscsoport = -1;
+                if (q != null && p.SharingGroup == q.SharingGroup)
+                    new Person[] { p, q }.First(r => !r.SharingGroupLeader).SharingGroup = -1;
             }
         }
     }

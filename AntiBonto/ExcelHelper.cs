@@ -41,7 +41,7 @@ namespace AntiBonto
                         ppl[i++].Name += " " + n;
                 }
                 ppl.RemoveAll(s => String.IsNullOrWhiteSpace(s.Name));
-                Person fiuvezeto = null, lanyvezeto = null;
+                Person boyLeader = null, girlLeader = null;
                 if (isHVKezelo || MessageBox.Show("Hétvége kezelő formátum?", "", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
                 {
                     int i = 0;
@@ -65,15 +65,15 @@ namespace AntiBonto
                         {
                             var type = (PersonType)x;
                             ppl[i].Type = type;
-                            if (type == PersonType.Lanyvezeto)
+                            if (type == PersonType.GirlLeader)
                             {
-                                ppl[i].Nem = Nem.Lany;
-                                lanyvezeto = ppl[i];
+                                ppl[i].Sex = Sex.Girl;
+                                girlLeader = ppl[i];
                             }
-                            else if (type == PersonType.Fiuvezeto)
+                            else if (type == PersonType.BoyLeader)
                             {
-                                ppl[i].Nem = Nem.Fiu;
-                                fiuvezeto = ppl[i];
+                                ppl[i].Sex = Sex.Boy;
+                                boyLeader = ppl[i];
                             }
                         }
                         i++;
@@ -89,7 +89,7 @@ namespace AntiBonto
                         else if (s is double || s is int)
                             x = (int)s;
                         if (x != 0)
-                            ppl[i].Kiscsoport = x - 1;
+                            ppl[i].SharingGroup = x - 1;
                         i++;
                     }
                     i = 0;
@@ -98,7 +98,7 @@ namespace AntiBonto
                         if (i >= ppl.Count)
                             break;
                         if (s != null && s.ToString() != "")
-                            ppl[i].Kiscsoportvezeto = true;
+                            ppl[i].SharingGroupLeader = true;
                         i++;
                     }
                     i = 0;
@@ -110,7 +110,7 @@ namespace AntiBonto
                         if (s != null && s is string)
                             x = Encoding.ASCII.GetBytes(s)[0] - 65;
                         if (x != -1)
-                            ppl[i].Alvocsoport = x;
+                            ppl[i].SleepingGroup = x;
                         i++;
                     }
                     i = 0;
@@ -119,18 +119,18 @@ namespace AntiBonto
                         if (i >= ppl.Count)
                             break;
                         if (s != null && s.ToString() != "")
-                            ppl[i].Alvocsoportvezeto = true;
+                            ppl[i].SleepingGroupLeader = true;
                         i++;
                     }
                 }
                 if (ppl[0].Name.Contains("név"))
                     ppl.RemoveAt(0);
-                if (fiuvezeto != null && fiuvezeto.Alvocsoport != -1)
-                    foreach (var p in ppl.Where(q => q.Alvocsoport == fiuvezeto.Alvocsoport))
-                        p.Nem = Nem.Fiu;
-                if (lanyvezeto != null && lanyvezeto.Alvocsoport != -1)
-                    foreach (var p in ppl.Where(q => q.Alvocsoport == lanyvezeto.Alvocsoport))
-                        p.Nem = Nem.Lany;
+                if (boyLeader != null && boyLeader.SleepingGroup != -1)
+                    foreach (var p in ppl.Where(q => q.SleepingGroup == boyLeader.SleepingGroup))
+                        p.Sex = Sex.Boy;
+                if (girlLeader != null && girlLeader.SleepingGroup != -1)
+                    foreach (var p in ppl.Where(q => q.SleepingGroup == girlLeader.SleepingGroup))
+                        p.Sex = Sex.Girl;
                 return ppl;
             }
             finally
@@ -143,8 +143,8 @@ namespace AntiBonto
         public static async Task SaveXLS(string filename, ViewModel.MainWindow data)
         {
             Uri uri = new("/Resources/hetvegekezelo.xlsm", UriKind.Relative);
-            var acsn = data.Alvocsoportvezetok.Count();
-            var sleepingGroupTitles = data.Alvocsoportok.Select(group => ((TitledCollectionView)group).Title).ToList();
+            var acsn = data.SleepingGroupLeaders.Count();
+            var sleepingGroupTitles = data.SleepingGroups.Select(group => ((TitledCollectionView)group).Title).ToList();
             var people = data.People.ToList();
 
             await Task.Run(() =>
@@ -180,17 +180,17 @@ namespace AntiBonto
                         c[i, 1] = nev[0];
                         c[i, 2] = nev[1];
                         c[i, 3] = p.Nickname;
-                        if (p.Type != PersonType.Teamtag)
+                        if (p.Type != PersonType.Team)
                             c[i, 4] = (int)p.Type;
-                        if (p.Type != PersonType.Egyeb)
+                        if (p.Type != PersonType.Others)
                         {
-                            c[i, 5] = p.Kiscsoport + 1;
-                            if (p.Kiscsoportvezeto)
-                                c[i, 6] = p.Kiscsoport + 1;
+                            c[i, 5] = p.SharingGroup + 1;
+                            if (p.SharingGroupLeader)
+                                c[i, 6] = p.SharingGroup + 1;
 
-                            c[i, 7] = ((char)(p.Alvocsoport + 65)).ToString();
-                            if (p.Alvocsoportvezeto)
-                                c[i, 8] = ((char)(p.Alvocsoport + 65)).ToString();
+                            c[i, 7] = ((char)(p.SleepingGroup + 65)).ToString();
+                            if (p.SleepingGroupLeader)
+                                c[i, 8] = ((char)(p.SleepingGroup + 65)).ToString();
                         }
                         i++;
                     }
