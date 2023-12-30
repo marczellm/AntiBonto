@@ -42,7 +42,7 @@ namespace AntiBonto
             LoadXML();
             DispatcherTimer dispatcherTimer = new()
             {
-                Interval = new TimeSpan(0, 4, 0)
+                Interval = TimeSpan.FromMinutes(4)
             };
             dispatcherTimer.Tick += new EventHandler((sender, e) => SaveXML());            
             dispatcherTimer.Start();
@@ -369,7 +369,21 @@ namespace AntiBonto
                 CancellationToken ct = cts.Token;
                 try
                 {
-                    if (!await Task.Run(() => alg.NaiveFirstFit(ct), ct))
+                    var algorithmTask = Task.Run(() => alg.NaiveFirstFit(ct), ct);
+                    DispatcherTimer timer = new()
+                    {
+                        Interval = TimeSpan.FromSeconds(10)
+                    };
+                    timer.Tick += (sender, e) =>
+                    {
+                        var dialogResult = MessageBox.Show("Nem találom a megoldást. Lehet, hogy túl sok a megkötés. Próbálkozzak még?", "AntiBonto", MessageBoxButton.YesNo);
+                        if (dialogResult == MessageBoxResult.No)
+                            cts.Cancel();
+                    };
+                    timer.Start();
+                    bool result = await algorithmTask;
+                    timer.Stop();
+                    if (!result)
                         viewModel.StatusText = "Nem sikerült az automatikus beosztás!";
                 }
                 catch (AggregateException) { }

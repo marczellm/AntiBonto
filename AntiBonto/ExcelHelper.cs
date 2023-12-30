@@ -42,7 +42,7 @@ namespace AntiBonto
                 }
                 ppl.RemoveAll(s => String.IsNullOrWhiteSpace(s.Name));
                 Person boyLeader = null, girlLeader = null;
-                if (isHVKezelo || MessageBox.Show("Hétvége kezelő formátum?", "", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                if (isHVKezelo || MessageBox.Show("Hétvége kezelő formátum?", "AntiBonto", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
                 {
                     int i = 0;
                     foreach (var s in range.Columns[3].Value)

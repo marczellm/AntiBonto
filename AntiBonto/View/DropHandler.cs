@@ -125,7 +125,7 @@ namespace AntiBonto.View
                     break;
                 case "SharingGroupLeaders":
                     Edge edge = d.Edges.FirstOrDefault(e => e.Persons.Contains(p) && e.Persons.First(q => q != p).SharingGroupLeader);
-                    if (edge == null || MessageBox.Show(String.Format("Ez a megszorítás törlődni fog:\n\n{0}\n\nAkarod folytatni?", edge.ToString()), "", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                    if (edge == null || MessageBox.Show(String.Format("Ez a megszorítás törlődni fog:\n\n{0}\n\nAkarod folytatni?", edge.ToString()), "AntiBonto", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
                     {
                         if (!p.SharingGroupLeader)
                         {
