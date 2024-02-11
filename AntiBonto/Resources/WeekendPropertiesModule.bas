@@ -10,10 +10,15 @@ Type WeekendProperties
 End Type
 
 Function GetWeekendProperties() As WeekendProperties
-    Dim weekendPropertiesSheet As Worksheet:    Set weekendPropertiesSheet = Sheets("Vezérlõ adatok")
+    Dim weekendPropertiesSheet As Worksheet: Set weekendPropertiesSheet = Sheets("Vezérlõ adatok")
+    
+    Dim strNum As String: strNum = weekendPropertiesSheet.Cells(2, 2).Value
+    If Right$(strNum, 1) = "." Then
+        strNum = Left(strNum, Len(strNum) - 1)
+    End If
     
     GetWeekendProperties.CommunityName = weekendPropertiesSheet.Cells(1, 2).Value
-    GetWeekendProperties.Number = weekendPropertiesSheet.Cells(2, 2).Value
+    GetWeekendProperties.Number = CInt(strNum)
     GetWeekendProperties.Date = weekendPropertiesSheet.Cells(3, 2).Value
     GetWeekendProperties.Location = weekendPropertiesSheet.Cells(4, 2).Value
     GetWeekendProperties.Address = weekendPropertiesSheet.Cells(5, 2).Value
@@ -34,3 +39,5 @@ Sub SetupPrintHeaders(sheet As Worksheet, sheetTitle As String)
         .RightFooter = ""
 End With
 End Sub
+
+
