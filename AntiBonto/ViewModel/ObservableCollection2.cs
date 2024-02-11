@@ -39,7 +39,7 @@ namespace AntiBonto.ViewModel
 
         public void RemoveAll(Func<T, bool> cond)
         {
-            Items.Where(cond).ToList().All(p => Items.Remove(p));
+            Items.Where(cond).ToList().ForEach(p => Items.Remove(p));
             OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
     }

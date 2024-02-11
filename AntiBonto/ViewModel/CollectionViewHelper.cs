@@ -28,7 +28,7 @@ namespace AntiBonto.ViewModel
             else return new List<string> { };
         }
 
-        private static readonly Dictionary<string, ICollectionView> collectionViewCache = new Dictionary<string, ICollectionView>();
+        private static readonly Dictionary<string, ICollectionView> collectionViewCache = new();
 
         /// <summary>
         /// Returns a newly created CollectionView that live filters the given collection by the given filter expression.
@@ -37,7 +37,7 @@ namespace AntiBonto.ViewModel
             Expression<Func<T, bool>> filter,
             SortDescription? sortDescription = null)
         {
-            CollectionViewSource cvs = new CollectionViewSource { Source = source, IsLiveFilteringRequested = true, IsLiveSortingRequested = true };
+            var cvs = new CollectionViewSource { Source = source, IsLiveFilteringRequested = true, IsLiveSortingRequested = true };
             foreach (string prop in AccessedProperties<T>(filter.Body))
                 cvs.LiveFilteringProperties.Add(prop);
             if (sortDescription != null)

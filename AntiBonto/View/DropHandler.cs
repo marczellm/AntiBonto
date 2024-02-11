@@ -2,7 +2,6 @@
 using GongSolutions.Wpf.DragDrop;
 using System.Windows;
 using System.Linq;
-using System.Collections.ObjectModel;
 using System.Windows.Controls;
 using System.ComponentModel;
 

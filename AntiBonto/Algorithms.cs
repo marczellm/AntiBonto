@@ -100,7 +100,7 @@ namespace AntiBonto
         /// <summary>
         /// Assign the given group number to the person and all of their BFFs.
         /// </summary>
-        private void AssignToSharingGroup(Person p, int sharingGroup)
+        private static void AssignToSharingGroup(Person p, int sharingGroup)
         {
             p.SharingGroup = sharingGroup;
             foreach (Person q in p.includeEdges)
