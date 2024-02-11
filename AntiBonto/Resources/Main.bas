@@ -41,7 +41,7 @@ Attribute GenerateBadges.VB_ProcData.VB_Invoke_Func = "K\n14"
 '
 ' Ctrl+Shift+K
 '
-    If Not WorksheetExists("Kitûzõ1") Then
+    If WorksheetExists("Kitûzõ1") Then
       Exit Sub
     End If
     
@@ -91,7 +91,7 @@ Attribute GenerateHandout.VB_ProcData.VB_Invoke_Func = "Z\n14"
 ' Ctrl+Shift+Z
 '
 
-If Not WorksheetExists("Záró elõlap") Then
+If WorksheetExists("Záró elõlap") Then
   Exit Sub
 End If
 

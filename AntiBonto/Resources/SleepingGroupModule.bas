@@ -9,7 +9,7 @@ Attribute GenerateSleepingGroups.VB_ProcData.VB_Invoke_Func = "A\n14"
 ' Ctrl+Shift+A
 '
 
-If Not WorksheetExists("Alvócsoport1") Then
+If WorksheetExists("Alvócsoport1") Then
   Exit Sub
 End If
 

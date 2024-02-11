@@ -8,11 +8,11 @@ End Function
 
 Function WorksheetExists(SheetName As String) As Boolean
     Dim i As Integer
-    WorksheetExists = True
+    WorksheetExists = False
 
     For i = 1 To Sheets.Count
       If Sheets(i).Name = SheetName Then
-        WorksheetExists = False
+        WorksheetExists = True
       End If
     Next i
 End Function

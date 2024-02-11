@@ -9,7 +9,7 @@ Attribute GenerateSharingGroups.VB_ProcData.VB_Invoke_Func = "M\n14"
 ' Ctrl+Shift+M
 '
 
-If Not WorksheetExists("Megosztócsoport1") Then
+If WorksheetExists("Megosztócsoport1") Then
   Exit Sub
 End If
 
