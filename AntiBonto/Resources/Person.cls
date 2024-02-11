@@ -10,13 +10,13 @@ Attribute VB_Exposed = False
 Option Explicit
 
 Public Enum PersonType
-    Team = 0
-    BoyLeader = 1
-    GirlLeader = 2
-    MusicLeader = 3
-    MusicTeam = 4
-    OtherParticipant = 10
-    Newcomer = 11
+    ptTeam = 0
+    ptBoyLeader = 1
+    ptGirlLeader = 2
+    ptMusicLeader = 3
+    ptMusicTeam = 4
+    ptOtherParticipant = 10
+    ptNewcomer = 11
 End Enum
 
 Public FirstName As String
