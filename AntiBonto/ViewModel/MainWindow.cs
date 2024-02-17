@@ -69,9 +69,9 @@ namespace AntiBonto.ViewModel
         /// </summary>
         internal void InitSharingGroups()
         {
-            sharingGroups = SharingGroupLeaders.Select((v, i) =>
+            sharingGroups = SharingGroupLeaders.Select(v =>
             {
-                var ret = (TitledCollectionView) SharingGroupCollectionView(i);
+                var ret = (TitledCollectionView) SharingGroupCollectionView(v.SharingGroup);
                 ret.Title = v.NameOfLedSharingGroup;
                 ret.TitleChanged += (sender, args) =>
                 {

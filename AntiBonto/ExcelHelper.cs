@@ -144,9 +144,9 @@ namespace AntiBonto
         {
             Uri uri = new("/Resources/hetvegekezelo.xlsm", UriKind.Relative);
             var sharingGroupCount = data.SharingGroups.Count();
-            var sharingGroupTitles = data.SharingGroupLeaders.Select(leader => leader.NameOfLedSharingGroup).ToList();
+            var sharingGroupTitles = data.SharingGroupLeaders.OrderBy(leader => leader.SharingGroup).Select(leader => leader.NameOfLedSharingGroup).ToList();
             var sleepingGroupCount = data.SleepingGroupLeaders.Count();            
-            var sleepingGroupTitles = data.SleepingGroupLeaders.Select(leader => leader.NameOfLedSleepingGroup).ToList();            
+            var sleepingGroupTitles = data.SleepingGroupLeaders.OrderBy(leader => leader.SleepingGroup).Select(leader => leader.NameOfLedSleepingGroup).ToList();   
             var people = data.People.ToList();
 
             await Task.Run(() =>
