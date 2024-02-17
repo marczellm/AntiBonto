@@ -143,8 +143,10 @@ namespace AntiBonto
         public static async Task SaveXLS(string filename, ViewModel.MainWindow data)
         {
             Uri uri = new("/Resources/hetvegekezelo.xlsm", UriKind.Relative);
-            var acsn = data.SleepingGroupLeaders.Count();
-            var sleepingGroupTitles = data.SleepingGroupLeaders.Select(leader => leader.NameOfLedSleepingGroup).ToList();
+            var sharingGroupCount = data.SharingGroups.Count();
+            var sharingGroupTitles = data.SharingGroupLeaders.Select(leader => leader.NameOfLedSharingGroup).ToList();
+            var sleepingGroupCount = data.SleepingGroupLeaders.Count();            
+            var sleepingGroupTitles = data.SleepingGroupLeaders.Select(leader => leader.NameOfLedSleepingGroup).ToList();            
             var people = data.People.ToList();
 
             await Task.Run(() =>
@@ -158,14 +160,21 @@ namespace AntiBonto
                 Workbook file = excel.Workbooks.Open(filename);
                 try
                 {
-                    Worksheet sheet = file.Worksheets["Vezérlő adatok"];
-                    sheet.Cells[2, 2] = ViewModel.MainWindow.WeekendNumber;
+                    Worksheet basicDataSheet = file.Worksheets["Vezérlő adatok"];
+                    basicDataSheet.Cells[2, 2] = ViewModel.MainWindow.WeekendNumber;
 
-                    sheet = file.Worksheets["Alvócsoport címek"];
-                    for (int j = 1; j <= acsn; j++)
+                    Worksheet sheet = file.Worksheets["Alvócsoport címek"];
+                    for (int j = 1; j <= sleepingGroupCount; j++)
                     {
                         sheet.Cells[j + 1, 1] = ((char)(j + 64)).ToString();
                         sheet.Cells[j + 1, 2] = sleepingGroupTitles[j - 1];
+                    }
+
+                    sheet = file.Worksheets["Kiscsoport nevek"];
+                    for (int j = 1; j <= sharingGroupCount; j++)
+                    {
+                        sheet.Cells[j + 1, 1] = j;
+                        sheet.Cells[j + 1, 2] = sharingGroupTitles[j - 1];
                     }
 
                     sheet = file.Worksheets["Alapadatok"];
@@ -194,6 +203,7 @@ namespace AntiBonto
                         }
                         i++;
                     }
+                    basicDataSheet.Activate();
                 }
                 finally
                 {

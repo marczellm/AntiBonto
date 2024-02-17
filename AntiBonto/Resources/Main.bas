@@ -124,6 +124,7 @@ Dim weekend As WeekendProperties: weekend = GetWeekendProperties()
 Cells(1, 6) = Str(weekend.Number) & ". " & weekend.CommunityName & " Antióchia-hétvége, "
 Cells(2, 6) = weekend.Date
 Cells(3, 6) = weekend.Address
+Cells(33, 2).Value = weekend.MarriedCouple
 
 Dim ppl() As Person: ppl = Participants()
 Dim teamCount As Integer: teamCount = 0
@@ -182,7 +183,7 @@ Attribute DeleteAllGeneratedWorksheets.VB_ProcData.VB_Invoke_Func = "T\n14"
 '
   Dim i As Integer
   Application.DisplayAlerts = False
-  For i = Sheets.Count To 9 Step (-1)
+  For i = Sheets.Count To 10 Step (-1)
     Sheets(i).Delete
   Next
   Application.DisplayAlerts = True

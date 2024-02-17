@@ -7,6 +7,7 @@ Type WeekendProperties
     Date As String
     Location As String
     Address As String
+    MarriedCouple As String
 End Type
 
 Function GetWeekendProperties() As WeekendProperties
@@ -22,6 +23,7 @@ Function GetWeekendProperties() As WeekendProperties
     GetWeekendProperties.Date = weekendPropertiesSheet.Cells(3, 2).Value
     GetWeekendProperties.Location = weekendPropertiesSheet.Cells(4, 2).Value
     GetWeekendProperties.Address = weekendPropertiesSheet.Cells(5, 2).Value
+    GetWeekendProperties.MarriedCouple = weekendPropertiesSheet.Cells(6, 2).Value
 End Function
 
 Sub SetupPrintHeaders(sheet As Worksheet, sheetTitle As String)

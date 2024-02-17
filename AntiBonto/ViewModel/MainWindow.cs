@@ -141,12 +141,12 @@ namespace AntiBonto.ViewModel
         /// </summary>
         internal void SharingGroupExportOrdering()
         {
-            int l = GirlLeader.SharingGroup, f = BoyLeader.SharingGroup, z = MusicLeader.SharingGroup, m = SharingGroupLeaders.Count();
-            SwapSharingGroups(GirlLeader.SharingGroup, m - 1);
-            if (f != l)
-                SwapSharingGroups(BoyLeader.SharingGroup, m - 2);
-            if (z != l && z != f)
-                SwapSharingGroups(MusicLeader.SharingGroup, m - 3);
+            int girl = GirlLeader.SharingGroup, boy = BoyLeader.SharingGroup, music = MusicLeader.SharingGroup, m = SharingGroupLeaders.Count();
+            SwapSharingGroups(girl, m - 1);
+            if (boy != girl)
+                SwapSharingGroups(boy, m - 2);
+            if (music != girl && music != boy)
+                SwapSharingGroups(music, m - 3);
         }
 
         public ICollectionView Boys => CollectionViewHelper.Lazy<Person>(People, p => p.Sex == Sex.Boy && p.Type != PersonType.Others);
