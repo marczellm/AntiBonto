@@ -10,6 +10,5 @@ namespace AntiBonto.ViewModel
     {
         public Person[] Persons;
         public Edge[] Edges;
-        public Person[][] MutuallyExclusiveGroups;
     }
 }

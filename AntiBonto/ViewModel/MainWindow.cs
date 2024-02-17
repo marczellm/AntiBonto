@@ -284,11 +284,6 @@ namespace AntiBonto.ViewModel
             set { statusText = value; RaisePropertyChanged(); }
         }
 
-        /// <summary>
-        /// Represents groups in which no two persons should get assigned to the same sharing group.
-        /// </summary>
-        public ObservableCollection2<ObservableCollection2<Person>> MutuallyExclusiveGroups { get; } = new ObservableCollection2<ObservableCollection2<Person>> { new() };
-
         internal AppData AppData
         {
             get
@@ -296,8 +291,7 @@ namespace AntiBonto.ViewModel
                 return new AppData
                 {
                     Persons = People.ToArray(),
-                    Edges = Edges.ToArray(),
-                    MutuallyExclusiveGroups = MutuallyExclusiveGroups.Select(g => g.ToArray()).ToArray()
+                    Edges = Edges.ToArray()
                 };
             }
             set
@@ -311,16 +305,6 @@ namespace AntiBonto.ViewModel
                 foreach (Person person in People)
                     if (person.WhoseNewcomer != null)
                         person.WhoseNewcomer = People.Single(p => p.Name == person.WhoseNewcomer.Name);
-                foreach (var group in value.MutuallyExclusiveGroups)
-                {
-                    var og = new ViewModel.ObservableCollection2<Person>();
-                    og.AddRange(group.Select(p => People.Single(q => q.Name == p.Name)));
-                    MutuallyExclusiveGroups.Add(og);
-                }
-                MutuallyExclusiveGroups.RemoveAll(g => !g.Any());
-                if (!MutuallyExclusiveGroups.Any())
-                    MutuallyExclusiveGroups.Add(new ObservableCollection2<Person>());
-                RaisePropertyChanged(nameof(MutuallyExclusiveGroups));
             }
         }
 

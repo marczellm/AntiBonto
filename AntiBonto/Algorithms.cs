@@ -41,7 +41,7 @@ namespace AntiBonto
         /// Convert the standalone Edge representation of constraints
         /// to one that lists incompatible and must-go-together people in properties of the Person object.
         /// 
-        /// This new representation also includes additional inferred constraints from Ujoncok and MutuallyExclusiveGroups.
+        /// This new representation also includes additional inferred constraints from Ujoncok.
         /// </summary>
         private void ConvertEdges()
         {
@@ -58,23 +58,6 @@ namespace AntiBonto
                 }
             d.BoyLeader.excludeEdges.Add(d.GirlLeader);
             d.GirlLeader.excludeEdges.Add(d.BoyLeader);
-            // Split up the MutuallyExclusiveGroups to groups no bigger than m
-            List<List<Person>> mutuallyExclusiveGroups = new();
-            foreach (IList<Person> group in d.MutuallyExclusiveGroups)
-                for (int i=0, j=i; i<group.Count; i++, j=i%m)
-                {
-                    if (j==0)
-                        mutuallyExclusiveGroups.Add(new List<Person>());
-                    mutuallyExclusiveGroups.Last().Add(group[i]);
-                }
-            foreach (ICollection<Person> group in mutuallyExclusiveGroups)
-                foreach (Person p in group)
-                    foreach (Person q in group)
-                        if (p != q)
-                        {
-                            p.excludeEdges.Add(q);
-                            q.excludeEdges.Add(p);
-                        }            
             foreach (Edge e in d.Edges)
             {
                 if (e.Dislike)
