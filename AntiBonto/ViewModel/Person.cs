@@ -24,7 +24,7 @@ namespace AntiBonto
     }
 
     [Serializable]
-    public class Person: ViewModelBase
+    public class Person : ViewModelBase
     {
         public string Name { get; set; }
         public string Nickname { get; set; }
@@ -78,6 +78,8 @@ namespace AntiBonto
                 RaisePropertyChanged();
                 if (value && (Type == PersonType.Newcomer || Type == PersonType.Others))
                     Type = PersonType.Team;
+                if (!value)
+                    NameOfLedSharingGroup = "";
             }
         }
         public bool SleepingGroupLeader
@@ -89,16 +91,19 @@ namespace AntiBonto
                 RaisePropertyChanged();
                 if (value && (Type == PersonType.Newcomer || Type == PersonType.Others))
                     Type = PersonType.Team;
+                if (!value)
+                    NameOfLedSleepingGroup = "";
             }
         }
         private int sharingGroup = -1;
-        
+
         /// <summary>Zero-based</summary>
         public int SharingGroup
         {
             get { return sharingGroup; }
             set { sharingGroup = value; RaisePropertyChanged(); }
         }
+
         private int sleepingGroup = -1;
 
         /// <summary>Zero-based</summary>
@@ -107,10 +112,15 @@ namespace AntiBonto
             get { return sleepingGroup; }
             set { sleepingGroup = value; RaisePropertyChanged(); }
         }
+
+        public string NameOfLedSharingGroup { get; set; }
+        public string NameOfLedSleepingGroup { get; set; }
+
         public override string ToString()
         {
             return Name;
         }
+        
         private Person whoseNewcomer;
         public Person WhoseNewcomer
         {

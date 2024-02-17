@@ -69,7 +69,16 @@ namespace AntiBonto.ViewModel
         /// </summary>
         internal void InitSharingGroups()
         {
-            sharingGroups = SharingGroupLeaders.Select((v, i) => SharingGroupCollectionView(i)).ToList();
+            sharingGroups = SharingGroupLeaders.Select((v, i) =>
+            {
+                var ret = (TitledCollectionView) SharingGroupCollectionView(i);
+                ret.Title = v.NameOfLedSharingGroup;
+                ret.TitleChanged += (sender, args) =>
+                {
+                    v.NameOfLedSharingGroup = ret.Title;
+                };
+                return ret;
+            }).ToList<ICollectionView>();
 
             RaisePropertyChanged(nameof(SharingGroups));
             RaisePropertyChanged(nameof(SharingGroupless));
@@ -100,8 +109,25 @@ namespace AntiBonto.ViewModel
             }
 
             sleepingGroups = SleepingGroupLeaders.Select((v, i) => SleepingGroupCollectionView(i)).ToList();
-            boySleepingGroups = SleepingGroupLeaders.Where(item => item.Sex == Sex.Boy).Select(item => SleepingGroupCollectionView(item.SleepingGroup)).ToList();
-            girlSleepingGroups = SleepingGroupLeaders.Where(item => item.Sex == Sex.Girl).Select(item => SleepingGroupCollectionView(item.SleepingGroup)).ToList();
+            boySleepingGroups = SleepingGroupLeaders.Where(item => item.Sex == Sex.Boy).Select(item =>
+            {
+                var ret = (TitledCollectionView)SleepingGroupCollectionView(item.SleepingGroup);
+                ret.Title = item.NameOfLedSleepingGroup;
+                ret.TitleChanged += (sender, args) =>
+                {
+                    item.NameOfLedSleepingGroup = ret.Title;
+                };
+                return ret;
+            }).ToList<ICollectionView>();
+            girlSleepingGroups = SleepingGroupLeaders.Where(item => item.Sex == Sex.Girl).Select(item => { 
+                var ret = (TitledCollectionView)SleepingGroupCollectionView(item.SleepingGroup);
+                ret.Title = item.NameOfLedSleepingGroup;
+                ret.TitleChanged += (sender, args) =>
+                {
+                    item.NameOfLedSleepingGroup = ret.Title;
+                };
+                return ret;
+            }).ToList<ICollectionView>();
 
             RaisePropertyChanged(nameof(SleepingGroups));
             RaisePropertyChanged(nameof(BoySleepingGroups));

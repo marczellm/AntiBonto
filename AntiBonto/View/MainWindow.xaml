@@ -6,7 +6,7 @@
         xmlns:view="clr-namespace:AntiBonto.View"
         xmlns:vm="clr-namespace:AntiBonto.ViewModel"
         xmlns:hammer="clr-namespace:Hammer.SpinningWheel;assembly=Hammer.SpinningWheel"
-        xmlns:dd="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
+        xmlns:dd="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop" xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         mc:Ignorable="d"
         Name="MainWindowName" Title="AntiBontó" 
         Width="1024" Height="768"
@@ -327,7 +327,14 @@
                                 <view:DnDItemsControl ItemsSource="{Binding}"
                                                       Pinnable="True"
                                                       MinHeight="220"                                                      
-                                                      DragOver2="{Binding DataContext.SharingGroup_DragOver, Source={StaticResource DataContextProxy}}"/>
+                                                      DragOver2="{Binding DataContext.SharingGroup_DragOver, Source={StaticResource DataContextProxy}}">
+                                    <HeaderedItemsControl.Header>
+                                        <xctk:WatermarkTextBox MinWidth="80" 
+                                                               HorizontalAlignment="Left" 
+                                                               Text="{Binding Title}"
+                                                               Watermark="Csoportnév"/>
+                                    </HeaderedItemsControl.Header>
+                                </view:DnDItemsControl>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
@@ -396,7 +403,7 @@
                                                           dd:DragDrop.DropHandler="{StaticResource DropHandler}"
                                                           DragOver2="{Binding DataContext.SleepingGroup_DragOver, Source={StaticResource DataContextProxy}}">
                                         <HeaderedItemsControl.Header>
-                                            <TextBox MinWidth="80" HorizontalAlignment="Left" Text="{Binding Title}"/>
+                                            <xctk:WatermarkTextBox MinWidth="80" HorizontalAlignment="Left" Text="{Binding Title}" Watermark="Csoportnév"/>
                                         </HeaderedItemsControl.Header>
                                     </view:DnDItemsControl>
                                 </DataTemplate>
@@ -421,7 +428,7 @@
                                                           dd:DragDrop.DropHandler="{StaticResource DropHandler}"
                                                           DragOver2="{Binding DataContext.SleepingGroup_DragOver, Source={StaticResource DataContextProxy}}">
                                         <HeaderedItemsControl.Header>
-                                            <TextBox MinWidth="80" HorizontalAlignment="Left" Text="{Binding Title}"/>
+                                            <xctk:WatermarkTextBox MinWidth="80" HorizontalAlignment="Left" Text="{Binding Title}" Watermark="Csoportnév"/>
                                         </HeaderedItemsControl.Header>
                                     </view:DnDItemsControl>
                                 </DataTemplate>

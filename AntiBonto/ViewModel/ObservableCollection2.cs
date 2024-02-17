@@ -11,8 +11,19 @@ namespace AntiBonto.ViewModel
 {
     class TitledCollectionView : ListCollectionView
     {
-        public string Title { get; set; }
-        
+        private string title;
+        public string Title
+        {
+            get => title; 
+            set
+            {
+                title = value;
+                TitleChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Title)));
+            }
+        }
+
+        public event PropertyChangedEventHandler TitleChanged;
+
         public TitledCollectionView(IList list) : base(list)
         {
         }
