@@ -14,13 +14,25 @@ If WorksheetExists("Megosztócsoport1") Then
 End If
 
 Dim data As Worksheet: Set data = Sheets("Alapadatok")
+Dim namesSheet As Worksheet: Set namesSheet = Sheets("Kiscsoport nevek")
 Dim numParticipants As Integer: numParticipants = GetNumParticipants()
 Dim numSharingGroups As Integer: numSharingGroups = WorksheetFunction.Max(Range(data.Cells(2, 5), data.Cells(numParticipants + 1, 5)))
 Dim numGroupPages As Integer: numGroupPages = WorksheetFunction.RoundUp(numSharingGroups / GROUPS_PER_PAGE, 0)
+ReDim groupNames(numSharingGroups - 1) As String
+Dim groupsAreNamed As Boolean: groupsAreNamed = False
+Dim i As Integer, j As Integer
+
+For i = 1 To numSharingGroups
+    Dim groupName As String
+    groupName = namesSheet.Cells(i + 1, 2)
+    If Not StrEmpty(groupName) Then
+        groupsAreNamed = True
+        groupNames(i - 1) = groupName
+    End If
+Next i
 
 Call SetupPrintHeaders(Sheets("Megosztócsoport_alap"), "MEGOSZTÓ CSOPORTOK")
 
-Dim i As Integer, j As Integer
 For i = 1 To numGroupPages
   Sheets("Megosztócsoport_alap").Copy After:=Sheets(Sheets.Count)
   ActiveSheet.Name = "Megosztócsoport" & i
@@ -30,14 +42,18 @@ For i = 1 To numGroupPages
     Dim sharingGroupIndex As Integer: sharingGroupIndex = (i - 1) * GROUPS_PER_PAGE + j
     
     If sharingGroupIndex <= numSharingGroups Then
-      Call GenerateSharingGroup(data, numParticipants, sharingGroupIndex)
+      Call GenerateSharingGroup(data, numParticipants, sharingGroupIndex, groupNames(j - 1), groupsAreNamed)
     End If
   Next j
 Next i
 
 End Sub
 
-Sub GenerateSharingGroup(data As Worksheet, numParticipants As Integer, sharingGroupIndex As Integer)
+Sub GenerateSharingGroup(data As Worksheet, _
+                         numParticipants As Integer, _
+                         sharingGroupIndex As Integer, _
+                         groupName As String, _
+                         groupsAreNamed As Boolean)
 
 Const MAX_GROUP_SIZE = 7
 
@@ -49,18 +65,26 @@ End If
 
 Dim row As Integer: row = 1 + Int((groupIndexWithinPage - 1) / 2) * MAX_GROUP_SIZE
 Dim col As Integer: col = 1 + ((groupIndexWithinPage - 1) Mod 2)
+
+If groupsAreNamed Then
+    Cells(row, col).Value = sharingGroupIndex & ". " & groupName
+    k = k + 1
+End If
+
 Dim ppl() As Person: ppl = Participants()
 Dim var As Variant
 Dim pers As Person
 For Each var In ppl
     Set pers = var
     If pers.SharingGroup = sharingGroupIndex Then
-        If pers.SharingGroupLeader Then
+        If pers.SharingGroupLeader And Not groupsAreNamed Then
             Cells(row, col).Value = sharingGroupIndex & ". " & pers.FullName
         Else
             k = k + 1
             Cells(row + k, col).Value = pers.FullName
             If pers.Kind = ptNewcomer Then
+                Cells(row + k, col).Font.Italic = True
+            ElseIf pers.SharingGroupLeader Then
                 Cells(row + k, col).Font.Bold = True
             ElseIf pers.Kind = ptOtherParticipant Then
                 Cells(row + k, col).Font.Underline = xlUnderlineStyleSingle
