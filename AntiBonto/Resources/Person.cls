@@ -40,8 +40,16 @@ Property Get FullName() As String
     FullName = FirstName & " " & LastName
 End Property
 
+Property Get StrSharingGroup() As String
+    If SharingGroup <> 0 Then
+        StrSharingGroup = SharingGroup
+    End If
+End Property
+
 Property Get SleepingGroupNo() As Integer
-    SleepingGroupNo = Asc(SleepingGroup) - 64
+    If Not StrEmpty(SleepingGroup) Then
+        SleepingGroupNo = Asc(SleepingGroup) - 64
+    End If
 End Property
 
 ' constructor

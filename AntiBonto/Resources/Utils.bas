@@ -1,6 +1,10 @@
 Attribute VB_Name = "Utils"
 Option Explicit
 
+Type GroupNaming
+    GroupsAreNamed As Boolean
+    GroupNames() As String
+End Type
 
 Function StrEmpty(s As String) As Boolean
     StrEmpty = Len(s) = 0
@@ -17,7 +21,6 @@ Function WorksheetExists(SheetName As String) As Boolean
     Next i
 End Function
 
-Public Function ArrayLen(arr As Variant) As Integer
+Function ArrayLen(arr As Variant) As Integer
     ArrayLen = UBound(arr) - LBound(arr) + 1
 End Function
-

@@ -3,6 +3,23 @@ Option Explicit
 
 Const SLEEPING_GROUPS_PER_PAGE = 6
 
+Function GetSleepingGroupNames() As GroupNaming
+    Dim groupPropertiesSheet As Worksheet:  Set groupPropertiesSheet = Sheets("Alvócsoport címek")
+    Dim numGroups As Integer: numGroups = groupPropertiesSheet.Cells(1, 1).CurrentRegion.Rows.Count - 1
+    ReDim ret(numGroups - 1) As String
+    GetSleepingGroupNames.GroupsAreNamed = False
+    Dim i As Integer
+    For i = 1 To numGroups
+        Dim groupName As String
+        groupName = groupPropertiesSheet.Cells(i + 1, 2)
+        If Not StrEmpty(groupName) Then
+            GetSleepingGroupNames.GroupsAreNamed = True
+            ret(i - 1) = groupName
+        End If
+    Next
+    GetSleepingGroupNames.GroupNames = ret
+End Function
+
 Sub GenerateSleepingGroups()
 Attribute GenerateSleepingGroups.VB_ProcData.VB_Invoke_Func = "A\n14"
 '
@@ -30,7 +47,7 @@ Next i
 Call SetupPrintHeaders(Sheets("Alvócsoport_alap"), "ALVÓCSOPORTOK")
 
 Dim numGroupPages As Integer: numGroupPages = WorksheetFunction.RoundUp(numGroups / SLEEPING_GROUPS_PER_PAGE, 0)
-    
+
 For i = 1 To numGroupPages
   Sheets("Alvócsoport_alap").Copy After:=Sheets(Sheets.Count)
   ActiveSheet.Name = "Alvócsoport" & i

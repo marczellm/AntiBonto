@@ -36,53 +36,6 @@ Function GetNumParticipants() As Integer
     data.Protect
 End Function
 
-Sub GenerateBadges()
-Attribute GenerateBadges.VB_ProcData.VB_Invoke_Func = "K\n14"
-'
-' Ctrl+Shift+K
-'
-    If WorksheetExists("Kitûzõ1") Then
-      Exit Sub
-    End If
-    
-    Const BADGES_PER_PAGE = 10
-    
-    Dim ppl() As Person: ppl = Participants()
-    Dim numParticipants As Integer: numParticipants = ArrayLen(ppl)
-    
-    Dim numBadgePages As Integer
-    numBadgePages = WorksheetFunction.RoundUp(numParticipants / BADGES_PER_PAGE, 0)
-    
-    Dim i As Integer: i = 0 ' index of current participant
-    Dim page As Integer
-    For page = 1 To numBadgePages
-      Sheets("Kitûzõ_alap").Copy After:=Sheets(Sheets.Count)
-      ActiveSheet.Name = "Kitûzõ" & page
-      ActiveSheet.Unprotect
-      
-      Dim j As Integer    ' badge row index in rows of 2 badges
-      For j = 1 To BADGES_PER_PAGE / 2
-        Dim row As Integer: row = (j - 1) * 5 + 1 ' index of first Excel row within current badge
-            
-        ' Generate first badge in row
-        Cells(row, 1).Value = ppl(i).FirstName
-        Cells(row + 1, 1).Value = " " + ppl(i).LastName
-        Cells(row + 3, 1).Value = " " & ppl(i).SharingGroup & "   " & ppl(i).SleepingGroup
-        i = i + 1
-        
-        ' Generate last badge in row
-        Cells(row, 4).Value = ppl(i).FirstName
-        Cells(row + 1, 4).Value = " " + ppl(i).LastName
-        Cells(row + 3, 4).Value = " " & ppl(i).SharingGroup & "   " & ppl(i).SleepingGroup
-        i = i + 1
-        
-        If i >= numParticipants Then
-            Exit For
-        End If
-      Next j
-    Next page
-End Sub
-
 Sub GenerateHandout()
 Attribute GenerateHandout.VB_ProcData.VB_Invoke_Func = "Z\n14"
 '
